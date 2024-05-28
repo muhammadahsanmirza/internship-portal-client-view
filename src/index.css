@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Add this CSS to your stylesheets */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; /* Make scrollbar track transparent */
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2); /* Color of the scrollbar thumb */
+    border-radius: 5px; /* Rounded corners */
+}

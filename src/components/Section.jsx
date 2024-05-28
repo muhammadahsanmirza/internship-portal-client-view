@@ -66,8 +66,8 @@ function Section() {
                     </button>
                 </div>
             </div>
-            <div className='flex flex-row'>
-                <div className={`flex mt-6 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
+            <div className='flex flex-row '>
+                <div className={`flex mt-6 mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
                     style={{ width: activeDetail ? '430px' : 'auto' }}>
                     {data.map((card) => (
                         <Card
@@ -80,17 +80,7 @@ function Section() {
                             detail={() => detailClickHandler(card)}
                         />
                     ))}
-                    {data.map((card) => (
-                        <Card
-                            key={card.id}
-                            company_name={card.company_name}
-                            name={card.name}
-                            program_name={card.program_name}
-                            start_date={card.start_date}
-                            end_date={card.end_date}
-                            detail={() => detailClickHandler(card)}
-                        />
-                    ))}
+                    
                 </div>
                 {activeDetail && selectedCard && (
                     <CardDetail card={selectedCard} onClose={closeDetailHandler} />
