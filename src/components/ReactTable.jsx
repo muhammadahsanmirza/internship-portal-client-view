@@ -91,7 +91,7 @@ function ReactTable() {
         );
 
     return (
-        <div className="container mx-0">
+        <div className="container mx-0 w-full" >
             <table {...getTableProps()} className="table-auto w-full">
                 <thead className="bg-gray-100">
                     {headerGroups.map((headerGroup) => (
@@ -130,21 +130,21 @@ function ReactTable() {
                     <p className="mx-6">Page No. {pageIndex + 1}</p>
                 </div>
                 <div>
-        <button 
-            disabled={!canPreviousPage} 
-            onClick={previousPage} 
-            className={`py-2 px-4 hover:bg-slate-200 ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-            <MdKeyboardArrowLeft className="w-5 h-5" />
-        </button>
-        <button 
-            disabled={!canNextPage} 
-            onClick={nextPage} 
-            className={`py-2 px-4 hover:bg-slate-200 ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-            <MdKeyboardArrowRight className="w-5 h-5" />
-        </button>
-    </div>
+                    <button
+                        disabled={!canPreviousPage}
+                        onClick={previousPage}
+                        className={`py-2 px-4 hover:bg-slate-200 ${!canPreviousPage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        <MdKeyboardArrowLeft className="w-5 h-5" />
+                    </button>
+                    <button
+                        disabled={!canNextPage}
+                        onClick={nextPage}
+                        className={`py-2 px-4 hover:bg-slate-200 ${!canNextPage ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                        <MdKeyboardArrowRight className="w-5 h-5" />
+                    </button>
+                </div>
 
             </div>
         </div>

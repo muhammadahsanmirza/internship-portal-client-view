@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
 import Sidebar from './Sidebar'
 import EditAndViewOpportunities from './EditAndViewOpportunities'
 
 function AdminDashboard() {
   return (
     <div className="flex h-screen">
-      <Sidebar/>
+      <Sidebar />
       <EditAndViewOpportunities/>
+
     </div>
   )
 }
