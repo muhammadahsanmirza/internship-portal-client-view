@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from 'axios';
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
 import { BsCheckCircle } from "react-icons/bs";
-
+import { debounce } from "lodash";
 function EditAndViewOpportunities() {
     const [data, setData] = useState([]);
     const [totalOpportunities, setTotalOpportunities] = useState(0);
@@ -14,20 +14,50 @@ function EditAndViewOpportunities() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
-        let timeOut = setTimeout(()=>{
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+    // useEffect(() => {
+    //     let timeOut = setTimeout(()=>{
+    //         axios.get(`http://159.89.7.6:8022/opportunities/admin?opportunity_name=${opportunitySearch}&company_name=${companySearch}`)
+    //         .then((response) => {
+    //             const newData = Array.isArray(response.data) ? response.data : response.data.data;
+    //             setData(newData);
+    //             setTotalOpportunities(response.data.total_records);
+    //             setCurrentPage(response.data.current_page);
+    //             setTotalPages(response.data.total_pages)
+    //         })
+    //         .catch((error) => { console.error(error) })
+    //     },800)
+    //     return ()=> clearTimeout(timeOut);
+    // }, [opportunitySearch, companySearch]);
+    const fetchOpportunities = useCallback(
+        debounce(() => {
+            setLoading(true);
             axios.get(`http://159.89.7.6:8022/opportunities/admin?opportunity_name=${opportunitySearch}&company_name=${companySearch}`)
-            .then((response) => {
-                const newData = Array.isArray(response.data) ? response.data : response.data.data;
-                setData(newData);
-                setTotalOpportunities(response.data.total_records);
-                setCurrentPage(response.data.current_page);
-                setTotalPages(response.data.total_pages)
-            })
-            .catch((error) => { console.error(error) })
-        },800)
-        return ()=> clearTimeout(timeOut);
-    }, [opportunitySearch, companySearch]);
+                .then((response) => {
+                    const newData = Array.isArray(response.data) ? response.data : response.data.data;
+                    setData(newData);
+                    setTotalOpportunities(response.data.total_records);
+                    setCurrentPage(response.data.current_page);
+                    setTotalPages(response.data.total_pages);
+                    setError(null);
+                })
+                .catch((error) => {
+                    setError(error.message);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }, 800), [opportunitySearch, companySearch]
+    );
+
+    useEffect(() => {
+        fetchOpportunities();
+        return () => {
+            fetchOpportunities.cancel();
+        };
+    }, [opportunitySearch, companySearch, fetchOpportunities]);
 
     function handleClearFilter() {
         setOpportunitySearch('');
@@ -111,6 +141,10 @@ function EditAndViewOpportunities() {
                         </button>
                     </div>
                 </div>
+                {loading && <p className="text-center mt-4 text-gray-500">Loading...</p>}
+                {error && <p className="text-center mt-4 text-red-500">Error: {error}</p>}
+                {data.length === 0 && !loading && <p className="text-center mt-4 text-gray-500">No records found.</p>}
+
                 <div className="relative overflow-x-auto">
                     <table className="w-full text-sm rtl:text-right">
                         <thead className="text-xs text-gray-700 bg-gray-100">
@@ -167,7 +201,7 @@ function EditAndViewOpportunities() {
                     </div>
                     <div>
                         <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                            disabled={currentPage===1}
+                            disabled={currentPage === 1}
                             onClick={handlePrevPage}
                         >
                             <MdKeyboardArrowLeft className="w-5 h-5" />
@@ -179,6 +213,7 @@ function EditAndViewOpportunities() {
                         >
                             <MdKeyboardArrowRight className="w-5 h-5" />
                         </button>
+
                     </div>
                 </div>
             </div>
