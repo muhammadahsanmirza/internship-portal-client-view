@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^3.16.0",
+    "@azure/msal-react": "^2.0.18",
     "@tanstack/react-table": "^8.17.3",
     "axios": "^1.7.1",
     "html-react-parser": "^5.1.10",
