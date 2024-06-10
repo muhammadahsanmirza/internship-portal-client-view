@@ -1,16 +1,17 @@
-export const msalConfig = {
-    auth: {
-      clientId: 'YOUR_CLIENT_ID', 
-      authority: 'https://login.microsoftonline.com/YOUR_TENANT_ID', 
-      redirectUri: 'http://localhost:3000', 
-    },
-    cache: {
-      cacheLocation: 'localStorage', 
-      storeAuthStateInCookie: false,
-    },
-  };
-  
-  export const loginRequest = {
-    scopes: ['User.Read'],
-  };
-  
+const msalConfig = {
+  auth: {
+    clientId: import.meta.env.VITE_MSAL_CLIENT_ID,
+    authority: import.meta.env.VITE_MSAL_AUTHORITY,
+    redirectUri: import.meta.env.VITE_MSAL_REDIRECT_URI,
+  },
+  cache: {
+    cacheLocation: 'localStorage',
+    storeAuthStateInCookie: false,
+  },
+};
+
+const loginRequest = {
+  scopes: ['User.Read'],
+};
+
+export { msalConfig, loginRequest };

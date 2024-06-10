@@ -12,7 +12,7 @@ import "./index.css";
 
 
 const msalInstance = new PublicClientApplication(msalConfig);
-
+msalInstance.initialize();
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(

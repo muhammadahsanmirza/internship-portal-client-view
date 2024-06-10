@@ -13,7 +13,6 @@ function Sidebar() {
 
     return (
         <>
-            {/* Sidebar for large screens */}
             <div className="hidden sm:flex flex-col w-20 justify-center h-screen max-h-screen border-r-2 border-gray-300 z-10 fixed top-0 left-0 sm:w-20">
                 <div className='mb-auto border-b-2 border-gray-300' style={{ height: '66px' }}>
                     <img className='fixed top-1 left-2 w-14 h-14' src="/InternshipPortalLogo.jpeg" alt="Logo" />
@@ -28,7 +27,6 @@ function Sidebar() {
                 </div>
             </div>
 
-            {/* Sidebar for small screens */}
             <div className="flex sm:hidden w-full p-2 z-10 bg-white border-b-2 border-gray-300">
                 <button className='text-2xl' onClick={toggleDrawer}>
                     <MdViewHeadline />

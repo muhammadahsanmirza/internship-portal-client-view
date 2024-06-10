@@ -1,23 +1,21 @@
 // src/components/ProtectedComponent.js
 import React from 'react';
-import { MsalAuthenticationTemplate, useMsal } from '@azure/msal-react';
+import { MsalAuthenticationTemplate } from '@azure/msal-react';
 import { loginRequest } from '../authentication/auth';
+import SignInButton from './SignInButton';
 
 const ProtectedContent = () => {
-  const { accounts } = useMsal();
-  const user = accounts[0];
-
   return (
     <div>
-      <h1>Welcome, {user.name}</h1>
-      {/* Your protected content */}
+      <h1>Protected Content</h1>
+      <SignInButton />
     </div>
   );
 };
 
 function ProtectedComponent() {
   return (
-    <MsalAuthenticationTemplate interactionType="popup" authenticationRequest={loginRequest}>
+    <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
       <ProtectedContent />
     </MsalAuthenticationTemplate>
   );

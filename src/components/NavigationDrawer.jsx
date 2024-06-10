@@ -3,7 +3,15 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { BsFillMortarboardFill } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { RxCrossCircled } from "react-icons/rx";
+
+import { useMsal } from "@azure/msal-react";
+
+
 function NavigationDrawer({ isOpen, onClose }) {
+    const { instance, accounts } = useMsal();
+    const handleLogout = () => {
+        instance.logout({ account: accounts[0] });
+    };
     return (
         <div
             className={`fixed top-0 left-0 sm:left-20 w-full sm:w-52 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
@@ -35,7 +43,11 @@ function NavigationDrawer({ isOpen, onClose }) {
                     </div>
                 </div>
                 <div className="flex justify-center items-center mt-auto border-t-2">
-                    <button className="pb-1 px-4 text-red-600 my-3">Sign Out</button>
+                    <button className="pb-1 px-4 text-red-600 my-3"
+                        onClick={handleLogout}
+                    >
+                    Sign Out
+                    </button>
                 </div>
             </div>
         </div>
