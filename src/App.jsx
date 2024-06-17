@@ -22,13 +22,13 @@ function App() {
       instance.acquireTokenSilent(request).then(response => {
         console.log('Token refreshed silently:', response);
         setToken(response.accessToken);
-        localStorage.setItem('idToken', response.idToken); // Store idToken in local storage
+        localStorage.setItem('idToken', response.idToken); 
       }).catch(error => {
         if (error instanceof InteractionRequiredAuthError) {
           instance.acquireTokenPopup(request).then(response => {
             console.log('Token acquired with popup:', response);
             setToken(response.accessToken);
-            localStorage.setItem('idToken', response.idToken); // Store idToken in local storage
+            localStorage.setItem('idToken', response.idToken); 
           }).catch(e => {
             console.error('Token acquisition error:', e);
           });
