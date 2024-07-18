@@ -21,7 +21,6 @@ function App() {
         ...loginRequest,
         account: account,
       };
-      console.log("inside if statement")
       instance.acquireTokenSilent(request).then(response => {
         console.log('Token refreshed silently:', response);
         const token = response.idToken;

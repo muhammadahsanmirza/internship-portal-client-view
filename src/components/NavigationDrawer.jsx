@@ -10,6 +10,7 @@ import { useMsal } from "@azure/msal-react";
 function NavigationDrawer({ isOpen, onClose }) {
     const { instance, accounts } = useMsal();
     const handleLogout = () => {
+        localStorage.clear();
         instance.logout({ account: accounts[0] });
     };
     return (
