@@ -1,3 +1,5 @@
+import "./index.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -8,7 +10,6 @@ import { MsalProvider } from '@azure/msal-react';
 import { msalConfig } from './authentication/auth.js';
 
 import App from "./App.jsx";
-import "./index.css";
 
 
 const msalInstance = new PublicClientApplication(msalConfig);

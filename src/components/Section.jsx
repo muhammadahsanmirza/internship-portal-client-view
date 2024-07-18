@@ -33,6 +33,8 @@ function Section({ idToken }) {
 
     const fetchOpportunities = useCallback(debounce(() => {
         setData([]);
+        setActiveDetail(false);
+        setSelectedCard(null);
         setLoading(true);
         axios.get(`http://159.89.7.6:8022/opportunities?query_search=${querySearch}&program_id=${programId}`, {
             headers: {
@@ -41,12 +43,13 @@ function Section({ idToken }) {
             },
         })
             .then(function (response) {
-                const opportunities = response.data.data || []; 
-                setData(opportunities);
+                const opportunities = response.data.data || [];
+
                 setError(null);
-                
-                // Handle the case when no opportunities are found
+                setData(opportunities);
+
                 if (opportunities.length === 0) {
+                    setSelectedCard(null);
                     setError(response.data.message || "No Opportunity Found");
                 }
 
@@ -58,7 +61,7 @@ function Section({ idToken }) {
             .finally(() => {
                 setLoading(false);
             });
-    }, 800), [querySearch, programId, idToken]);
+    }, 500), [querySearch, programId, idToken]);
 
     useEffect(() => {
         fetchOpportunities();
@@ -94,7 +97,6 @@ function Section({ idToken }) {
         setProgramId(0);
 
         setLoading(false)
-       
     }
 
     return (
