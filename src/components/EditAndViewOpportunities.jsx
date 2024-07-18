@@ -49,8 +49,7 @@ function EditAndViewOpportunities() {
                 .finally(() => {
                     setLoading(false);
                 });
-        }, 800), [opportunitySearch, companySearch]
-    );
+        }, 800),[opportunitySearch, companySearch]);
 
     useEffect(() => {
         fetchOpportunities();

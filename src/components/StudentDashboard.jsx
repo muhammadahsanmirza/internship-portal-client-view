@@ -1,11 +1,11 @@
 import React from 'react'
 import Sidebar from './Sidebar'
 import Section from './Section'
-function StudentDashboard() {
+function StudentDashboard({idToken}) {
   return (
     <div className="flex h-screen sm">
         <Sidebar/>
-        <Section/>
+        <Section idToken={idToken}/>
     </div>
   )
 }

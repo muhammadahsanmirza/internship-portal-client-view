@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
 import './App.css';
-import AdminDashboard from './components/AdminDashboard';
-import StudentDashboard from './components/StudentDashboard';
+
+import React, { useEffect, useState } from 'react';
 
 import { useMsal } from '@azure/msal-react';
 import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MsalAuthenticationTemplate } from '@azure/msal-react';
 
+import AdminDashboard from './components/AdminDashboard';
+import StudentDashboard from './components/StudentDashboard';
+
 function App() {
   const { instance, accounts } = useMsal();
-  const [token, setToken] = useState(null);
+  const [idToken, setIdToken] = useState(null);
 
   useEffect(() => {
     if (accounts.length > 0) {
@@ -21,14 +23,16 @@ function App() {
       };
       instance.acquireTokenSilent(request).then(response => {
         console.log('Token refreshed silently:', response);
-        setToken(response.accessToken);
-        localStorage.setItem('idToken', response.idToken); 
+        const token = response.idToken;
+        setIdToken(token);
+        localStorage.setItem('idToken', token);
       }).catch(error => {
         if (error instanceof InteractionRequiredAuthError) {
           instance.acquireTokenPopup(request).then(response => {
             console.log('Token acquired with popup:', response);
-            setToken(response.accessToken);
-            localStorage.setItem('idToken', response.idToken); 
+            const token = response.idToken;
+            setIdToken(token);
+            localStorage.setItem('idToken', token);
           }).catch(e => {
             console.error('Token acquisition error:', e);
           });
@@ -42,20 +46,19 @@ function App() {
   return (
     <>
       <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
-        <AuthenticatedApp token={token} />
+        <AuthenticatedApp idToken={idToken} />
       </MsalAuthenticationTemplate>
     </>
   );
 }
 
-function AuthenticatedApp({ token }) {
-  const idToken = localStorage.getItem('idToken');
-  console.log('idToken from local storage:', idToken);
+function AuthenticatedApp({ idToken }) {
+  const token = localStorage.getItem('idToken');
+  console.log('idToken from local storage:', token);
 
   return (
     <>
-      {/* <AdminDashboard /> */}
-      <StudentDashboard token={token} idToken={idToken} />
+      <StudentDashboard idToken={idToken} />
     </>
   );
 }
