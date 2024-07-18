@@ -32,6 +32,7 @@ function Section({ idToken }) {
     }, [idToken]);
 
     const fetchOpportunities = useCallback(debounce(() => {
+        setData([]);
         setLoading(true);
         axios.get(`http://159.89.7.6:8022/opportunities?query_search=${querySearch}&program_id=${programId}`, {
             headers: {
@@ -40,8 +41,14 @@ function Section({ idToken }) {
             },
         })
             .then(function (response) {
-                setData(response.data.data);
+                const opportunities = response.data.data || []; 
+                setData(opportunities);
                 setError(null);
+                
+                // Handle the case when no opportunities are found
+                if (opportunities.length === 0) {
+                    setError(response.data.message || "No Opportunity Found");
+                }
 
             })
             .catch(function (error) {
@@ -51,7 +58,7 @@ function Section({ idToken }) {
             .finally(() => {
                 setLoading(false);
             });
-    }), [querySearch, programId]);
+    }, 800), [querySearch, programId, idToken]);
 
     useEffect(() => {
         fetchOpportunities();
@@ -61,7 +68,6 @@ function Section({ idToken }) {
     }, [idToken, querySearch, programId])
 
     function handleProgramChange(e) {
-        console.log(e.target.value);
         setProgramId(e.target.value);
     }
 
@@ -80,14 +86,15 @@ function Section({ idToken }) {
         setQuerySearch(e.target.value);
     }
 
-
     function clearFilters() {
-        console.log('Before-->', querySearch)
-        console.log('Before-->', programId)
+        setLoading(true)
+        setError(null)
+
         setQuerySearch('');
         setProgramId(0);
-        console.log('After-->', querySearch)
-        console.log('After-->', programId)
+
+        setLoading(false)
+       
     }
 
     return (
@@ -125,8 +132,8 @@ function Section({ idToken }) {
                     </button>
                 </div>
             </div>
-            {loading && <p className="text-center mt-4 text-gray-500">Loading...</p>}
-            {error && <p className="text-center mt-4 text-red-500">Error: {error}</p>}
+            {loading && <p className="text-center mt-4 text-black font-bold text-xl">Loading...</p>}
+            {error && <p className="text-center mt-4 text-red-500 font-bold text-xl">Error: {error}</p>}
             <div className='flex flex-row '>
                 <div className={`flex mt-6 mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
                     style={{ width: activeDetail ? '430px' : 'auto' }}>

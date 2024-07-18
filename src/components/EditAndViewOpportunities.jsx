@@ -140,8 +140,8 @@ function EditAndViewOpportunities() {
                         </button>
                     </div>
                 </div>
-                {loading && <p className="text-center mt-4 text-gray-500">Loading...</p>}
-                {error && <p className="text-center mt-4 text-red-500">Error: {error}</p>}
+                {loading && <p className="text-center mt-4 text-gray-500 font-bold text-xl">Loading...</p>}
+                {error && <p className="text-center mt-4 text-red-500 font-bold text-xl">Error: {error}</p>}
                 {data.length === 0 && !loading && <p className="text-center mt-4 text-gray-500">No records found.</p>}
 
                 <div className="relative overflow-x-auto">
