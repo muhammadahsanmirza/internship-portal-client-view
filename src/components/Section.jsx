@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { IoIosSearch } from "react-icons/io";
-import { RiCloseCircleLine } from "react-icons/ri"; // Corrected the import for RiCloseCircleLine
-import Card from './Card';
-import CardDetail from './CardDetail';
+import { RiCloseCircleLine } from "react-icons/ri"; 
 import { debounce } from 'lodash';
 
+import Card from './Card';
+import CardDetail from './CardDetail';
+import Header from './Header';
 function Section({ idToken }) {
     const [activeDetail, setActiveDetail] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
@@ -101,10 +102,7 @@ function Section({ idToken }) {
 
     return (
         <div className='w-[calc(100%-5rem)] ml-20 z-0'>
-            <div className="flex flex-col border-b-2 border-gray-300 px-10 py-3" style={{ height: '4.1rem' }}>
-                <h2 className="font-bold">College of Engineering Internship</h2>
-                <p className='text-sm text-gray-400'>Opportunities</p>
-            </div>
+            <Header/>
             <div className='flex flex-row my-4 mx-3'>
                 <div className='flex flex-row rounded border mx-1' style={{ width: '34rem' }}>
                     <input
@@ -137,7 +135,7 @@ function Section({ idToken }) {
             {loading && <p className="text-center mt-4 text-black font-bold text-xl">Loading...</p>}
             {error && <p className="text-center mt-4 text-red-500 font-bold text-xl">Error: {error}</p>}
             <div className='flex flex-row '>
-                <div className={`flex mt-6 mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
+                <div className={`flex mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
                     style={{ width: activeDetail ? '430px' : 'auto' }}>
                     {data && data.map((card) => (
                         <Card
