@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import axios from 'axios';
+import axiosInstance from '../interceptors/axiosInstance';
 import { IoIosSearch } from "react-icons/io";
-import { RiCloseCircleLine } from "react-icons/ri"; 
+import { RiCloseCircleLine } from "react-icons/ri";
 import { debounce } from 'lodash';
 
 import Card from './Card';
@@ -18,18 +20,26 @@ function Section({ idToken }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://159.89.7.6:8022/program/names`, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            }
-        })
-            .then(function (response) {
+        // axios.get(`http://159.89.7.6:8022/program/names`, {
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Authorization': `Bearer ${idToken}`
+        //     }
+        // })
+        //     .then(function (response) {
+        //         setPrograms(response.data.data);
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
+        axiosInstance
+            .get(`/program/names`)
+            .then((response) => {
                 setPrograms(response.data.data);
             })
-            .catch(function (error) {
-                console.log(error);
-            });
+            .catch((error) => {
+                console.error(error);
+            })
     }, [idToken]);
 
     const fetchOpportunities = useCallback(debounce(() => {
@@ -37,13 +47,9 @@ function Section({ idToken }) {
         setActiveDetail(false);
         setSelectedCard(null);
         setLoading(true);
-        axios.get(`http://159.89.7.6:8022/opportunities?query_search=${querySearch}&program_id=${programId}`, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${idToken}`
-            },
-        })
-            .then(function (response) {
+        axiosInstance
+            .get(`/opportunities?query_search=${querySearch}&program_id=${programId}`)
+            .then((response) => {
                 const opportunities = response.data.data || [];
 
                 setError(null);
@@ -53,15 +59,39 @@ function Section({ idToken }) {
                     setSelectedCard(null);
                     setError(response.data.message || "No Opportunity Found");
                 }
-
             })
-            .catch(function (error) {
+            .catch((error) => {
                 setError(error.message);
                 console.error(error);
             })
             .finally(() => {
                 setLoading(false);
             });
+        // axios.get(`http://159.89.7.6:8022/opportunities?query_search=${querySearch}&program_id=${programId}`, {
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Authorization': `Bearer ${idToken}`
+        //     },
+        // })
+        //     .then(function (response) {
+        //         const opportunities = response.data.data || [];
+
+        //         setError(null);
+        //         setData(opportunities);
+
+        //         if (opportunities.length === 0) {
+        //             setSelectedCard(null);
+        //             setError(response.data.message || "No Opportunity Found");
+        //         }
+
+        //     })
+        //     .catch(function (error) {
+        //         setError(error.message);
+        //         console.error(error);
+        //     })
+        //     .finally(() => {
+        //         setLoading(false);
+        //     });
     }, 500), [querySearch, programId, idToken]);
 
     useEffect(() => {
@@ -102,7 +132,7 @@ function Section({ idToken }) {
 
     return (
         <div className='w-[calc(100%-5rem)] ml-20 z-0'>
-            <Header/>
+            <Header />
             <div className='flex flex-row my-4 mx-3'>
                 <div className='flex flex-row rounded border mx-1' style={{ width: '34rem' }}>
                     <input

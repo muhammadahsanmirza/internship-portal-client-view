@@ -1,25 +1,19 @@
+// NavigationDrawer.jsx
 import React from "react";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { BsFillMortarboardFill } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
 import { RxCrossCircled } from "react-icons/rx";
+import { NavLink } from "react-router-dom";
 
 import { useMsal } from "@azure/msal-react";
-import { useDispatch } from 'react-redux';
-import { setView } from '../features/studenDashboard/studentDashboardSlice';
 
 function NavigationDrawer({ isOpen, onClose }) {
-    const dispatch = useDispatch();
-
     const { instance, accounts } = useMsal();
+
     const handleLogout = () => {
         localStorage.clear();
         instance.logout({ account: accounts[0] });
-    };
-
-    const onClickHandler = (e) => {
-        dispatch(setView({ currentView: e.target.value })); // Dispatch directly without local state
-        onClose(); // Close the drawer if needed
     };
 
     return (
@@ -46,26 +40,23 @@ function NavigationDrawer({ isOpen, onClose }) {
                 </div>
                 <div className="flex-grow">
                     <div className="flex flex-col justify-between mt-1">
-                        <div className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500">
+                        <NavLink
+                            to="opportunities" // Correct the path to be relative to "/student/"
+                            className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500"
+                            onClick={onClose}
+                        >
                             <BsFillMortarboardFill className="mx-4" />
-                            <button
-                                className="mx-4 text-center sm:text-left"
-                                value="Opportunities"
-                                onClick={onClickHandler}
-                            >
-                                Opportunities
-                            </button>
-                        </div>
-                        <div className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500">
+                            <span className="mx-4 text-center sm:text-left">Opportunities</span>
+                        </NavLink>
+
+                        <NavLink
+                            to="profile" // Correct the path to be relative to "/student/"
+                            className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500"
+                            onClick={onClose}
+                        >
                             <CgProfile className="mx-4" />
-                            <button
-                                className="mx-4 text-center sm:text-left"
-                                value="StudentProfile"
-                                onClick={onClickHandler}
-                            >
-                                Profile
-                            </button>
-                        </div>
+                            <span className="mx-4 text-center sm:text-left">Profile</span>
+                        </NavLink>
                     </div>
                 </div>
                 <div className="flex justify-center items-center mt-auto border-t-2">

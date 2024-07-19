@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+// Sidebar.jsx
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { MdViewHeadline } from "react-icons/md";
 import NavigationDrawer from './NavigationDrawer';
 
 function Sidebar() {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);

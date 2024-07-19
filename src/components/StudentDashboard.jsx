@@ -1,21 +1,13 @@
 // StudentDashboard.jsx
 import React from 'react';
 import Sidebar from './Sidebar';
-import Section from './Section';
-import { useSelector } from 'react-redux';
-import StudentProfile from './StudentProfile';
+import { Outlet } from 'react-router-dom';
 
-function StudentDashboard({ idToken }) {
-  const currentUserView = useSelector((state) => state.studentView.currentView); // Correct state access
-
+function StudentDashboard({idToken}) {
   return (
-    <div className="flex h-screen sm">
+    <div className="flex h-screen">
       <Sidebar />
-      {currentUserView === 'Opportunities' ? (
-        <Section idToken={idToken} />
-      ) : (
-        <StudentProfile />
-      )}
+      <Outlet />
     </div>
   );
 }
