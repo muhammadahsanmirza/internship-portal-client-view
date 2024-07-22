@@ -10,6 +10,14 @@ import { MsalAuthenticationTemplate } from '@azure/msal-react';
 import AdminDashboard from './components/AdminDashboard';
 import StudentDashboard from './components/StudentDashboard';
 
+
+// Import styles of packages that you've installed.
+// All packages except `@mantine/hooks` require styles imports
+import '@mantine/core/styles.css';
+
+import { MantineProvider } from '@mantine/core';
+
+
 function App() {
   const { instance, accounts } = useMsal();
   const [idToken, setIdToken] = useState(null);
@@ -46,9 +54,11 @@ function App() {
 
   return (
     <>
-      <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
-        <AuthenticatedApp idToken={idToken} />
-      </MsalAuthenticationTemplate>
+      <MantineProvider>
+        <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
+          <AuthenticatedApp idToken={idToken} />
+        </MsalAuthenticationTemplate>
+      </MantineProvider>
     </>
   );
 }
