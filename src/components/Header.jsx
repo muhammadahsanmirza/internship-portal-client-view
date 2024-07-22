@@ -20,7 +20,7 @@ function Header({ breadcrumbs }) {
       <p className="font-bold text-sm" style={{ fontSize: '1rem', lineHeight: '1.25rem' }}>
         College of Engineering Internship
       </p>
-      <div className="pb-2"> {/* Added padding-bottom */}
+      <div className="pb-2">
         <Breadcrumbs separator="/" mt="xs">
           {items}
         </Breadcrumbs>
