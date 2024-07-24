@@ -3,7 +3,7 @@ import React from 'react';
 import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
 
-function StudentDashboard({idToken}) {
+function StudentDashboard() {
   return (
     <div className="flex h-screen">
       <Sidebar />

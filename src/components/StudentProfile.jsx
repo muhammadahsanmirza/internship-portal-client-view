@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Header from './Header';
 import axiosInstance from '../interceptors/axiosInstance';
+
 import { RiAccountCircleFill } from "react-icons/ri";
 import { SiAdobeacrobatreader } from "react-icons/si";
 import { MdFileDownload } from "react-icons/md";
+
+import { ToastContainer, toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 function StudentProfile() {
   const breadcrumbs = [
@@ -22,9 +26,10 @@ function StudentProfile() {
   const [resumeId, setResumeId] = useState(false);
 
   useEffect(() => {
+    console.log("inside useEffect");
     axiosInstance.get('/student/profile')
       .then((res) => {
-        console.log(res.data.data);
+        console.log("inside thenS", res.data.data);
         setData(res.data.data);
         setUserId(res.data.data.user_id);
         if (res.data.profile_complete) {
@@ -48,6 +53,7 @@ function StudentProfile() {
       .catch((err) => {
         console.log(err);
       });
+    console.log("After axios call")
   }, []);
 
   const downloadFile = () => {
@@ -96,30 +102,31 @@ function StudentProfile() {
     if (selectedFile) {
       // Create a FormData object
       const formData = new FormData();
-      
+
       // Append the selected file to the FormData object
-      formData.append('new_file ', selectedFile);
+      formData.append('new_file', selectedFile);
       console.log(selectedFile.name)
       const url = `/student/profile?resume_id=${resumeId}`;
-  
+
       axiosInstance.put(url, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then((response) => {
-        console.log('File uploaded successfully:', response.data);
-      })
-      .catch((error) => {
-        console.error('Error uploading file:', error);
-        setErrorMessage('Error uploading file:', error);
-        setSelectedFile(null);
-      });
-  
+        .then((response) => {
+          console.log('File uploaded successfully:', response.data);
+          toast.success('File uploaded successfully');
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+          setErrorMessage('Error uploading file:', error);
+          setSelectedFile(null);
+        });
+
       setIsDialogOpen(false);
     }
   };
-  
+
   return (
     <div className="w-[calc(100%-5rem)] ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
@@ -182,10 +189,10 @@ function StudentProfile() {
           </div>
         )}
         {errorMessage && (
-                  <div className="mt-2 text-sm text-red-500">
-                    {errorMessage}
-                  </div>
-                )}
+          <div className="mt-2 text-sm text-red-500">
+            {errorMessage}
+          </div>
+        )}
         {isDialogOpen && (
           <div
             className="fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black bg-opacity-60 backdrop-blur-sm"
@@ -268,6 +275,20 @@ function StudentProfile() {
           </div>
         )}
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover
+        theme="colored"
+        transition={Slide} 
+      />
+
     </div>
   );
 }
