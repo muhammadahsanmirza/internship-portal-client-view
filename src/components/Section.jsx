@@ -8,6 +8,7 @@ import { debounce } from 'lodash';
 import Card from './Card';
 import CardDetail from './CardDetail';
 import Header from './Header';
+import Loader from './Loader';
 
 function Section() {
     const [activeDetail, setActiveDetail] = useState(false);
@@ -118,7 +119,7 @@ function Section() {
                 <div className="flex flex-row rounded border mx-1" style={{ width: '34rem' }}>
                     <select className="w-full text-sm p-2 outline-none" value={programId} onChange={handleProgramChange}>
                         <option value="">Select Program</option>
-                        {programs.map((program) => (
+                        {programs?.map((program) => (
                             <option key={program.id} value={program.id}>
                                 {program.name}
                             </option>
@@ -133,7 +134,7 @@ function Section() {
                     </button>
                 </div>
             </div>
-            {loading && <p className="text-center mt-4 text-black font-bold text-xl">Loading...</p>}
+            {loading && <Loader/>}
             {error && <p className="text-center mt-4 text-red-500 font-bold text-xl">Error: {error}</p>}
             <div className="flex flex-row ">
                 <div
@@ -142,7 +143,7 @@ function Section() {
                     style={{ width: activeDetail ? '430px' : 'auto' }}
                 >
                     {data &&
-                        data.map((card) => (
+                        data?.map((card) => (
                             <Card
                                 key={card.id}
                                 company_name={card.company_name}

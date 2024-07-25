@@ -17,7 +17,7 @@ function Sidebar() {
         <>
             <div className="hidden sm:flex flex-col w-20 justify-center h-screen max-h-screen border-r-2 border-gray-300 z-10 fixed top-0 left-0 sm:w-20">
                 <div className='mb-auto border-b-2 border-gray-300' style={{ height: '66px' }}>
-                    <img className='fixed top-1 left-2 w-14 h-14' src="/InternshipPortalLogo.jpeg" alt="Logo" />
+                    <img className='fixed top-1 left-2 w-14 h-14' src="/InternshipPortalLogo.png" alt="Logo" />
                     {!isDrawerOpen &&
                         <button className='text-xl fixed top-5 left-16' onClick={toggleDrawer}><IoIosArrowDroprightCircle /></button>
                     }
