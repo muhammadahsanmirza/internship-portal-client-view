@@ -19,6 +19,7 @@ function Section() {
     const [querySearch, setQuerySearch] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [applied, setApplied] = useState(false); // moved to the bottom for readability
 
     useEffect(() => {
         axiosInstance
@@ -41,7 +42,7 @@ function Section() {
                 .get(`/opportunities?query_search=${querySearch}&program_id=${programId}`)
                 .then((response) => {
                     const opportunities = response.data.data || [];
-
+                    console.log(opportunities);
                     setError(null);
                     setData(opportunities);
 
@@ -66,7 +67,7 @@ function Section() {
         return () => {
             fetchOpportunities.cancel();
         };
-    }, [querySearch, programId]);
+    }, [fetchOpportunities, applied]);
 
     function handleProgramChange(e) {
         setProgramId(e.target.value);
@@ -104,7 +105,10 @@ function Section() {
         <div className="w-[calc(100%-5rem)] ml-20 z-0">
             <Header breadcrumbs={breadcrumbs} />
             <div className="flex flex-row my-4 mx-3">
-                <div className="flex flex-row rounded border mx-1" style={{ width: '34rem' }}>
+                <div
+                    className="flex flex-row rounded border mx-1"
+                    style={{ width: '34rem' }}
+                >
                     <input
                         type="text"
                         value={querySearch}
@@ -116,8 +120,15 @@ function Section() {
                         <IoIosSearch className="text-lg" />
                     </button>
                 </div>
-                <div className="flex flex-row rounded border mx-1" style={{ width: '34rem' }}>
-                    <select className="w-full text-sm p-2 outline-none" value={programId} onChange={handleProgramChange}>
+                <div
+                    className="flex flex-row rounded border mx-1"
+                    style={{ width: '34rem' }}
+                >
+                    <select
+                        className="w-full text-sm p-2 outline-none"
+                        value={programId}
+                        onChange={handleProgramChange}
+                    >
                         <option value="">Select Program</option>
                         {programs?.map((program) => (
                             <option key={program.id} value={program.id}>
@@ -129,13 +140,21 @@ function Section() {
 
                 <div className="flex flex-row rounded bg-blue-950 text-white px-2 py-1 text-sm items-center justify-center mx-1">
                     <RiCloseCircleLine />
-                    <button onClick={clearFilters} className="mx-1 text-xs" style={{ minWidth: '100px', padding: '5px 10px' }}>
+                    <button
+                        onClick={clearFilters}
+                        className="mx-1 text-xs"
+                        style={{ minWidth: '100px', padding: '5px 10px' }}
+                    >
                         CLEAR FILTERS
                     </button>
                 </div>
             </div>
-            {loading && <Loader/>}
-            {error && <p className="text-center mt-4 text-red-500 font-bold text-xl">Error: {error}</p>}
+            {loading && <Loader />}
+            {error && (
+                <p className="text-center mt-4 text-red-500 font-bold text-xl">
+                    Error: {error}
+                </p>
+            )}
             <div className="flex flex-row ">
                 <div
                     className={`flex mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'
@@ -143,7 +162,7 @@ function Section() {
                     style={{ width: activeDetail ? '430px' : 'auto' }}
                 >
                     {data &&
-                        data?.map((card) => (
+                        data.map((card) => (
                             <Card
                                 key={card.id}
                                 company_name={card.company_name}
@@ -155,7 +174,13 @@ function Section() {
                             />
                         ))}
                 </div>
-                {activeDetail && selectedCard && <CardDetail card={selectedCard} onClose={closeDetailHandler} />}
+                {activeDetail && selectedCard && (
+                    <CardDetail
+                        card={selectedCard}
+                        setApplied={setApplied}
+                        onClose={closeDetailHandler}
+                    />
+                )}
             </div>
         </div>
     );
