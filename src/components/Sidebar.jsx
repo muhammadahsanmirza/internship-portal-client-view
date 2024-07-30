@@ -1,13 +1,11 @@
-// Sidebar.jsx
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { MdViewHeadline } from "react-icons/md";
 import NavigationDrawer from './NavigationDrawer';
 
 function Sidebar() {
-    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
@@ -15,6 +13,7 @@ function Sidebar() {
 
     return (
         <>
+            {/* Sidebar for large screens */}
             <div className="hidden sm:flex flex-col w-20 justify-center h-screen max-h-screen border-r-2 border-gray-300 z-10 fixed top-0 left-0 sm:w-20">
                 <div className='mb-auto border-b-2 border-gray-300' style={{ height: '66px' }}>
                     <img className='fixed top-1 left-2 w-14 h-14' src="/InternshipPortalLogo.png" alt="Logo" />
@@ -29,10 +28,9 @@ function Sidebar() {
                 </div>
             </div>
 
-            <div className="flex sm:hidden w-full p-2 z-10 bg-white border-b-2 border-gray-300">
-                <button className='text-2xl' onClick={toggleDrawer}>
-                    <MdViewHeadline />
-                </button>
+            {/* Sidebar for small screens */}
+            <div className="sm:hidden bg-white mt-2 h-10  border-b-2 border-gray-300" onClick={toggleDrawer}>
+                    <MdViewHeadline className='text-3xl ml-6' />
             </div>
 
             <NavigationDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />

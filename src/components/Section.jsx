@@ -102,12 +102,12 @@ function Section() {
     ];
 
     return (
-        <div className="w-[calc(100%-5rem)] ml-20 z-0">
+        <div className="sm:w-[calc(100%-5rem)] sm:ml-20 mr-4">
             <Header breadcrumbs={breadcrumbs} />
-            <div className="flex flex-row my-4 mx-3">
+            <div className="flex flex-col gap-4 w-auto sm:flex-row sm:flex-wrap sm:items-center sm:my-4 sm:mx-3 mt-10">
                 <div
-                    className="flex flex-row rounded border mx-1"
-                    style={{ width: '34rem' }}
+                    className="flex flex-row rounded border sm:mx-1"
+                    // style={{ width: '34rem' }}
                 >
                     <input
                         type="text"
@@ -121,8 +121,8 @@ function Section() {
                     </button>
                 </div>
                 <div
-                    className="flex flex-row rounded border mx-1"
-                    style={{ width: '34rem' }}
+                    className="flex flex-row rounded border mx-1 w-auto"
+                    // style={{ width: '34rem' }}
                 >
                     <select
                         className="w-full text-sm p-2 outline-none"
@@ -155,7 +155,7 @@ function Section() {
                     Error: {error}
                 </p>
             )}
-            <div className="flex flex-row ">
+            <div className="flex flex-row flex-wrap">
                 <div
                     className={`flex mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'
                         } overflow-y-auto overflow-x-hidden`}

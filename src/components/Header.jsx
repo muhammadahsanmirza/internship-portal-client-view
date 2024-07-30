@@ -1,4 +1,3 @@
-// Header.jsx
 import React from 'react';
 import { Breadcrumbs } from '@mantine/core';
 import { Link } from 'react-router-dom';
@@ -16,8 +15,8 @@ function Header({ breadcrumbs }) {
   ));
 
   return (
-    <div className="flex flex-col border-b-2 border-gray-300 px-10 py-3" style={{ height: '4.1rem' }}>
-      <p className="font-bold text-sm" style={{ fontSize: '1rem', lineHeight: '1.25rem' }}>
+    <div className="flex flex-col mt-10 sm:border-b-2 border-gray-300 ml-2 sm:ml-10 sm:px-10 py-2 sm:py-3 ">
+      <p className="font-bold text-base sm:text-lg  sm:leading-snug">
         College of Engineering Internship
       </p>
       <div className="pb-2">
