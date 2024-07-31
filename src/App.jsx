@@ -4,7 +4,7 @@ import { useMsal } from '@azure/msal-react';
 import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MsalAuthenticationTemplate } from '@azure/msal-react';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import AdminDashboard from './components/AdminDashboard';
 import StudentDashboard from './components/StudentDashboard';
 import '@mantine/core/styles.css';
