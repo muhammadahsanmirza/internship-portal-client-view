@@ -23,13 +23,13 @@ function NavigationDrawer({ isOpen, onClose }) {
         >
             <div className="flex flex-col h-full">
                 <div className="flex flex-row p-1 border-b-2">
-                    <div className="flex flex-col flex-grow h-14 justify-center">
-                        <h2 className="font-bold text-center sm:text-left text-sm sm:text-base">
-                            College of Engineering
+                    <div className="flex flex-col flex-grow h-14 justify-start">
+                        <h2 className="font-bold m-4 text-lg sm:text-left text-sm sm:text-base">
+                            College of Engineering Internship
                         </h2>
-                        <h2 className="font-bold text-center sm:text-left text-sm sm:text-base">
-                            Internship
-                        </h2>
+                        {/* <h2 className="font-bold sm:text-left text-sm sm:text-base"> */}
+                            {/* Internship */}
+                        {/* </h2> */}
                     </div>
                     <button className="text-2xl sm:hidden mr-2" onClick={onClose}>
                         <RxCrossCircled />
@@ -41,20 +41,20 @@ function NavigationDrawer({ isOpen, onClose }) {
                 <div className="flex-grow">
                     <div className="flex flex-col justify-between mt-1">
                         <NavLink
-                            to="opportunities" // Correct the path to be relative to "/student/"
-                            className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500"
+                            to="opportunities"
+                            className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full sm:hover:bg-slate-500"
                             onClick={onClose}
                         >
-                            <BsFillMortarboardFill className="mx-4" />
+                            <BsFillMortarboardFill className="mx-4 text-xl" />
                             <span className="mx-4 text-center sm:text-left">Opportunities</span>
                         </NavLink>
 
                         <NavLink
-                            to="profile" // Correct the path to be relative to "/student/"
-                            className="flex flex-col sm:flex-row sm:items-center py-2 rounded-3xl justify-center sm:justify-start w-full hover:bg-slate-500"
+                            to="profile"
+                            className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full sm:hover:bg-slate-500"
                             onClick={onClose}
                         >
-                            <CgProfile className="mx-4" />
+                            <CgProfile className="mx-4 text-xl" />
                             <span className="mx-4 text-center sm:text-left">Profile</span>
                         </NavLink>
                     </div>

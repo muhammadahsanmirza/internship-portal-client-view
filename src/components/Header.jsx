@@ -15,7 +15,7 @@ function Header({ breadcrumbs }) {
   ));
 
   return (
-    <div className="flex flex-col mt-10 sm:border-b-2 border-gray-300 ml-2 sm:ml-10 sm:px-10 py-2 sm:py-3 ">
+    <div className="flex flex-col mt-14 pb-2  border-b-2 border-gray-300 sm:ml-10 sm:px-10 px-8 m sm:py-3 ">
       <p className="font-bold text-base sm:text-lg  sm:leading-snug">
         College of Engineering Internship
       </p>
