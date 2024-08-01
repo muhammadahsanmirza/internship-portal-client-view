@@ -36,7 +36,7 @@ function StudentProfile() {
       try {
         const res = await axiosInstance.get('/student/profile');
         const profileData = res.data.data;
-        console.log("User Data useEffect-->",profileData);
+        console.log("User Data useEffect-->", profileData);
         setData(profileData);
         if (res.data.profile_complete) {
           setUserId(profileData.user_id);
@@ -95,90 +95,87 @@ function StudentProfile() {
   };
 
   return (
-    <div className="w-[calc(100%-5rem)] ml-20 z-0">
+    <div className="w-full sm:w-[calc(100%-5rem)] sm:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
-      <div className="flex flex-row h-12 bg-blue-950 items-center ">
-        <div className="text-gray-400 ml-36">
-          <RiAccountCircleFill className='w-10 h-8' />
+      <div className=''>
+        <div className="flex flex-row h-12 bg-blue-950 items-center justify-center sm:justify-start sm:pl-36">
+          <div className="text-gray-400">
+            <RiAccountCircleFill className='w-10 h-8' />
+          </div>
+          <p className='text-lg text-white font-bold ml-2'>Student Profile</p>
         </div>
-        <p className='text-lg text-white font-bold'>Student Profile</p>
+
+        {loading && <Loader />}
+
+        {!loading && notFoundMessage && (
+          <div className="flex items-center justify-center mt-4 px-4 py-3 bg-red-500 text-white shadow-md">
+            <TiWarning className="text-xl mr-2" />
+            <span className="text-sm font-medium">{notFoundMessage}</span>
+          </div>
+        )}
+
+        {!loading && !notFoundMessage && (
+          <div className='card rounded shadow-lg w-11/12 sm:w-8/12 lg:w-5/12 mt-8 h-96 border mx-auto'>
+            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
+              <div className='text-sm font-bold'>Name</div>
+              <div className='text-gray-500 sm:ml-12'>{data.user_name}</div>
+            </div>
+            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
+              <div className='text-sm font-bold'>Email</div>
+              <div className='text-gray-500 sm:ml-12'>{data.email}</div>
+            </div>
+            <div className='flex flex-row gap-4 sm:gap-11 items-center border-b p-3 m-3'>
+              <div className='text-sm font-bold'>Program</div>
+              <div className='text-gray-500 sm:ml-12'>{data.program}</div>
+            </div>
+            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
+              <div className='text-sm font-bold'>Major</div>
+              <div className='text-gray-500 sm:ml-12'>{data.major}</div>
+            </div>
+            {completeProfile ? (
+              <div className='flex flex-row flex-wrap items-center p-3 m-3 gap-4'>
+                <div className='text-sm font-bold'>Resume</div>
+                <div className="flex flex-row rounded text-black py-1 text-sm items-center justify-center sm:ml-24 mr-6 p-1 border gap-0">
+                  <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
+                  <button className="mx-1 text-sm text-gray-500" onClick={downloadFile}>
+                    click to download
+                  </button>
+                  <MdFileDownload className="w-4 h-4 text-green-500" />
+                </div>
+                <div className="flex flex-row rounded bg-blue-950 text-white px-1 py-1 text-sm items-center justify-center mx-20">
+                  <button
+                    className="select-none rounded text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none mx-3 my-1 text-xs"
+                    onClick={toggleDialog}
+                    data-ripple-light="true"
+                    data-dialog-target="animated-dialog"
+                  >
+                    UPDATE RESUME
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className='flex flex-row items-center p-3 m-3'>
+                <div className='text-sm font-bold'>Resume</div>
+                <div className="flex flex-row rounded text-black py-1 text-lg items-center justify-center sm:ml-24 mx-8 p-1 border gap-10 h-10 px-2">
+                  <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
+                  <button className="mx-1 text-sm text-gray-500" onClick={toggleDialog}>
+                    click to upload
+                  </button>
+                  <MdFileUpload className="w-4 h-4 text-green-500" />
+                </div>
+              </div>
+            )}
+            {isDialogOpen && <ResumeDialog
+              isOpen={isDialogOpen}
+              onClose={toggleDialog}
+              onUpload={handleFileUploadSuccess} // Pass success handler
+              resumeId={resumeId}
+              userId={userId}
+              setIsFileUploaded={setIsFileUploaded}
+            />}
+          </div>
+        )}
       </div>
-
-      {loading && <Loader />}
-
-      {!loading && notFoundMessage && (
-        <div className="flex items-center justify-center mt-4 px-4 py-3 bg-red-500 text-white shadow-md">
-          <TiWarning className="text-xl mr-2" />
-          <span className="text-sm font-medium">{notFoundMessage}</span>
-        </div>
-      )}
-
-
-      {!loading && !notFoundMessage && (
-        <div className='card rounded shadow-lg w-5/12 mt-8 h-80 border' style={{ marginLeft: '11.5rem' }}>
-          <div className='flex flex-row gap-16 items-center border-b p-3 m-3'>
-            <div className='text-sm font-bold'>Name</div>
-            <div className='text-gray-500 ml-12'>{data.user_name}</div>
-          </div>
-          <div className='flex flex-row gap-16 items-center border-b p-3 m-3'>
-            <div className='text-sm font-bold'>Email</div>
-            <div className='text-gray-500 ml-12'>{data.email}</div>
-          </div>
-          <div className='flex flex-row gap-11 items-center border-b p-3 m-3'>
-            <div className='text-sm font-bold'>Program</div>
-            <div className='text-gray-500 ml-12'>{data.program}</div>
-          </div>
-
-          <div className='flex flex-row gap-16 items-center border-b p-3 m-3'>
-            <div className='text-sm font-bold'>Major</div>
-            <div className='text-gray-500 ml-12'>{data.major}</div>
-          </div>
-
-          {completeProfile ? (
-            <div className='flex flex-row items-center p-3 m-3'>
-              <div className='text-sm font-bold'>Resume</div>
-              <div className="flex flex-row rounded text-black py-1 text-sm items-center justify-center ml-24 mr-6 p-1 border gap-1">
-                <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
-                <button className="mx-1 text-sm text-gray-500" onClick={downloadFile}>
-                  click to download
-                </button>
-                <MdFileDownload className="w-4 h-4 text-green-500" />
-              </div>
-              <div className="flex flex-row rounded bg-blue-950 text-white px-2 py-1 text-sm items-center justify-center mx-1">
-                <button
-                  className="select-none rounded text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none mx-3 my-1 text-xs"
-                  onClick={toggleDialog}
-                  data-ripple-light="true"
-                  data-dialog-target="animated-dialog"
-                >
-                  UPDATE RESUME
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className='flex flex-row items-center p-3 m-3'>
-              <div className='text-sm font-bold'>Resume</div>
-              <div className="flex flex-row rounded text-black py-1 text-lg items-center justify-center ml-24 mx-8 p-1 border gap-10 h-10 px-2">
-                <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
-                <button className="mx-1 text-sm text-gray-500" onClick={toggleDialog}>
-                  click to upload
-                </button>
-                <MdFileUpload className="w-4 h-4 text-green-500" />
-              </div>
-            </div>
-          )}
-
-          {isDialogOpen && <ResumeDialog
-            isOpen={isDialogOpen}
-            onClose={toggleDialog}
-            onUpload={handleFileUploadSuccess} // Pass success handler
-            resumeId={resumeId}
-            userId={userId}
-            setIsFileUploaded={setIsFileUploaded}
-          />}
-        </div>
-      )}
-
       <ToastContainer
         position="top-center"
         autoClose={2000}

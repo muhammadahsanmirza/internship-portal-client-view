@@ -9,8 +9,6 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
 
   const handleFileChange = (event) => {
     setErrorMessage(null);
-    console.log("Inside handle File");
-
     const file = event.target.files[0];
     const maxFileSize = 2 * 1024 * 1024;
 
@@ -29,14 +27,12 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
 
       setErrorMessage(null);
       setSelectedFile(file);
-      console.log("Inside handle File-->", file);
     }
   };
 
   const handleFileUpload = async () => {
     setLoading(true);
     setErrorMessage(null);
-    console.log("Inside File upload");
 
     if (selectedFile) {
       const formData = new FormData();
@@ -44,11 +40,9 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
       let url = `/student/profile`;
       if (resumeId && !userId) {
         url = `/student/profile?resume_id=${resumeId}`;
-        console.log("Resume id url-->", url);
       }
       if (resumeId && userId) {
         url = `/student/profile?resume_id=${resumeId}&user_id=${userId}`;
-        console.log("User id url-->", url);
       }
 
       try {
@@ -57,9 +51,8 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        console.log('File uploaded successfully:', response.data);
         toast.success('File uploaded successfully');
-        onUpload(); // Call success handler
+        onUpload();
       } catch (error) {
         console.error('Error uploading file:', error);
         toast.error('Error uploading file');
@@ -80,7 +73,7 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative m-4 w-2/5 min-w-[40%] max-w-[40%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
+            className="relative m-4 w-full max-w-lg lg:max-w-xl xl:max-w-2xl min-w-[90%] sm:min-w-[80%] md:min-w-[70%] lg:min-w-[60%] xl:min-w-[50%] rounded-lg bg-white font-sans text-base font-light leading-relaxed text-blue-gray-500 antialiased shadow-2xl"
           >
             <div className="flex items-center p-4 font-sans text-2xl antialiased font-semibold leading-snug shrink-0 text-blue-950">
               Upload Resume
@@ -91,7 +84,7 @@ function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
                   htmlFor="dropzone-file"
                   className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-blue-950 rounded-lg cursor-pointer bg-gray-100 hover:bg-blue-50"
                 >
-                  <div className="flex flex-col items-center justify-center pt-5 pb-6 bg">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <svg
                       className="w-8 h-8 mb-4 text-blue-950"
                       aria-hidden="true"

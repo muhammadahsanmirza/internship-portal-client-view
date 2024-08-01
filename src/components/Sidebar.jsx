@@ -9,6 +9,7 @@ function Sidebar() {
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
+        console.log("Drawer Valu->",isDrawerOpen)
     };
 
     return (
@@ -29,8 +30,8 @@ function Sidebar() {
             </div>
 
             {/* Sidebar for small screens */}
-            <div className="sm:hidden bg-white p-2 h-12 border-b-2 border-gray-300 fixed top-0 left-0 right-0" onClick={toggleDrawer}>
-                    <MdViewHeadline className='text-3xl ml-6' />
+            <div className="sm:hidden bg-white p-2 h-12 border-b-2 border-gray-300 fixed top-0 left-0 right-0" >
+                    <MdViewHeadline className='text-3xl ml-6' onClick={toggleDrawer}/>
             </div>
 
             <NavigationDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />

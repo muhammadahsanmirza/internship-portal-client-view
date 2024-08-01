@@ -1,4 +1,3 @@
-// Section.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../interceptors/axiosInstance';
 import { IoIosSearch } from 'react-icons/io';
@@ -19,7 +18,7 @@ function Section() {
     const [querySearch, setQuerySearch] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [applied, setApplied] = useState(false); // moved to the bottom for readability
+    const [applied, setApplied] = useState(false);
 
     useEffect(() => {
         axiosInstance
@@ -102,15 +101,11 @@ function Section() {
     ];
 
     return (
-
         <div className="sm:w-[calc(100%-5rem)] sm:ml-20">
             <Header breadcrumbs={breadcrumbs} />
             <div className="my-3 mx-4 sm:mx-3 sm:mt-10">
                 <div className="flex flex-col gap-4 my-3 sm:flex-row sm:flex-wrap sm:my-4 sm:mx-3 sm:mt-10">
-                    <div
-                        className="flex flex-row rounded border w-full px-1 sm:mx-1"
-                    // style={{ width: '34rem' }}
-                    >
+                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1">
                         <input
                             type="text"
                             value={querySearch}
@@ -122,10 +117,7 @@ function Section() {
                             <IoIosSearch className="text-lg" />
                         </button>
                     </div>
-                    <div
-                        className="flex flex-row rounded border w-full px-1"
-                    // style={{ width: '34rem' }}
-                    >
+                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1">
                         <select
                             className="w-full text-sm p-2 outline-none"
                             value={programId}
@@ -159,9 +151,8 @@ function Section() {
                 )}
                 <div className="flex flex-row flex-wrap">
                     <div
-                        className={`flex mb-4 ${activeDetail ? 'flex-col max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'
-                            } overflow-y-auto overflow-x-hidden`}
-                        style={{ width: activeDetail ? '430px' : 'auto' }}
+                        className={`flex mb-4 ${activeDetail ? 'flex-col sm:max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
+                        style={{ width: activeDetail ? '100%' : 'auto' }}
                     >
                         {data &&
                             data.map((card) => (
@@ -186,7 +177,6 @@ function Section() {
                 </div>
             </div>
         </div>
-
     );
 }
 
