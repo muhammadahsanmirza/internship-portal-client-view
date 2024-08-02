@@ -112,7 +112,8 @@ function CardDetail({ card, setApplied, onClose }) {
         <div className="flex items-center justify-center mt-4 px-4 py-3 bg-red-500 text-white rounded-lg shadow-md">
           <TiWarning className="text-xl mr-2" />
           <span className="text-sm font-medium">{notFoundMessage}</span>
-        </div>
+        </div> 
+        
       )}
     </div>
   );
