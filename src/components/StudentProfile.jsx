@@ -95,7 +95,7 @@ function StudentProfile() {
   };
 
   return (
-    <div className="w-full sm:w-[calc(100%-5rem)] sm:ml-20 z-0">
+    <div className="w-full lg:w-[calc(100%-5rem)] lg:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
       <div className=''>
         <div className="flex flex-row h-12 bg-blue-950 items-center justify-center sm:justify-start sm:pl-36">
@@ -115,7 +115,7 @@ function StudentProfile() {
         )}
 
         {!loading && !notFoundMessage && (
-          <div className='card rounded shadow-lg w-11/12 sm:w-8/12 lg:w-5/12 mt-8 h-96 border mx-auto'>
+          <div className='card rounded shadow-lg w-11/12 sm:w-8/12 lg:w-5/12 mt-8 h-96  sm:h-80 border mx-auto md:ml-36'>
             <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
               <div className='text-sm font-bold'>Name</div>
               <div className='text-gray-500 sm:ml-12'>{data.user_name}</div>
@@ -133,18 +133,18 @@ function StudentProfile() {
               <div className='text-gray-500 sm:ml-12'>{data.major}</div>
             </div>
             {completeProfile ? (
-              <div className='flex flex-row flex-wrap items-center p-3 m-3 gap-4'>
+              <div className='flex flex-row flex-wrap items-center p-3 m-3 gap-4 sm:gap-0'>
                 <div className='text-sm font-bold'>Resume</div>
-                <div className="flex flex-row rounded text-black py-1 text-sm items-center justify-center sm:ml-24 mr-6 p-1 border gap-0">
+                <div className="flex flex-row rounded text-black py-1 text-sm items-center justify-center sm:ml-24 mr-6 p-1 border gap-0 sm:gap-1">
                   <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
                   <button className="mx-1 text-sm text-gray-500" onClick={downloadFile}>
                     click to download
                   </button>
                   <MdFileDownload className="w-4 h-4 text-green-500" />
                 </div>
-                <div className="flex flex-row rounded bg-blue-950 text-white px-1 py-1 text-sm items-center justify-center mx-20">
+                <div className="flex flex-row rounded bg-blue-950 text-white px-1 py-1 text-sm items-center justify-center mx-20 sm:mx-0">
                   <button
-                    className="select-none rounded text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none mx-3 my-1 text-xs"
+                    className="select-none rounded text-white transition-all hover:shadow-lg active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none mx-3 sm:mx-0 my-1 text-xs"
                     onClick={toggleDialog}
                     data-ripple-light="true"
                     data-dialog-target="animated-dialog"

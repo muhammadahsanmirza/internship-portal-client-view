@@ -9,8 +9,8 @@ function Card({ company_name, name, program_name, start_date, end_date, detail }
     };
 
     return (
-        <div className="flex flex-col w-full sm:w-96 rounded shadow-md border px-6 py-3 sm:mx-4 mt-3">
-            <div className="border-b-2">
+        <div className="flex flex-col w-full sm:w-80 lg:w-96 rounded shadow-md border px-6 py-3 sm:mx-4 lg:mx-2 mt-3">
+            <div className="border-b-2 pb-3">
                 <div className="flex flex-row my-3">
                     <p className="text-xs font-semibold mr-4">{company_name}</p>
                     <p className="text-xs text-gray-400">{calculateDaysAgo(start_date)} days ago</p>

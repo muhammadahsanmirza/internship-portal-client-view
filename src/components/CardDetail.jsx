@@ -57,15 +57,13 @@ function CardDetail({ card, setApplied, onClose }) {
   };
 
   return (
-    <div
-      className="fixed inset-0 sm:relative flex flex-col mx-4 mt-4 bg-white px-4 shadow-lg sm:mt-0 sm:mx-0 sm:mb-0 sm:w-1/2"
-    >
+    <div className="fixed inset-0 flex flex-col mx-4 sm:mx-0 sm:px-10 sm:pt-4 mt-4 bg-white px-4 shadow-lg sm:mt-0 md:mb-0 md:w-7/12 md:ml-16 lg:pt-4 lg:pl-10 md:mt-40 lg:max-h-full lg:overflow-y-auto">
       <div className="flex justify-between items-center pb-2">
         <div className="flex items-center">
           <p className="mr-2 font-bold">{card.company_name}</p>
           <a href={card.external_link} target="_blank" rel="noopener noreferrer">
             <CiGlobe />
-          </a>
+          </a> 
         </div>
         <button onClick={onClose}>
           <RxCross2 className="text-xl" />
@@ -77,19 +75,17 @@ function CardDetail({ card, setApplied, onClose }) {
         <p className="font-semibold my-2">Opportunity Description</p>
         <div className="text-sm">{parse(card.description)}</div>
       </div>
-      <div
-        className="flex justify-between items-center p-4 border-t mt-auto bg-white sm:fixed sm:bottom-0 sm:w-full"
-      >
+      <div className="flex justify-between items-center py-2 border-t mt-auto bg-white sm:relative sm:w-full">
         <div className="flex items-center">
           <div className="flex items-center mr-4">
-            <SlCalender className="mx-2" />
+            <SlCalender className="mx-1 sm:mx-2" />
             <div>
               <p className="text-xs">Start Date</p>
               <p className="text-sm">{card.start_date}</p>
             </div>
           </div>
           <div className="flex items-center">
-            <GoClockFill className="mx-2" />
+            <GoClockFill className="mx-1 sm:mx-2" />
             <div>
               <p className="text-xs">End Date</p>
               <p className="text-sm">{card.end_date}</p>
@@ -97,7 +93,7 @@ function CardDetail({ card, setApplied, onClose }) {
           </div>
         </div>
         <button
-          className="bg-blue-950 text-white px-4 py-2 rounded flex items-center justify-center"
+          className="bg-blue-950 text-white px-4 py-2 rounded flex items-center justify-center "
           onClick={handleApplyNow}
           disabled={applyLoading || card.applied}
         >

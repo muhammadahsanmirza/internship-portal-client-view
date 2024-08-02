@@ -18,23 +18,20 @@ function NavigationDrawer({ isOpen, onClose }) {
 
     return (
         <div
-            className={`fixed top-0 left-0 sm:left-20 w-full sm:w-52 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
+            className={`fixed top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
                 }`}
         >
             <div className="flex flex-col h-full">
                 <div className="flex flex-row p-1 border-b-2">
                     <div className="flex flex-col flex-grow h-14 justify-start">
-                        <h2 className="font-bold m-4 text-lg sm:text-left text-sm sm:text-base">
+                        <h2 className="font-bold m-4 sm:text-left text-sm sm:text-base">
                             College of Engineering Internship
                         </h2>
-                        {/* <h2 className="font-bold sm:text-left text-sm sm:text-base"> */}
-                            {/* Internship */}
-                        {/* </h2> */}
                     </div>
-                    <button className="text-2xl sm:hidden mr-2" onClick={onClose}>
+                    <button className="text-2xl lg:hidden mr-2" onClick={onClose}>
                         <RxCrossCircled />
                     </button>
-                    <button className="hidden sm:block text-xl" onClick={onClose}>
+                    <button className="hidden lg:block text-xl" onClick={onClose}>
                         <IoIosArrowDropleftCircle />
                     </button>
                 </div>
@@ -42,16 +39,16 @@ function NavigationDrawer({ isOpen, onClose }) {
                     <div className="flex flex-col justify-between mt-1">
                         <NavLink
                             to="opportunities"
-                            className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full sm:hover:bg-slate-500"
+                            className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
                             <BsFillMortarboardFill className="mx-4 text-xl" />
-                            <span className="mx-4 text-center sm:text-left">Opportunities</span>
+                            <span className="mx-4 text-center lg:text-left">Opportunities</span>
                         </NavLink>
 
                         <NavLink
                             to="profile"
-                            className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full sm:hover:bg-slate-500"
+                            className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
                             <CgProfile className="mx-4 text-xl" />

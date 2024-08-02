@@ -1,3 +1,4 @@
+
 import './App.css';
 import React, { useEffect, useState, useRef } from 'react';
 import { useMsal } from '@azure/msal-react';
@@ -50,30 +51,7 @@ function App() {
       }
     };
 
-    const checkTokenAndRefresh = async () => {
-      const token = localStorage.getItem('idToken');
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        const expiryTime = decodedToken.exp * 1000;
-        const currentTime = new Date().getTime();
-
-        if (expiryTime < currentTime) {
-          // Token has expired
-          fetchToken();
-        } else if ((expiryTime - currentTime) < 5 * 60 * 1000) {
-          // Token is about to expire in less than 5 minutes
-          fetchToken();
-        } else {
-          // Token is still valid
-          setIdToken(token);
-          scheduleTokenRefresh(token);
-        }
-      } else {
-        // fetchToken();
-      }
-    };
-
-    checkTokenAndRefresh();
+    fetchToken();
   }, [accounts, instance]);
 
   const scheduleTokenRefresh = (token) => {

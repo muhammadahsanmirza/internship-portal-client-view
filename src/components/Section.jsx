@@ -101,11 +101,11 @@ function Section() {
     ];
 
     return (
-        <div className="sm:w-[calc(100%-5rem)] sm:ml-20">
+        <div className="lg:w-[calc(100%-5rem)] lg:ml-20  sm:w-full">
             <Header breadcrumbs={breadcrumbs} />
             <div className="my-3 mx-4 sm:mx-3 sm:mt-10">
                 <div className="flex flex-col gap-4 my-3 sm:flex-row sm:flex-wrap sm:my-4 sm:mx-3 sm:mt-10">
-                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1">
+                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1 sm:w-4/12">
                         <input
                             type="text"
                             value={querySearch}
@@ -117,7 +117,7 @@ function Section() {
                             <IoIosSearch className="text-lg" />
                         </button>
                     </div>
-                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1">
+                    <div className="flex flex-row rounded border w-full px-1 sm:mx-1 sm:w-4/12">
                         <select
                             className="w-full text-sm p-2 outline-none"
                             value={programId}
@@ -132,7 +132,7 @@ function Section() {
                         </select>
                     </div>
 
-                    <div className="flex flex-row rounded bg-blue-950 text-white px-2 py-1 text-sm items-center justify-center w-full sm:mx-1">
+                    <div className="flex flex-row rounded bg-blue-950 text-white px-2 py-1 text-sm items-center justify-center w-full sm:mx-1 sm:w-3/12">
                         <RiCloseCircleLine />
                         <button
                             onClick={clearFilters}
@@ -151,7 +151,7 @@ function Section() {
                 )}
                 <div className="flex flex-row flex-wrap">
                     <div
-                        className={`flex mb-4 ${activeDetail ? 'flex-col sm:max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
+                        className={`flex mb-4 sm:gap-2 lg:gap-1 ${activeDetail ? 'flex-col md:max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
                         style={{ width: activeDetail ? '100%' : 'auto' }}
                     >
                         {data &&
