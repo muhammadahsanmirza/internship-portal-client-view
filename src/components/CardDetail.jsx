@@ -57,7 +57,7 @@ function CardDetail({ card, setApplied, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 flex flex-col mx-4 sm:mx-0 sm:px-10 sm:pt-4 mt-4 bg-white px-4 shadow-lg sm:mt-0 md:mb-0 md:w-7/12 md:ml-16 lg:pt-4 lg:pl-10 md:mt-40 lg:max-h-full lg:overflow-y-auto">
+    <div className="fixed inset-0 flex flex-col mx-4 sm:mx-0 sm:px-10 sm:pt-4 mt-4 bg-white px-4 shadow-lg sm:mt-0 lg:pt-4 lg:mt-0 lg:h-screen lg:overflow-y-scroll lg:max-h-full  lg:static">
       <div className="flex justify-between items-center pb-2">
         <div className="flex items-center">
           <p className="mr-2 font-bold">{card.company_name}</p>
@@ -75,7 +75,7 @@ function CardDetail({ card, setApplied, onClose }) {
         <p className="font-semibold my-2">Opportunity Description</p>
         <div className="text-sm">{parse(card.description)}</div>
       </div>
-      <div className="flex justify-between items-center py-2 border-t mt-auto bg-white sm:relative sm:w-full">
+      <div className="flex justify-between items-center py-2 border-t mt-auto bg-white sm:relative sm:w-full lg:fixed lg:bottom-0 lg:right-16 lg:w-6/12 lg:mx-16">
         <div className="flex items-center">
           <div className="flex items-center mr-4">
             <SlCalender className="mx-1 sm:mx-2" />

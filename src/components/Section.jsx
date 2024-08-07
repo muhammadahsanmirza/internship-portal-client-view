@@ -149,10 +149,10 @@ function Section() {
                         Error: {error}
                     </p>
                 )}
-                <div className="flex flex-row flex-wrap">
+                <div className={`flex md:flow-row flex-row ${activeDetail ? '' : 'flex-wrap'} `}>
                     <div
-                        className={`flex mb-4 sm:gap-2 lg:gap-1 ${activeDetail ? 'flex-col md:max-h-[calc(100vh-1rem)]' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
-                        style={{ width: activeDetail ? '100%' : 'auto' }}
+                        className={`flex mb-4 sm:gap-2 md:gap-0 ${activeDetail ? 'flex-col md:max-h-[calc(100vh-1rem)] w-1/6 md:ml-2' : 'flex-row flex-wrap'} overflow-y-auto overflow-x-hidden`}
+                        style={{ width: activeDetail ? '49%' : 'auto' }}
                     >
                         {data &&
                             data.map((card) => (
@@ -167,13 +167,15 @@ function Section() {
                                 />
                             ))}
                     </div>
-                    {activeDetail && selectedCard && (
-                        <CardDetail
-                            card={selectedCard}
-                            setApplied={setApplied}
-                            onClose={closeDetailHandler}
-                        />
-                    )}
+                    <div className='md:w-full md:mt-0'>
+                        {activeDetail && selectedCard && (
+                            <CardDetail
+                                card={selectedCard}
+                                setApplied={setApplied}
+                                onClose={closeDetailHandler}
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
