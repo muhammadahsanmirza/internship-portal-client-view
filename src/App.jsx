@@ -98,18 +98,16 @@ function App() {
   return (
     <MantineProvider>
       <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
-        <AuthenticatedApp idToken={idToken} />
+        <AuthenticatedApp />
       </MsalAuthenticationTemplate>
     </MantineProvider>
   );
 }
 
 function AuthenticatedApp({ idToken }) {
-  const token = localStorage.getItem('idToken');
-  console.log('idToken from local storage:', token);
-
   return (
-    <StudentDashboard idToken={idToken} />
+    // <StudentDashboard />
+    <AdminDashboard/>
   );
 }
 
