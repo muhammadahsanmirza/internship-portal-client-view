@@ -255,7 +255,7 @@ function EditAndViewOpportunities() {
                                             <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
                                                 View
                                             </button>
-                                            <button className=" bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
+                                            <button className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
                                                 Delete
                                             </button>
                                         </div>
