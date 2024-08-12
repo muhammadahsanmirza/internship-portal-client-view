@@ -14,24 +14,26 @@ import App from "./App.jsx";
 import Section from "./components/Section.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
 import PageNotFound from './components/PageNotFound.jsx';
+import EditAndViewOpportunities from "./components/EditAndViewOpportunities.jsx";
+import OpportunityForm from "./components/OpportunityForm.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
-      {/* Root path redirect to /student */}
-      <Route path="/" element={<Navigate to="/student/opportunities" />} />
+    <Route>
+      {/* Root path redirect to /admin/opportunities */}
+      <Route path="/" element={<Navigate to="/admin/opportunities" />} />
 
-      {/* Define student routes */}
-      <Route path='/student/' element={<App />}>
+      {/* Define admin routes */}
+      <Route path='/admin/' element={<App />}>
         <Route index element={<Navigate to="opportunities" />} /> {/* Redirect to opportunities by default */}
-        <Route path='opportunities' element={<Section />} />
-        <Route path='profile' element={<StudentProfile />} />
+        <Route path='opportunities' element={<EditAndViewOpportunities />} />
+        <Route path='create/opportunities' element={<OpportunityForm />} />
         <Route path='*' element={<PageNotFound />} />
       </Route>
-    </>
+    </Route>
   )
 );
 

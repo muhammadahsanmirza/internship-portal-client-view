@@ -1,12 +1,12 @@
 import React from 'react'
 import Sidebar from './Sidebar'
 import EditAndViewOpportunities from './EditAndViewOpportunities'
-
+import { Outlet } from 'react-router-dom'
 function AdminDashboard() {
   return (
-    <div className="flex flex-col sm:flex-row h-screen">
+    <div className="flex sm:flex-row h-screen">
       <Sidebar />
-      <EditAndViewOpportunities />
+      <Outlet/>
     </div>
   )
 }

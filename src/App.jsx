@@ -1,20 +1,21 @@
-
 import './App.css';
 import React, { useEffect, useState, useRef } from 'react';
-import { useMsal } from '@azure/msal-react';
+import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react'; // Import MsalAuthenticationTemplate
 import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { MsalAuthenticationTemplate } from '@azure/msal-react';
 import { jwtDecode } from "jwt-decode";
 import AdminDashboard from './components/AdminDashboard';
 import StudentDashboard from './components/StudentDashboard';
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 
+const MAX_RETRIES = 3; // Set a maximum retry limit
+
 function App() {
   const { instance, accounts } = useMsal();
   const [idToken, setIdToken] = useState(null);
   const refreshTokenTimeout = useRef(null);
+  const retryCount = useRef(0); // Track retry attempts
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -27,25 +28,17 @@ function App() {
 
         try {
           const response = await instance.acquireTokenSilent(request);
-          console.log('Token refreshed silently:', response);
-          const token = response.idToken;
-          setIdToken(token);
-          localStorage.setItem('idToken', token);
-          scheduleTokenRefresh(token);
+          handleTokenSuccess(response.idToken);
         } catch (error) {
           if (error instanceof InteractionRequiredAuthError) {
             try {
               const response = await instance.acquireTokenPopup(request);
-              console.log('Token acquired with popup:', response);
-              const token = response.idToken;
-              setIdToken(token);
-              localStorage.setItem('idToken', token);
-              scheduleTokenRefresh(token);
+              handleTokenSuccess(response.idToken);
             } catch (popupError) {
-              console.error('Token acquisition error with popup:', popupError);
+              handleTokenFailure(popupError);
             }
           } else {
-            console.error('Silent token acquisition error:', error);
+            handleTokenFailure(error);
           }
         }
       }
@@ -53,6 +46,25 @@ function App() {
 
     fetchToken();
   }, [accounts, instance]);
+
+  const handleTokenSuccess = (token) => {
+    setIdToken(token);
+    localStorage.setItem('idToken', token);
+    retryCount.current = 0; // Reset retry count on success
+    scheduleTokenRefresh(token);
+  };
+
+  const handleTokenFailure = (error) => {
+    console.error('Token acquisition error:', error);
+    retryCount.current += 1;
+
+    if (retryCount.current < MAX_RETRIES) {
+      scheduleTokenRefresh(); // Retry token acquisition
+    } else {
+      console.error('Max retry attempts reached.');
+      // Optionally, log out the user or redirect to an error page.
+    }
+  };
 
   const scheduleTokenRefresh = (token) => {
     const decodedToken = jwtDecode(token);
@@ -69,28 +81,9 @@ function App() {
         ...loginRequest,
         account: accounts[0],
       }).then(response => {
-        console.log('Token refreshed silently:', response);
-        const newToken = response.idToken;
-        setIdToken(newToken);
-        localStorage.setItem('idToken', newToken);
-        scheduleTokenRefresh(newToken);
+        handleTokenSuccess(response.idToken);
       }).catch(error => {
-        if (error instanceof InteractionRequiredAuthError) {
-          instance.acquireTokenPopup({
-            ...loginRequest,
-            account: accounts[0],
-          }).then(response => {
-            console.log('Token acquired with popup:', response);
-            const newToken = response.idToken;
-            setIdToken(newToken);
-            localStorage.setItem('idToken', newToken);
-            scheduleTokenRefresh(newToken);
-          }).catch(popupError => {
-            console.error('Token acquisition error with popup:', popupError);
-          });
-        } else {
-          console.error('Silent token acquisition error:', error);
-        }
+        handleTokenFailure(error);
       });
     }, timeout);
   };
@@ -98,7 +91,7 @@ function App() {
   return (
     <MantineProvider>
       <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
-        <AuthenticatedApp />
+        <AuthenticatedApp idToken={idToken} />
       </MsalAuthenticationTemplate>
     </MantineProvider>
   );
@@ -107,7 +100,7 @@ function App() {
 function AuthenticatedApp({ idToken }) {
   return (
     // <StudentDashboard />
-    <AdminDashboard/>
+    <AdminDashboard />
   );
 }
 
