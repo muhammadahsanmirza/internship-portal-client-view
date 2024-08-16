@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
@@ -25,6 +26,8 @@ function EditAndViewOpportunities() {
   const [statusValue, setStatusValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate()
 
   const fetchOpportunities = useCallback(
     debounce(() => {
@@ -209,7 +212,7 @@ function EditAndViewOpportunities() {
             <button
               className=" text-xs"
               style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
+              onClick={()=>{navigate('/admin/create/opportunities')}}
               disabled={loading || error}
             >
               CREATE OPPORTUNITY

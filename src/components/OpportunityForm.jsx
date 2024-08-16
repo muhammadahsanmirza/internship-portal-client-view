@@ -1,33 +1,111 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import { useForm } from "react-hook-form";
-
+import axiosInstance from "../interceptors/axiosInstance";
 import Header from "./Header";
-
+const breadcrumbs = [
+  { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
+  { title: "Opportunity Form", href: "#", isDisabled: true },
+];
 function OpportunityForm() {
-  const breadcrumbs = [
-    { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
-    { title: "Opportunity Form", href: "#", isDisabled: true },
-  ];
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [programs, setPrograms] = useState([]);
+  const [majors, setMajors] = useState([]);
   const editor = useRef(null);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch, 
+    watch,
     setValue,
     formState: { errors },
+    getValues,
+    trigger,
+    clearErrors,
+    reset,
   } = useForm();
-const description = watch("description", ""); // Initialize description with an empty string
+  const description = watch("description", ""); // Initialize description with an empty string
 
-  const onSubmit = (data,e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
+    data.publish = data.publish === "published";
+
+    const formattedData = {
+      name: data.name,
+      description: data.description,
+      email: data.email,
+      external_link: data.external_link,
+      contact_person: data.contact_person,
+      published: data.publish === "published",
+      program_id: parseInt(data.program),
+      cgpa: parseFloat(data.cgpa),
+      credit_hours: parseInt(data.credit_hours),
+      major_id: parseInt(data.major),
+      company_name: data.company_name,
+      start_date: data.start_date,
+      end_date: data.end_date,
+    };
     console.log(data);
+
+    axiosInstance
+      .post("/opportunity", formattedData)
+      .then((res) => {
+        console.log("Opportunity Created Successfully--->", res.data);
+        trigger(); // Trigger validation
+        clearErrors(); // Clear error messages
+        setValue("description", ""); // Reset description field
+        reset();
+        navigate("/admin/opportunities");
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   useEffect(() => {
     register("description", { required: "Description is required." }); // Register with validation
   }, [register]);
-  
+
+  useEffect(() => {
+    axiosInstance
+      .get("/programs")
+      .then((res) => {
+        console.log("Programs --->", res.data.data);
+        setPrograms(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+
+    axiosInstance
+      .get("/majors")
+      .then((res) => {
+        console.log(res.data.data);
+        setMajors(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  }, []);
+  const handleStartDateChange = (e) => {
+    const selectedStartDate = e.target.value;
+    setStartDate(selectedStartDate);
+    // Reset end date if it is before the selected start date
+    if (endDate && new Date(selectedStartDate) > new Date(endDate)) {
+      setEndDate(null);
+    }
+  };
+
+  // Handle end date change
+  const handleEndDateChange = (e) => {
+    const selectedEndDate = e.target.value;
+    setEndDate(selectedEndDate);
+    // Reset start date if it is after the selected end date
+    if (startDate && new Date(selectedEndDate) < new Date(startDate)) {
+      setStartDate(null);
+    }
+  };
   return (
     <div className="w-full sm:mt-0 sm:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
@@ -43,6 +121,7 @@ const description = watch("description", ""); // Initialize description with an 
           <div className="rounded border mt-1 mx-2 sm:mx-6">
             <div className="w-full">
               <div className="flex flex-wrap justify-around mb-6">
+                {/* Opportunity Name Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -52,24 +131,31 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.opportunityName
-                        ? "border-red-500"
-                        : "border-gray-200"
+                      errors.name ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-name"
                     type="text"
                     placeholder="Name"
-                    {...register("opportunityName", {
+                    {...register("name", {
                       required: "Name is required.",
+                      pattern: {
+                        value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
+                        message: "Only numbers are not allowed.",
+                      },
+                      onBlur: () => trigger("name"),
+                      onFocus: (e) => {
+                        clearErrors("name");
+                        setValue("name", e.target.value);
+                      },
                     })}
                   />
-                  {errors.opportunityName && (
+                  {errors.name && (
                     <p className="text-red-500 text-xs px-4">
-                      {errors.opportunityName.message}
+                      {errors.name.message}
                     </p>
                   )}
                 </div>
-
+                {/* Email Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -85,11 +171,12 @@ const description = watch("description", ""); // Initialize description with an 
                     type="email"
                     placeholder="xyz@gmail.com"
                     {...register("email", {
-                      required: "Email is required.",
                       pattern: {
                         value: /^\S+@\S+$/i,
                         message: "Invalid email address.",
                       },
+                      onBlur: () => trigger("email"),
+                      onFocus: () => clearErrors("email"),
                     })}
                   />
                   {errors.email && (
@@ -98,7 +185,7 @@ const description = watch("description", ""); // Initialize description with an 
                     </p>
                   )}
                 </div>
-
+                {/* External Link Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -108,23 +195,33 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.externalLink ? "border-red-500" : "border-gray-200"
+                      errors.external_link
+                        ? "border-red-500"
+                        : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-external-link"
                     type="text"
                     placeholder="http://xyz.com"
-                    {...register("externalLink", {
+                    {...register("external_link", {
                       required: "Link is required.",
-                      
+                      pattern: {
+                        value:
+                          /^(https?:\/\/)([\w-]+\.)+[\w-]{2,6}(\/.*)?$/i,
+                        message:
+                          "Enter a valid URL starting with http:// or https://",
+                      },
+                      onBlur: () => trigger("external_link"),
+                      onFocus: () => clearErrors("external_link"),
                     })}
                   />
-                  {errors.externalLink && (
+                  {errors.external_link && (
                     <p className="text-red-500 text-xs px-4">
-                      {errors.externalLink.message}
+                      {errors.external_link.message}
                     </p>
                   )}
                 </div>
 
+                {/* Company Name Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -134,13 +231,19 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.companyName ? "border-red-500" : "border-gray-200"
+                      errors.company_name ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-company-name"
                     type="text"
                     placeholder="Name"
-                    {...register("companyName", {
+                    {...register("company_name", {
                       required: "Field is required.",
+                      pattern: {
+                        value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
+                        message: "Only numbers are not allowed.",
+                      },
+                      onBlur: () => trigger("company_name"),
+                      onFocus: () => clearErrors("company_name"),
                     })}
                   />
                   {errors.companyName && (
@@ -149,7 +252,7 @@ const description = watch("description", ""); // Initialize description with an 
                     </p>
                   )}
                 </div>
-
+                {/* Contact Person Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -159,24 +262,30 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.contactPerson
+                      errors.contact_person
                         ? "border-red-500"
                         : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-contact-person"
-                    type="text"
+                    type="tel"
                     placeholder="+12345678"
-                    {...register("contactPerson", {
-                      required: "Name is required.",
+                    {...register("contact_person", {
+                      required: "Contact Number is required.",
+                      pattern: {
+                        value: /^\+?\d+$/,
+                        message: "Invalid Characters ",
+                      },
+                      onBlur: () => trigger("contact_person"),
+                      onFocus: () => clearErrors("contact_person"),
                     })}
                   />
                   {errors.contactPerson && (
                     <p className="text-red-500 text-xs px-4">
-                      {errors.contactPerson.message}
+                      {errors.contact_person.message}
                     </p>
                   )}
                 </div>
-
+                {/* Select Program Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -192,12 +301,16 @@ const description = watch("description", ""); // Initialize description with an 
                       id="grid-program-select"
                       {...register("program", {
                         required: "Field is required.",
+                        onBlur: () => trigger("program"),
+                        onFocus: () => clearErrors("program"),
                       })}
                     >
                       <option value="">Select a program</option>
-                      <option value="program1">Program 1</option>
-                      <option value="program2">Program 2</option>
-                      <option value="program3">Program 3</option>
+                      {programs.map((program) => (
+                        <option key={program.id} value={program.id}>
+                          {program.program_name}
+                        </option>
+                      ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <svg
@@ -216,7 +329,7 @@ const description = watch("description", ""); // Initialize description with an 
                   )}
                 </div>
               </div>
-
+              {/* Select Editor Field  */}
               <div className="px-8 my-2 mx-4">
                 <label
                   className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -224,27 +337,22 @@ const description = watch("description", ""); // Initialize description with an 
                 >
                   Description
                 </label>
-                {/* <JoditEditor
-                  ref={editor}
-                  value=""
-                  tabIndex={1} // tabIndex of textarea
-                  onBlur={(newContent) => {}}
-                  onChange={(newContent) => {}}
-                /> */}
                 <JoditEditor
                   ref={editor}
                   value={description || ""} // Use description from watch
                   tabIndex={1} // tabIndex of textarea
-                  onBlur={(newContent) =>
+                  onBlur={(newContent) => {
                     setValue("description", newContent, {
                       shouldValidate: true,
-                    })
-                  } // Validate on blur
+                    });
+                    trigger("description");
+                  }} // Validate on blur
                   onChange={(newContent) =>
                     setValue("description", newContent, {
                       shouldValidate: true,
                     })
                   } // Validate on change
+                  onFocus={() => clearErrors("description")}
                 />
                 {errors.description && (
                   <p className="text-red-500 text-xs px-4">
@@ -260,6 +368,7 @@ const description = watch("description", ""); // Initialize description with an 
           <div className="rounded border mt-1 mx-2 sm:mx-6">
             <div className="w-full">
               <div className="flex flex-wrap justify-around mb-6">
+                {/* Select Major Field  */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -275,12 +384,16 @@ const description = watch("description", ""); // Initialize description with an 
                       id="grid-major-select"
                       {...register("major", {
                         required: "Field is required.",
+                        onBlur: () => trigger("major"),
+                        onFocus: () => clearErrors("major"),
                       })}
                     >
                       <option value="">Select Major</option>
-                      <option value="major1">Major 1</option>
-                      <option value="major2">Major 2</option>
-                      <option value="major3">Major 3</option>
+                      {majors.map((major) => (
+                        <option key={major.id} value={major.id}>
+                          {major.name}
+                        </option>
+                      ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <svg
@@ -298,7 +411,7 @@ const description = watch("description", ""); // Initialize description with an 
                     </p>
                   )}
                 </div>
-
+                {/* CGPA Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -311,9 +424,26 @@ const description = watch("description", ""); // Initialize description with an 
                       errors.cgpa ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-cgpa"
-                    type="text"
+                    type="number"
                     placeholder="CGPA"
-                    {...register("cgpa", { required: "CGPA is required." })}
+                    min="0"
+                    max="5"
+                    step="0.01" // This allows two decimal places
+                    {...register("cgpa", {
+                      required: "CGPA is required.",
+                      validate: (value) => {
+                        const num = parseFloat(value);
+                        if (num < 0 || num > 5) {
+                          return "CGPA must be between 0 and 5";
+                        }
+                        if (num === 5 && value.includes(".")) {
+                          return "CGPA of 5 cannot have decimal places";
+                        }
+                        return true;
+                      },
+                      onBlur: () => trigger("cgpa"),
+                      onFocus: () => clearErrors("cgpa"),
+                    })}
                   />
                   {errors.cgpa && (
                     <p className="text-red-500 text-xs px-4">
@@ -322,6 +452,7 @@ const description = watch("description", ""); // Initialize description with an 
                   )}
                 </div>
 
+                {/* Credit Hours Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -331,18 +462,25 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.creditHours ? "border-red-500" : "border-gray-200"
+                      errors.credit_hours ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-credit-hours"
-                    type="text"
+                    min="0"
+                    type="number"
                     placeholder="Credit Hours"
-                    {...register("creditHours", {
+                    {...register("credit_hours", {
                       required: "Credit Hours are required.",
+                      pattern: {
+                        value: /^\d+$/,
+                        message: "Credit Hours must be positive Numbers only",
+                      },
+                      onBlur: () => trigger("credit_hours"),
+                      onFocus: () => clearErrors("credit_hours"),
                     })}
                   />
                   {errors.creditHours && (
                     <p className="text-red-500 text-xs px-4">
-                      {errors.creditHours.message}
+                      {errors.credit_hours.message}
                     </p>
                   )}
                 </div>
@@ -358,6 +496,7 @@ const description = watch("description", ""); // Initialize description with an 
           <div className="rounded border mt-1 mx-2 sm:mx-6">
             <div className="w-full">
               <div className="flex flex-wrap justify-around mb-6">
+                {/* Start Date Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -367,13 +506,18 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.startDate ? "border-red-500" : "border-gray-200"
+                      errors.start_date ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-start-date"
                     type="date"
-                    {...register("startDate", {
+                    max={endDate || ""} // Disable dates before today or end date
+                    value={startDate || ""}
+                    {...register("start_date", {
                       required: "Start Date is required.",
+                      onBlur: () => trigger("start_date"),
+                      onFocus: () => clearErrors("start_date"),
                     })}
+                    onChange={handleStartDateChange}
                   />
                   {errors.startDate && (
                     <p className="text-red-500 text-xs px-4">
@@ -382,6 +526,7 @@ const description = watch("description", ""); // Initialize description with an 
                   )}
                 </div>
 
+                {/* End Date Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -391,13 +536,27 @@ const description = watch("description", ""); // Initialize description with an 
                   </label>
                   <input
                     className={`appearance-none block w-full bg-gray-200 text-gray-700 border ${
-                      errors.endDate ? "border-red-500" : "border-gray-200"
+                      errors.end_date ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-end-date"
                     type="date"
-                    {...register("endDate", {
+                    min={startDate || ""} // Disable dates after the selected start date
+                    value={endDate || ""}
+                    {...register("end_date", {
                       required: "End Date is required.",
+                      validate: {
+                        notBeforeStartDate: (value) => {
+                          return (
+                            !startDate ||
+                            new Date(value) >= new Date(startDate) ||
+                            "End Date cannot be before Start Date."
+                          );
+                        },
+                      },
+                      onBlur: () => trigger("end_date"),
+                      onFocus: () => clearErrors("end_date"),
                     })}
+                    onChange={handleEndDateChange}
                   />
                   {errors.endDate && (
                     <p className="text-red-500 text-xs px-4">
@@ -406,6 +565,7 @@ const description = watch("description", ""); // Initialize description with an 
                   )}
                 </div>
 
+                {/* Published Unpublished Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
                     className="block tracking-wide text-gray-700 text-xs font-bold mb-1"
@@ -416,13 +576,13 @@ const description = watch("description", ""); // Initialize description with an 
                   <div className="relative">
                     <select
                       className={`block appearance-none w-full bg-gray-200 border ${
-                        errors.major ? "border-red-500" : "border-gray-200"
+                        errors.published ? "border-red-500" : "border-gray-200"
                       } text-gray-700 py-1 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white`}
                       id="grid-publish-select"
-                      {...register("publish")}
+                      {...register("published")}
                     >
-                      <option value="unpublished">Un Published</option>
                       <option value="published">Published</option>
+                      <option value="unpublished">UnPublished</option>
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                       <svg
