@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import { useForm } from "react-hook-form";
 import axiosInstance from "../interceptors/axiosInstance";
 import Header from "./Header";
+import { ToastContainer } from "react-toastify";
 const breadcrumbs = [
   { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
   { title: "Opportunity Form", href: "#", isDisabled: true },
@@ -21,7 +22,6 @@ function OpportunityForm() {
     watch,
     setValue,
     formState: { errors },
-    getValues,
     trigger,
     clearErrors,
     reset,
@@ -29,15 +29,14 @@ function OpportunityForm() {
   const description = watch("description", ""); // Initialize description with an empty string
 
   const onSubmit = (data) => {
-    data.publish = data.publish === "published";
-
+    console.log("Before-->", data.published);
     const formattedData = {
       name: data.name,
       description: data.description,
       email: data.email,
       external_link: data.external_link,
       contact_person: data.contact_person,
-      published: data.publish === "published",
+      published: data.published === "published",
       program_id: parseInt(data.program),
       cgpa: parseFloat(data.cgpa),
       credit_hours: parseInt(data.credit_hours),
@@ -46,7 +45,7 @@ function OpportunityForm() {
       start_date: data.start_date,
       end_date: data.end_date,
     };
-    console.log(data);
+    console.log("After-->", formattedData.published);
 
     axiosInstance
       .post("/opportunity", formattedData)
@@ -205,8 +204,7 @@ function OpportunityForm() {
                     {...register("external_link", {
                       required: "Link is required.",
                       pattern: {
-                        value:
-                          /^(https?:\/\/)([\w-]+\.)+[\w-]{2,6}(\/.*)?$/i,
+                        value: /^(https?:\/\/)([\w-]+\.)+[\w-]{2,6}(\/.*)?$/i,
                         message:
                           "Enter a valid URL starting with http:// or https://",
                       },
@@ -581,6 +579,7 @@ function OpportunityForm() {
                       id="grid-publish-select"
                       {...register("published")}
                     >
+                      <option value="">Select Status</option>
                       <option value="published">Published</option>
                       <option value="unpublished">UnPublished</option>
                     </select>
@@ -608,6 +607,7 @@ function OpportunityForm() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

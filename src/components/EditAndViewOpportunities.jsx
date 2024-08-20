@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { Button } from "@mantine/core";
+import { toast, ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
@@ -9,11 +11,14 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
+import ViewOpportunity from "./ViewOpportunity";
 import axiosInstance from "../interceptors/axiosInstance";
+
 const applicationStatus = [
   { id: 1, status: "Published", value: true },
   { id: 2, status: "Unpublished", value: false },
 ];
+
 function EditAndViewOpportunities() {
   const [data, setData] = useState([]);
   const [totalOpportunities, setTotalOpportunities] = useState(0);
@@ -24,10 +29,15 @@ function EditAndViewOpportunities() {
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
   const [statusValue, setStatusValue] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedOpportunity, setSelectedOpportunity] = useState({});
+  const [opportunityId, setOpportunityId] = useState(null); // Store the ID of the opportunity to delete
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const fetchOpportunities = useCallback(
     debounce(() => {
@@ -45,6 +55,7 @@ function EditAndViewOpportunities() {
 
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
+            console.log(newData);
             setData(newData);
             setTotalOpportunities(response.data.total_records);
             setCurrentPage(response.data.current_page);
@@ -69,6 +80,40 @@ function EditAndViewOpportunities() {
     }, 800),
     [opportunitySearch, companySearch, programId, statusValue]
   );
+
+  const deleteOpportunity = (id) => {
+    axiosInstance
+      .delete(`/opportunity/${id}`)
+      .then((response) => {
+        const message =
+          response.data.message || "Opportunity deleted successfully.";
+        toast.success(message, { transition: Slide });
+        fetchOpportunities(); // Refresh the list after deletion
+      })
+      .catch((error) => {
+        const errorMessage =
+          error.response?.data?.message || "Failed to delete opportunity.";
+        toast.error(errorMessage, { transition: Slide });
+        console.error(error);
+      })
+      .finally(() => {
+        closeConfirmDialog();
+      });
+  };
+
+  const openOpportunity = (opportunity) => {
+    setSelectedOpportunity(opportunity);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const closeConfirmDialog = () => {
+    setConfirmDialogOpen(false);
+    setOpportunityId(null); // Reset the opportunity to delete
+  };
 
   useEffect(() => {
     fetchOpportunities();
@@ -120,6 +165,7 @@ function EditAndViewOpportunities() {
       });
   }
   function handlePrevPage(e) {}
+
   const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
 
   return (
@@ -212,7 +258,9 @@ function EditAndViewOpportunities() {
             <button
               className=" text-xs"
               style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={()=>{navigate('/admin/create/opportunities')}}
+              onClick={() => {
+                navigate("/admin/create/opportunities");
+              }}
               disabled={loading || error}
             >
               CREATE OPPORTUNITY
@@ -328,10 +376,20 @@ function EditAndViewOpportunities() {
                           <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
                             Edit
                           </button>
-                          <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
+                          <button
+                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => openOpportunity(opportunity)}
+                            // onClick={() => console.log(opportunity)}
+                          >
                             View
                           </button>
-                          <button className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
+                          <button
+                            className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => {
+                              setOpportunityId(opportunity.id);
+                              setConfirmDialogOpen(true);
+                            }}
+                          >
                             Delete
                           </button>
                         </div>
@@ -368,6 +426,87 @@ function EditAndViewOpportunities() {
           </div>
         )}
       </div>
+      {isDialogOpen && (
+        <ViewOpportunity
+          opportunity={selectedOpportunity}
+          isOpen={isDialogOpen}
+          onClose={closeDialog}
+        />
+      )}
+      {confirmDialogOpen && (
+        <div>
+          <div
+            className="fixed inset-0 z-50 flex items-center  justify-center"
+            onClick={() => closeConfirmDialog()}
+          >
+            <div className="border rounded-lg shadow relative bg-white max-w-4xl z-30">
+              <div className="flex justify-end p-2">
+                <button
+                  type="button"
+                  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                  onClick={closeConfirmDialog}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 pt-0 text-center">
+                <svg
+                  className="w-20 h-20 text-red-600 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">
+                  Do You want to delete this opportunity?
+                </h3>
+                <button
+                  className={`text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-6 py-2.5 text-center mr-2 `}
+                  onClick={() => deleteOpportunity(opportunityId)}
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={closeConfirmDialog}
+                  className={`text-white bg-green-600 hover:bg-green-800 focus:ring-4 focus:ring-cyan-200 border border-gray-200 font-medium inline-flex items-center rounded-lg text-base px-7 py-2.5 text-center`}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

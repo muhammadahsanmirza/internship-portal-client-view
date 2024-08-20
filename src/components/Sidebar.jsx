@@ -14,7 +14,7 @@ function Sidebar() {
     return (
         <>
             {/* Sidebar for large screens */}
-            <div className="hidden lg:flex flex-col w-20 justify-center h-screen max-h-screen border-r-2 border-gray-300 z-10 fixed top-0 left-0 lg:w-20">
+            <div className="hidden lg:flex flex-col w-20 justify-center h-screen max-h-screen border-r-2 border-gray-300 fixed top-0 left-0 lg:w-20">
                 <div className='mb-auto border-b-2 border-gray-300' style={{ height: '66px' }}>
                     <img className='fixed top-1 left-2 w-14 h-14' src="/InternshipPortalLogo.png" alt="Logo" />
                     {!isDrawerOpen &&
