@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mantine/core";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
@@ -13,6 +12,7 @@ import { debounce, isArray } from "lodash";
 import Header from "./Header";
 import ViewOpportunity from "./ViewOpportunity";
 import axiosInstance from "../interceptors/axiosInstance";
+import EditOpportunity from "./EditOpportunity";
 
 const applicationStatus = [
   { id: 1, status: "Published", value: true },
@@ -25,11 +25,13 @@ function EditAndViewOpportunities() {
   const [opportunitySearch, setOpportunitySearch] = useState("");
   const [companySearch, setCompanySearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
   const [statusValue, setStatusValue] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditOpportunity, setIsEditOpportunity] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [selectedOpportunity, setSelectedOpportunity] = useState({});
   const [opportunityId, setOpportunityId] = useState(null); // Store the ID of the opportunity to delete
@@ -47,6 +49,7 @@ function EditAndViewOpportunities() {
         company_name: companySearch || undefined,
         program_id: programId || undefined,
         opportunity_status: statusValue !== "" ? statusValue : undefined,
+        page_number:nextPrevPage || undefined, 
       };
       axiosInstance
         .get(`opportunities/admin`, { params: payload })
@@ -59,6 +62,7 @@ function EditAndViewOpportunities() {
             setData(newData);
             setTotalOpportunities(response.data.total_records);
             setCurrentPage(response.data.current_page);
+            // setNextPrevPage(currentPage);
             setTotalPages(response.data.total_pages);
           } else {
             setData([]); // No opportunities found
@@ -78,21 +82,23 @@ function EditAndViewOpportunities() {
           setLoading(false);
         });
     }, 800),
-    [opportunitySearch, companySearch, programId, statusValue]
+    [opportunitySearch, companySearch, programId, statusValue,currentPage,nextPrevPage]
   );
+
+// To Delete and Opportunity
 
   const deleteOpportunity = (id) => {
     axiosInstance
       .delete(`/opportunity/${id}`)
-      .then((response) => {
+      .then((res) => {
         const message =
-          response.data.message || "Opportunity deleted successfully.";
+          res.data.message || "Opportunity deleted successfully.";
         toast.success(message, { transition: Slide });
         fetchOpportunities(); // Refresh the list after deletion
       })
-      .catch((error) => {
+      .catch((err) => {
         const errorMessage =
-          error.response?.data?.message || "Failed to delete opportunity.";
+          err.response?.data?.message || "Failed to delete opportunity.";
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -100,12 +106,13 @@ function EditAndViewOpportunities() {
         closeConfirmDialog();
       });
   };
+// To Open View Opportunity Dialog
 
   const openOpportunity = (opportunity) => {
     setSelectedOpportunity(opportunity);
     setIsDialogOpen(true);
   };
-
+// To Close View Opportunity Dialog 
   const closeDialog = () => {
     setIsDialogOpen(false);
   };
@@ -114,7 +121,24 @@ function EditAndViewOpportunities() {
     setConfirmDialogOpen(false);
     setOpportunityId(null); // Reset the opportunity to delete
   };
+// To Cles Edit Opportunity Dialog
+  const closeIsEditOpportunity = () => {
+    setIsEditOpportunity(false);
+  };
 
+  // Hide Body Scrollbar when Dialog Is Open
+  useEffect(() => {
+    if (isEditOpportunity || isDialogOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isEditOpportunity, isDialogOpen]);
   useEffect(() => {
     fetchOpportunities();
     return () => {
@@ -126,6 +150,8 @@ function EditAndViewOpportunities() {
     programId,
     statusValue,
     fetchOpportunities,
+    currentPage,
+    nextPrevPage,
   ]);
 
   useEffect(() => {
@@ -146,25 +172,24 @@ function EditAndViewOpportunities() {
     setStatusValue("");
   }
 
-  function handleNextPage(e) {
-    currentPage === totalPages;
-    axiosInstance
-      .get(
-        `/opportunities/admin?opportunity_name=${opportunitySearch}&company_name=${companySearch}`
-      )
-      .then((response) => {
-        const newData = Array.isArray(response.data)
-          ? response.data
-          : response.data.data;
-        setData(newData);
-        setTotalOpportunities(response.data.total_records);
-        setCurrentPage(response.data.current_page);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  function handlePrevPage(e) {}
+  // function handleNextPage() {
+  //   currentPage === totalPages;
+  //   axiosInstance
+  //     .get(
+  //       `/opportunities/admin?opportunity_name=${opportunitySearch}&company_name=${companySearch}`
+  //     )
+  //     .then((response) => {
+  //       const newData = Array.isArray(response.data)
+  //         ? response.data
+  //         : response.data.data;
+  //       setData(newData);
+  //       setTotalOpportunities(response.data.total_records);
+  //       setCurrentPage(response.data.current_page);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
+  // }
 
   const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
 
@@ -373,13 +398,18 @@ function EditAndViewOpportunities() {
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
                         <div className="flex flex-col sm:flex-row justify-center items-center">
-                          <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded">
+                          <button
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => {
+                              setSelectedOpportunity(opportunity);
+                              setIsEditOpportunity(true);
+                            }}
+                          >
                             Edit
                           </button>
                           <button
                             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => openOpportunity(opportunity)}
-                            // onClick={() => console.log(opportunity)}
                           >
                             View
                           </button>
@@ -410,14 +440,14 @@ function EditAndViewOpportunities() {
                 <button
                   className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === 1}
-                  onClick={handlePrevPage}
+                  onClick={()=>{setNextPrevPage(currentPage - 1);}}
                 >
                   <MdKeyboardArrowLeft className="w-5 h-5" />
                 </button>
                 <button
                   className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === totalPages}
-                  onClick={handleNextPage}
+                  onClick={()=>{setNextPrevPage(currentPage + 1);}}
                 >
                   <MdKeyboardArrowRight className="w-5 h-5" />
                 </button>
@@ -495,6 +525,14 @@ function EditAndViewOpportunities() {
           </div>
         </div>
       )}
+      {isEditOpportunity && (
+        <EditOpportunity
+          {...selectedOpportunity}
+          onClose={closeIsEditOpportunity}
+          onOpportunityUpdate={fetchOpportunities}
+        />
+      )}
+
       <ToastContainer
         position="top-center"
         autoClose={2000}

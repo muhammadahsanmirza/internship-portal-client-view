@@ -1,34 +1,59 @@
+/* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { RxCross2 } from "react-icons/rx";
 import JoditEditor from "jodit-react";
+// import 'jodit/build/jodit.min.css';
 import { useForm } from "react-hook-form";
 import axiosInstance from "../interceptors/axiosInstance";
-import Header from "./Header";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const breadcrumbs = [
-  { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
-  { title: "Opportunity Form", href: "#", isDisabled: true },
-];
-function OpportunityForm() {
+function EditOpportunity(props) {
+  // console.log('ProgramId=>',props.program_id)
+  // console.log("Props---->", props);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [programs, setPrograms] = useState([]);
   const [majors, setMajors] = useState([]);
   const editor = useRef(null);
-  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
-    watch,
+    // watch,
     setValue,
     formState: { errors },
     trigger,
     clearErrors,
     reset,
-  } = useForm();
-  const description = watch("description", ""); // Initialize description with an empty string
+  } = useForm({
+    defaultValues: {
+      name: props.name || "",
+      email: props.email || "",
+      external_link: props.external_link || "",
+      company_name: props.company_name || "",
+      contact_person: props.contact_person || "",
+      program: props.program_id || -1,
+      description: props.description || "",
+      major: props.major_id || -1,
+      cgpa: props.cgpa || -1,
+      credit_hours: props.credit_hours || -1,
+      start_date: props.start_date || "",
+      end_date: props.end_date || "",
+      published: props.published,
+    },
+  });
+  const [publishedStatus, setPublishedStatus] = useState("");
+
+  // Set the initial value from props when the component mounts
+  useEffect(() => {
+    setPublishedStatus(props.published ? "published" : "unpublished");
+  }, [props.published]);
+
+  const handleStatusChange = (e) => {
+    const selectedValue = e.target.value;
+    setPublishedStatus(selectedValue);
+    setValue("published", selectedValue);
+  };
+  // const description = watch("description", ""); // Initialize description with an empty string
 
   const onSubmit = (data) => {
     console.log("Before-->", data.published);
@@ -50,24 +75,27 @@ function OpportunityForm() {
     console.log("After-->", formattedData.published);
 
     axiosInstance
-      .post("/opportunity", formattedData)
+      .put(`/opportunity/${props.id}`, formattedData)
       .then((res) => {
         console.log("Opportunity Created Successfully--->", res.data);
-        const message = res.data.message || "Opportunity Updated successfully.";
-        toast.success(message, { transition: Slide });
-        // trigger(); // Trigger validation
         clearErrors(); // Clear error messages
+        // trigger();
         setValue("description", ""); // Reset description field
         reset();
-        setTimeout(() => {
-          navigate("/admin/opportunities");
-        }, 500);
+        const message = res.data.message || "Opportunity Updated successfully.";
+        toast.success(message, { transition: Slide });
       })
       .catch((err) => {
         console.log(err.message);
         const errorMessage =
           err.data.message || "Opportunity Updated successfully.";
         toast.error(errorMessage, { transition: Slide });
+      })
+      .finally(() => {
+        setTimeout(() => {
+          props.onClose();
+          props.onOpportunityUpdate(); // Call any additional update handlers
+        }, 500);
       });
   };
 
@@ -79,7 +107,7 @@ function OpportunityForm() {
     axiosInstance
       .get("/programs")
       .then((res) => {
-        console.log("Programs --->", res.data.data);
+        // console.log("Programs --->", res.data.data);
         setPrograms(res.data.data);
       })
       .catch((err) => {
@@ -89,7 +117,7 @@ function OpportunityForm() {
     axiosInstance
       .get("/majors")
       .then((res) => {
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setMajors(res.data.data);
       })
       .catch((err) => {
@@ -115,20 +143,30 @@ function OpportunityForm() {
     }
   };
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
-      <Header breadcrumbs={breadcrumbs} />
+    <div className=" fixed inset-0 z-20 bg-white w-full mx-0= mt-0 overflow-y-auto">
       <form
-        className="rounded border mt-4 sm:mx-6 md:mx-auto md:my-10 md:max-w-5xl"
+        className="border md:mx-auto md:max-w-full"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t font-bold text-center">
-          Create Opportunity
-        </p>
-        <div className="">
+        <div className="fixed top-0  right-0 left-0 flex justify-between items-center bg-blue-950 text-white font-bold px-4">
+          <div className="flex justify-between items-center">
+            <button onClick={() => props.onClose()} className="close-button">
+              <RxCross2 className="text-xl" />
+            </button>
+            <p className="py-4 pl-4 text-center">Update Opportunity</p>
+          </div>
+          <button
+            type="submit"
+            className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          >
+            Update
+          </button>
+        </div>
+        <div className=" mt-16">
           <p className="text-blue-600 mx-6 mt-4">General Information</p>
           <div className="rounded border mt-1 mx-2 sm:mx-6">
             <div className="w-full">
-              <div className="flex flex-wrap justify-around mb-6">
+              <div className="flex flex-wrap justify-evenly mb-6">
                 {/* Opportunity Name Field */}
                 <div className="w-full md:w-64 px-3 my-2 mx-4 md:mb-0">
                   <label
@@ -143,6 +181,7 @@ function OpportunityForm() {
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-name"
                     type="text"
+                    defaultValue={props.name}
                     placeholder="Name"
                     {...register("name", {
                       required: "Name is required.",
@@ -177,6 +216,7 @@ function OpportunityForm() {
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-opportunity-email"
                     type="email"
+                    defaultValue={props.email}
                     placeholder="xyz@gmail.com"
                     {...register("email", {
                       pattern: {
@@ -210,6 +250,7 @@ function OpportunityForm() {
                     id="grid-opportunity-external-link"
                     type="text"
                     placeholder="http://xyz.com"
+                    defaultValue={props.external_link}
                     {...register("external_link", {
                       required: "Link is required.",
                       pattern: {
@@ -243,6 +284,7 @@ function OpportunityForm() {
                     id="grid-company-name"
                     type="text"
                     placeholder="Name"
+                    defaultValue={props.company_name}
                     {...register("company_name", {
                       required: "Field is required.",
                       pattern: {
@@ -250,6 +292,7 @@ function OpportunityForm() {
                         message: "Only numbers are not allowed.",
                       },
                       onBlur: () => trigger("company_name"),
+                      onFocus: () => clearErrors("company_name"),
                     })}
                   />
                   {errors.company_name && (
@@ -275,6 +318,7 @@ function OpportunityForm() {
                     id="grid-contact-person"
                     type="tel"
                     placeholder="+12345678"
+                    defaultValue={props.contact_person}
                     {...register("contact_person", {
                       required: "Contact Number is required.",
                       pattern: {
@@ -305,6 +349,7 @@ function OpportunityForm() {
                         errors.program ? "border-red-500" : "border-gray-200"
                       } text-gray-700 py-1 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white`}
                       id="grid-program-select"
+                      defaultValue={props.program_id}
                       {...register("program", {
                         required: "Field is required.",
                         onBlur: () => trigger("program"),
@@ -313,7 +358,11 @@ function OpportunityForm() {
                     >
                       <option value="">Select a program</option>
                       {programs.map((program) => (
-                        <option key={program.id} value={program.id}>
+                        <option
+                          key={program.id}
+                          value={program.id}
+                          selected={props.program_id == program.id}
+                        >
                           {program.program_name}
                         </option>
                       ))}
@@ -345,7 +394,7 @@ function OpportunityForm() {
                 </label>
                 <JoditEditor
                   ref={editor}
-                  value={description || ""} // Use description from watch
+                  value={props.description || ""} // Use description from watch
                   tabIndex={1} // tabIndex of textarea
                   onBlur={(newContent) => {
                     setValue("description", newContent, {
@@ -360,12 +409,11 @@ function OpportunityForm() {
                   } // Validate on change
                   onFocus={() => clearErrors("description")}
                 />
-                {errors.description &&
-                  errors.description.type === "required" && (
-                    <p className="text-red-500 text-xs px-4">
-                      Description is required.
-                    </p>
-                  )}
+                {errors.description && (
+                  <p className="text-red-500 text-xs px-4">
+                    {errors.description.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -397,7 +445,11 @@ function OpportunityForm() {
                     >
                       <option value="">Select Major</option>
                       {majors.map((major) => (
-                        <option key={major.id} value={major.id}>
+                        <option
+                          key={major.id}
+                          value={major.id}
+                          selected={props.major_id == major.id}
+                        >
                           {major.name}
                         </option>
                       ))}
@@ -433,6 +485,7 @@ function OpportunityForm() {
                     id="grid-opportunity-cgpa"
                     type="number"
                     placeholder="CGPA"
+                    defaultValue={props.cgpa}
                     min="0"
                     max="5"
                     step="0.01" // This allows two decimal places
@@ -472,6 +525,7 @@ function OpportunityForm() {
                       errors.credit_hours ? "border-red-500" : "border-gray-200"
                     } rounded py-1 px-2 mb-1 leading-tight focus:outline-none focus:bg-white`}
                     id="grid-credit-hours"
+                    defaultValue={props.credit_hours}
                     min="0"
                     type="number"
                     placeholder="Credit Hours"
@@ -518,7 +572,7 @@ function OpportunityForm() {
                     id="grid-opportunity-start-date"
                     type="date"
                     max={endDate || ""} // Disable dates before today or end date
-                    value={startDate || ""}
+                    defaultValue={props.start_date || ""}
                     {...register("start_date", {
                       required: "Start Date is required.",
                       onBlur: () => trigger("start_date"),
@@ -548,7 +602,7 @@ function OpportunityForm() {
                     id="grid-opportunity-end-date"
                     type="date"
                     min={startDate || ""} // Disable dates after the selected start date
-                    value={endDate || ""}
+                    defaultValue={props.end_date || ""}
                     {...register("end_date", {
                       required: "End Date is required.",
                       validate: {
@@ -586,9 +640,9 @@ function OpportunityForm() {
                         errors.published ? "border-red-500" : "border-gray-200"
                       } text-gray-700 py-1 px-2 pr-8 rounded leading-tight focus:outline-none focus:bg-white`}
                       id="grid-publish-select"
-                      {...register("published")}
+                      value={publishedStatus}
+                      onChange={handleStatusChange}
                     >
-                      <option value="">Select Status</option>
                       <option value="published">Published</option>
                       <option value="unpublished">UnPublished</option>
                     </select>
@@ -602,19 +656,19 @@ function OpportunityForm() {
                       </svg>
                     </div>
                   </div>
+                  {errors.published && (
+                    <p className="text-red-500 text-xs px-4">
+                      {errors.published.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="flex justify-center items-center my-4 pb-10">
-          <button
-            type="submit"
-            className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-md text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-          >
-            Submit
-          </button>
-        </div>
+        {/* <div className="flex justify-center items-center my-4 pb-10">
+          
+        </div> */}
       </form>
       <ToastContainer
         position="top-center"
@@ -632,4 +686,4 @@ function OpportunityForm() {
   );
 }
 
-export default OpportunityForm;
+export default EditOpportunity;

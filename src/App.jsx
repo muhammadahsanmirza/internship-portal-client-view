@@ -1,11 +1,11 @@
 import './App.css';
-import React, { useEffect, useState, useRef } from 'react';
-import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react'; // Import MsalAuthenticationTemplate
+import { useEffect, useState, useRef } from 'react';
+import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react'; 
 import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { jwtDecode } from "jwt-decode";
 import AdminDashboard from './components/AdminDashboard';
-import StudentDashboard from './components/StudentDashboard';
+// import StudentDashboard from './components/StudentDashboard';
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 
@@ -13,7 +13,6 @@ const MAX_RETRIES = 3; // Set a maximum retry limit
 
 function App() {
   const { instance, accounts } = useMsal();
-  const [idToken, setIdToken] = useState(null);
   const refreshTokenTimeout = useRef(null);
   const retryCount = useRef(0); // Track retry attempts
 
@@ -23,6 +22,7 @@ function App() {
         const account = accounts[0];
         const request = {
           ...loginRequest,
+          forceRefresh: true,
           account: account,
         };
 
@@ -48,7 +48,6 @@ function App() {
   }, [accounts, instance]);
 
   const handleTokenSuccess = (token) => {
-    setIdToken(token);
     localStorage.setItem('idToken', token);
     retryCount.current = 0; // Reset retry count on success
     scheduleTokenRefresh(token);
@@ -79,6 +78,7 @@ function App() {
     refreshTokenTimeout.current = setTimeout(() => {
       instance.acquireTokenSilent({
         ...loginRequest,
+        forceRefresh: true,
         account: accounts[0],
       }).then(response => {
         handleTokenSuccess(response.idToken);
@@ -91,13 +91,13 @@ function App() {
   return (
     <MantineProvider>
       <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
-        <AuthenticatedApp idToken={idToken} />
+        <AuthenticatedApp />
       </MsalAuthenticationTemplate>
     </MantineProvider>
   );
 }
 
-function AuthenticatedApp({ idToken }) {
+function AuthenticatedApp() {
   return (
     // <StudentDashboard />
     <AdminDashboard />
