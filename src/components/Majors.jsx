@@ -4,67 +4,56 @@ import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
-import { TbBulb } from "react-icons/tb";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
-import ViewOpportunity from "./ViewOpportunity";
 import axiosInstance from "../interceptors/axiosInstance";
 import EditOpportunity from "./EditOpportunity";
 
-const applicationStatus = [
-  { id: 1, status: "Published", value: true },
-  { id: 2, status: "Unpublished", value: false },
-];
 
-function EditAndViewOpportunities() {
+function Majors() {
   const [data, setData] = useState([]);
-  const [totalOpportunities, setTotalOpportunities] = useState(0);
-  const [opportunitySearch, setOpportunitySearch] = useState("");
-  const [companySearch, setCompanySearch] = useState("");
+  const [totalMajors, setTotalMajors] = useState(0);
+  const [majorSearch, setMajorSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
-  const [statusValue, setStatusValue] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [majorId, setMajorId] = useState(null);
   const [isEditOpportunity, setIsEditOpportunity] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState({});
-  const [opportunityId, setOpportunityId] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const fetchOpportunities = useCallback(
+  const fetchMajors = useCallback(
     debounce(() => {
       setLoading(true);
       const payload = {
-        opportunity_name: opportunitySearch || undefined,
-        company_name: companySearch || undefined,
+        major_name: majorSearch || undefined,
         program_id: programId || undefined,
-        opportunity_status: statusValue !== "" ? statusValue : undefined,
         page_number: nextPrevPage || currentPage || undefined,
       };
       axiosInstance
-        .get(`opportunities/admin`, { params: payload })
+        .get(`/majors`, { params: payload })
         .then((response) => {
+            console.log(response)
           const newData = response.data.data;
 
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalOpportunities(response.data.total_records);
+            setTotalMajors(response.data.total_records);
             setCurrentPage(response.data.current_page);
             // setNextPrevPage(currentPage);
             setTotalPages(response.data.total_pages);
           } else {
             setData([]); // No opportunities found
-            setTotalOpportunities(0);
+            setTotalMajors(0);
             setCurrentPage(1);
             setTotalPages(1);
             setError(response.data.message || "No opportunities found");
@@ -78,14 +67,12 @@ function EditAndViewOpportunities() {
         })
         .finally(() => {
           setLoading(false);
-          setNextPrevPage(null)
+          setNextPrevPage(null);
         });
     }, 800),
     [
-      opportunitySearch,
-      companySearch,
+      majorSearch,
       programId,
-      statusValue,
       currentPage,
       nextPrevPage,
     ]
@@ -97,21 +84,23 @@ function EditAndViewOpportunities() {
       btnArray.push(i);
     }
     return btnArray;
-  },[currentPage]);
+  }, [currentPage]);
 
   // To Delete and Opportunity
 
-  const deleteOpportunity = (id) => {
+  const deleteMajor = (id) => {
     axiosInstance
-      .delete(`/opportunity/${id}`)
+      .delete(`/major/${id}`)
       .then((res) => {
-        const message = res.data.message || "Opportunity deleted successfully.";
+        const message = res.data.message || "Major deleted successfully.";
         toast.success(message, { transition: Slide });
-        fetchOpportunities(); // Refresh the list after deletion
+        setMajorId(null)
+        fetchMajors(); // Refresh the list after deletion
       })
       .catch((err) => {
         const errorMessage =
-          err.response?.data?.message || "Failed to delete opportunity.";
+          err.response?.data || "Failed to delete Major.";
+          console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -119,52 +108,25 @@ function EditAndViewOpportunities() {
         closeConfirmDialog();
       });
   };
-  // To Open View Opportunity Dialog
-
-  const openOpportunity = (opportunity) => {
-    setSelectedOpportunity(opportunity);
-    setIsDialogOpen(true);
-  };
-  // To Close View Opportunity Dialog
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
 
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
-    setOpportunityId(null); // Reset the opportunity to delete
   };
   // To Close Edit Opportunity Dialog
   const closeIsEditOpportunity = () => {
     setIsEditOpportunity(false);
   };
 
-  // Hide Body Scrollbar when Dialog Is Open
+ 
   useEffect(() => {
-    if (isEditOpportunity || isDialogOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    // Cleanup on unmount
+    fetchMajors();
     return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isEditOpportunity, isDialogOpen]);
-
-
-  useEffect(() => {
-    fetchOpportunities();
-    return () => {
-      fetchOpportunities.cancel();
+        fetchMajors.cancel();
     };
   }, [
-    opportunitySearch,
-    companySearch,
+    majorSearch,
     programId,
-    statusValue,
-    fetchOpportunities,
+    fetchMajors,
     currentPage,
     nextPrevPage,
   ]);
@@ -181,44 +143,30 @@ function EditAndViewOpportunities() {
   }, []);
 
   function handleClearFilter() {
-    setOpportunitySearch("");
-    setCompanySearch("");
+    setMajorSearch("");
     setProgramId(0);
-    setStatusValue("");
   }
 
-  const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
+  const breadcrumbs = [
+    { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
+    { title: "Majors", href: "#", isDisabled: true },
+];
 
   return (
     <div className="w-full sm:mt-0 sm:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">
-          Opportunities
-        </p>
+        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Majors</p>
         <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
           <div className="flex flex-col sm:flex-row justify-evenly">
             <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
               <input
                 type="text"
-                placeholder="Search opportunity name"
+                placeholder="Search major name"
                 className="w-full text-xs outline-none px-1"
-                onChange={(e) => setOpportunitySearch(e.target.value)}
-                value={opportunitySearch}
-                disabled={loading || error}
-              />
-              <button className="flex items-center justify-center w-12">
-                <TbBulb className="text-lg" />
-              </button>
-            </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
-              <input
-                type="text"
-                placeholder="Search company name"
-                className="w-full text-xs outline-none px-1"
-                onChange={(e) => setCompanySearch(e.target.value)}
-                value={companySearch}
+                onChange={(e) => setMajorSearch(e.target.value)}
+                value={majorSearch}
                 disabled={loading || error}
               />
               <button className="flex items-center justify-center w-12">
@@ -242,50 +190,32 @@ function EditAndViewOpportunities() {
                 ))}
               </select>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
-              <select
-                className="w-full text-sm px-2 outline-none"
-                value={statusValue}
+          </div>
+          <div className="flex gap-2">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
+              <RxCrossCircled />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={handleClearFilter}
                 disabled={loading || error}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setStatusValue(
-                    value === "true" ? true : value === "false" ? false : ""
-                  ); // Convert to boolean
-                }}
               >
-                <option value="">Select Status</option>
-                {applicationStatus?.map((status) => (
-                  <option key={status.id} value={status.value}>
-                    {status.status}
-                  </option>
-                ))}
-              </select>
+                CLEAR FILTERS
+              </button>
             </div>
-          </div>
-          <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
-            <RxCrossCircled />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
-              disabled={loading || error}
-            >
-              CLEAR FILTERS
-            </button>
-          </div>
-          <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
-            <IoIosAddCircleOutline className="text-white" />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={() => {
-                navigate("/admin/create/opportunities");
-              }}
-              disabled={loading || error}
-            >
-              CREATE OPPORTUNITY
-            </button>
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
+              <IoIosAddCircleOutline className="text-white" />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={() => {
+                  navigate("/admin/create/opportunities");
+                }}
+                disabled={loading || error}
+              >
+                CREATE MAJOR
+              </button>
+            </div>
           </div>
         </div>
         {loading && (
@@ -325,31 +255,20 @@ function EditAndViewOpportunities() {
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
-                      Email
+                      Program
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
-                      Contact Person
+                      College
                     </th>
+        
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
-                      Company Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Program Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Published
+                      Status
                     </th>
                     <th
                       scope="col"
@@ -361,28 +280,22 @@ function EditAndViewOpportunities() {
                 </thead>
 
                 <tbody>
-                  {data?.map((opportunity) => (
-                    <tr key={opportunity.id}>
+                  {data?.map((major) => (
+                    <tr key={major.id}>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.id}
+                        {major.id}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.name}
+                        {major.name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.email}
+                        {major.program_name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.contact_person}
+                        {major.college_name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.company_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.program_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.published ? (
+                        {major.status ? (
                           <span className="text-green-600 px-4 inline-block">
                             <BsCheckCircle />
                           </span>
@@ -397,22 +310,17 @@ function EditAndViewOpportunities() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setSelectedOpportunity(opportunity);
+                            //   setSelectedOpportunity(opportunity);
                               setIsEditOpportunity(true);
                             }}
                           >
                             Edit
                           </button>
-                          <button
-                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                            onClick={() => openOpportunity(opportunity)}
-                          >
-                            View
-                          </button>
+                          
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setOpportunityId(opportunity.id);
+                              setMajorId(major.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -428,7 +336,7 @@ function EditAndViewOpportunities() {
             <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
               <div className="flex flex-row justify-between text-xs">
                 <p className="mx-6">
-                  Total Opportunities : {totalOpportunities}
+                  Total Majors : {totalMajors}
                 </p>
                 <p className="mx-6">Page No. {currentPage}</p>
               </div>
@@ -473,13 +381,6 @@ function EditAndViewOpportunities() {
           </div>
         )}
       </div>
-      {isDialogOpen && (
-        <ViewOpportunity
-          opportunity={selectedOpportunity}
-          isOpen={isDialogOpen}
-          onClose={closeDialog}
-        />
-      )}
       {confirmDialogOpen && (
         <div>
           <div
@@ -523,11 +424,11 @@ function EditAndViewOpportunities() {
                   />
                 </svg>
                 <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">
-                  Do You want to delete this opportunity?
+                  Do You want to delete this Major?
                 </h3>
                 <button
                   className={`text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-6 py-2.5 text-center mr-2 `}
-                  onClick={() => deleteOpportunity(opportunityId)}
+                  onClick={() => deleteMajor(majorId)}
                 >
                   Yes
                 </button>
@@ -544,9 +445,9 @@ function EditAndViewOpportunities() {
       )}
       {isEditOpportunity && (
         <EditOpportunity
-          {...selectedOpportunity}
+        //   {...selectedOpportunity}
           onClose={closeIsEditOpportunity}
-          onOpportunityUpdate={fetchOpportunities}
+          onOpportunityUpdate={fetchMajors}
         />
       )}
 
@@ -566,4 +467,4 @@ function EditAndViewOpportunities() {
   );
 }
 
-export default EditAndViewOpportunities;
+export default Majors;

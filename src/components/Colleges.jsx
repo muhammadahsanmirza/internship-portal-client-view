@@ -4,67 +4,53 @@ import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
-import { TbBulb } from "react-icons/tb";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
-import ViewOpportunity from "./ViewOpportunity";
 import axiosInstance from "../interceptors/axiosInstance";
 import EditOpportunity from "./EditOpportunity";
 
-const applicationStatus = [
-  { id: 1, status: "Published", value: true },
-  { id: 2, status: "Unpublished", value: false },
-];
 
-function EditAndViewOpportunities() {
+function Colleges() {
   const [data, setData] = useState([]);
-  const [totalOpportunities, setTotalOpportunities] = useState(0);
-  const [opportunitySearch, setOpportunitySearch] = useState("");
-  const [companySearch, setCompanySearch] = useState("");
+  const [totalColleges, setTotalColleges] = useState(0);
+  const [collegeSearch, setCollegeSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
-  const [programs, setPrograms] = useState([]);
-  const [programId, setProgramId] = useState(0);
-  const [statusValue, setStatusValue] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [collegeId, setCollegeId] = useState(0);
+  const [programId, setProgramId] = useState(null);
   const [isEditOpportunity, setIsEditOpportunity] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [selectedOpportunity, setSelectedOpportunity] = useState({});
-  const [opportunityId, setOpportunityId] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const fetchOpportunities = useCallback(
+  const fetchPrograms = useCallback(
     debounce(() => {
       setLoading(true);
       const payload = {
-        opportunity_name: opportunitySearch || undefined,
-        company_name: companySearch || undefined,
-        program_id: programId || undefined,
-        opportunity_status: statusValue !== "" ? statusValue : undefined,
+        college_name: collegeSearch || undefined,
         page_number: nextPrevPage || currentPage || undefined,
       };
       axiosInstance
-        .get(`opportunities/admin`, { params: payload })
+        .get(`/colleges`, { params: payload })
         .then((response) => {
+            console.log(response.data)
           const newData = response.data.data;
-
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalOpportunities(response.data.total_records);
+            setTotalColleges(response.data.total_records);
             setCurrentPage(response.data.current_page);
             // setNextPrevPage(currentPage);
             setTotalPages(response.data.total_pages);
           } else {
             setData([]); // No opportunities found
-            setTotalOpportunities(0);
+            setTotalColleges(0);
             setCurrentPage(1);
             setTotalPages(1);
             setError(response.data.message || "No opportunities found");
@@ -78,14 +64,12 @@ function EditAndViewOpportunities() {
         })
         .finally(() => {
           setLoading(false);
-          setNextPrevPage(null)
+          setNextPrevPage(null);
         });
     }, 800),
     [
-      opportunitySearch,
-      companySearch,
-      programId,
-      statusValue,
+        collegeSearch,
+      collegeId,
       currentPage,
       nextPrevPage,
     ]
@@ -97,21 +81,22 @@ function EditAndViewOpportunities() {
       btnArray.push(i);
     }
     return btnArray;
-  },[currentPage]);
+  }, [currentPage]);
 
-  // To Delete and Opportunity
+  // To Delete and Opportunity 
 
-  const deleteOpportunity = (id) => {
+  const deleteProgram = (id) => {
     axiosInstance
-      .delete(`/opportunity/${id}`)
+      .delete(`/program/${id}`)
       .then((res) => {
-        const message = res.data.message || "Opportunity deleted successfully.";
+        const message = res.data.message || "Program deleted successfully.";
         toast.success(message, { transition: Slide });
-        fetchOpportunities(); // Refresh the list after deletion
+        fetchPrograms(); // Refresh the list after deletion
       })
       .catch((err) => {
         const errorMessage =
-          err.response?.data?.message || "Failed to delete opportunity.";
+          err.response?.data || "Failed to delete program.";
+          console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -119,173 +104,86 @@ function EditAndViewOpportunities() {
         closeConfirmDialog();
       });
   };
-  // To Open View Opportunity Dialog
-
-  const openOpportunity = (opportunity) => {
-    setSelectedOpportunity(opportunity);
-    setIsDialogOpen(true);
-  };
-  // To Close View Opportunity Dialog
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
 
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
-    setOpportunityId(null); // Reset the opportunity to delete
   };
   // To Close Edit Opportunity Dialog
   const closeIsEditOpportunity = () => {
     setIsEditOpportunity(false);
   };
 
-  // Hide Body Scrollbar when Dialog Is Open
+ 
   useEffect(() => {
-    if (isEditOpportunity || isDialogOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    // Cleanup on unmount
+    fetchPrograms();
     return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [isEditOpportunity, isDialogOpen]);
-
-
-  useEffect(() => {
-    fetchOpportunities();
-    return () => {
-      fetchOpportunities.cancel();
+        fetchPrograms.cancel();
     };
   }, [
-    opportunitySearch,
-    companySearch,
-    programId,
-    statusValue,
-    fetchOpportunities,
+    collegeSearch,
+    collegeId,
+    fetchPrograms,
     currentPage,
     nextPrevPage,
   ]);
 
-  useEffect(() => {
-    axiosInstance
-      .get("/program/names")
-      .then((res) => {
-        setPrograms(res.data.data);
-      })
-      .catch((error) => {
-        setError(error.message);
-      });
-  }, []);
-
   function handleClearFilter() {
-    setOpportunitySearch("");
-    setCompanySearch("");
-    setProgramId(0);
-    setStatusValue("");
+    setCollegeSearch("");
+    setCollegeId(0);
   }
 
-  const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
+  const breadcrumbs = [
+    { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
+    { title: "College", href: "#", isDisabled: true },
+];
 
   return (
     <div className="w-full sm:mt-0 sm:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">
-          Opportunities
-        </p>
+        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Colleges</p>
         <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
           <div className="flex flex-col sm:flex-row justify-evenly">
             <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
               <input
                 type="text"
-                placeholder="Search opportunity name"
+                placeholder="Search college name"
                 className="w-full text-xs outline-none px-1"
-                onChange={(e) => setOpportunitySearch(e.target.value)}
-                value={opportunitySearch}
-                disabled={loading || error}
-              />
-              <button className="flex items-center justify-center w-12">
-                <TbBulb className="text-lg" />
-              </button>
-            </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
-              <input
-                type="text"
-                placeholder="Search company name"
-                className="w-full text-xs outline-none px-1"
-                onChange={(e) => setCompanySearch(e.target.value)}
-                value={companySearch}
+                onChange={(e) => setCollegeSearch(e.target.value)}
+                value={collegeSearch}
                 disabled={loading || error}
               />
               <button className="flex items-center justify-center w-12">
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
-              <select
-                className="w-full text-sm px-2 outline-none"
-                value={programId}
-                disabled={loading || error}
-                onChange={(e) => {
-                  setProgramId(e.target.value);
-                }}
-              >
-                <option value="">Select Program</option>
-                {programs?.map((program) => (
-                  <option key={program.id} value={program.id}>
-                    {program.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
-              <select
-                className="w-full text-sm px-2 outline-none"
-                value={statusValue}
-                disabled={loading || error}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setStatusValue(
-                    value === "true" ? true : value === "false" ? false : ""
-                  ); // Convert to boolean
-                }}
-              >
-                <option value="">Select Status</option>
-                {applicationStatus?.map((status) => (
-                  <option key={status.id} value={status.value}>
-                    {status.status}
-                  </option>
-                ))}
-              </select>
-            </div>
           </div>
-          <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
-            <RxCrossCircled />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
-              disabled={loading || error}
-            >
-              CLEAR FILTERS
-            </button>
-          </div>
-          <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
-            <IoIosAddCircleOutline className="text-white" />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={() => {
-                navigate("/admin/create/opportunities");
-              }}
-              disabled={loading || error}
-            >
-              CREATE OPPORTUNITY
-            </button>
+          <div className="flex gap-2">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
+              <RxCrossCircled />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={handleClearFilter}
+                disabled={loading || error}
+              >
+                CLEAR FILTERS
+              </button>
+            </div>
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
+              <IoIosAddCircleOutline className="text-white" />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={() => {
+                  navigate("/admin/create/opportunities");
+                }}
+                disabled={loading || error}
+              >
+                CREATE COLLEGE
+              </button>
+            </div>
           </div>
         </div>
         {loading && (
@@ -315,41 +213,19 @@ function EditAndViewOpportunities() {
                     >
                       #
                     </th>
+                    
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
                       Name
                     </th>
+        
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
-                      Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Contact Person
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Company Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Program Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Published
+                      Status
                     </th>
                     <th
                       scope="col"
@@ -361,28 +237,16 @@ function EditAndViewOpportunities() {
                 </thead>
 
                 <tbody>
-                  {data?.map((opportunity) => (
-                    <tr key={opportunity.id}>
+                  {data?.map((college) => (
+                    <tr key={college.id}>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.id}
+                        {college.id}
+                      </td>                      
+                      <td className="px-6 py-4 text-center align-middle">
+                        {college.college_name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.email}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.contact_person}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.company_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.program_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.published ? (
+                        {college.status ? (
                           <span className="text-green-600 px-4 inline-block">
                             <BsCheckCircle />
                           </span>
@@ -397,22 +261,17 @@ function EditAndViewOpportunities() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setSelectedOpportunity(opportunity);
+                            //   setSelectedOpportunity(opportunity);
                               setIsEditOpportunity(true);
                             }}
                           >
                             Edit
                           </button>
-                          <button
-                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                            onClick={() => openOpportunity(opportunity)}
-                          >
-                            View
-                          </button>
+                          
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setOpportunityId(opportunity.id);
+                                setProgramId(college.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -428,7 +287,7 @@ function EditAndViewOpportunities() {
             <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
               <div className="flex flex-row justify-between text-xs">
                 <p className="mx-6">
-                  Total Opportunities : {totalOpportunities}
+                  Total Colleges : {totalColleges}
                 </p>
                 <p className="mx-6">Page No. {currentPage}</p>
               </div>
@@ -473,13 +332,6 @@ function EditAndViewOpportunities() {
           </div>
         )}
       </div>
-      {isDialogOpen && (
-        <ViewOpportunity
-          opportunity={selectedOpportunity}
-          isOpen={isDialogOpen}
-          onClose={closeDialog}
-        />
-      )}
       {confirmDialogOpen && (
         <div>
           <div
@@ -523,11 +375,11 @@ function EditAndViewOpportunities() {
                   />
                 </svg>
                 <h3 className="text-xl font-normal text-gray-500 mt-5 mb-6">
-                  Do You want to delete this opportunity?
+                  Do You want to delete this Program?
                 </h3>
                 <button
                   className={`text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-6 py-2.5 text-center mr-2 `}
-                  onClick={() => deleteOpportunity(opportunityId)}
+                  onClick={() => deleteProgram(programId)}
                 >
                   Yes
                 </button>
@@ -544,9 +396,9 @@ function EditAndViewOpportunities() {
       )}
       {isEditOpportunity && (
         <EditOpportunity
-          {...selectedOpportunity}
+        //   {...selectedOpportunity}
           onClose={closeIsEditOpportunity}
-          onOpportunityUpdate={fetchOpportunities}
+          onOpportunityUpdate={fetchPrograms}
         />
       )}
 
@@ -566,4 +418,4 @@ function EditAndViewOpportunities() {
   );
 }
 
-export default EditAndViewOpportunities;
+export default Colleges;

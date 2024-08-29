@@ -1,8 +1,8 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
+
 function PageNotFound() {
     return (
-        <div className="text-center">
+        <div className="flex flex-col items-center mx-auto justify-center h-screen w-full z-0">
             <h1 className="mb-4 text-6xl font-semibold text-red-500">404</h1>
             <p className="mb-4 text-lg text-gray-600">Oops! Looks like you're lost.</p>
             <div className="animate-bounce">
@@ -21,10 +21,10 @@ function PageNotFound() {
                 </svg>
             </div>
             <p className="mt-4 text-gray-600">
-                Let's get you back{" "}
+                Visit
                 <NavLink
                     to="/"
-                    className="text-blue-500 hover:text-blue-700"
+                    className="text-blue-500 ml-2 hover:text-blue-700"
                     activeClassName="text-blue-700"
                 >
                     Home

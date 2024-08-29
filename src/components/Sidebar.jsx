@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { MdViewHeadline } from "react-icons/md";
-import NavigationDrawer from './NavigationDrawer';
+// import NavigationDrawer from './NavigationDrawer';
+import AdminNavigationDrawer from './AdminNavigationDrawer';
 function Sidebar() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -34,7 +35,8 @@ function Sidebar() {
                 
             </div>
 
-            <NavigationDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
+            {/* <NavigationDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} /> */}
+            <AdminNavigationDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
         </>
     );
 }

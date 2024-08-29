@@ -1,6 +1,5 @@
 import "./index.css";
 
-import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { RouterProvider, Navigate } from 'react-router-dom';
@@ -11,12 +10,16 @@ import { MsalProvider } from '@azure/msal-react';
 import { msalConfig } from './authentication/auth.js';
 
 import App from "./App.jsx";
-import Section from "./components/Section.jsx";
-import StudentProfile from "./components/StudentProfile.jsx";
-import PageNotFound from './components/PageNotFound.jsx';
+// import Section from "./components/Section.jsx";
+// import StudentProfile from "./components/StudentProfile.jsx";
 import EditAndViewOpportunities from "./components/EditAndViewOpportunities.jsx";
 import OpportunityForm from "./components/OpportunityForm.jsx";
-
+import Applicants from "./components/Applicants.jsx";
+import Students from "./components/Students.jsx";
+import Majors from "./components/Majors.jsx";
+import Programs from "./components/Programs.jsx";
+import Colleges from "./components/Colleges.jsx";
+import PageNotFound from './components/PageNotFound.jsx';
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 
@@ -31,6 +34,11 @@ const router = createBrowserRouter(
         <Route index element={<Navigate to="opportunities" />} /> {/* Redirect to opportunities by default */}
         <Route path='opportunities' element={<EditAndViewOpportunities />} />
         <Route path='create/opportunities' element={<OpportunityForm />} />
+        <Route path='applicants' element={<Applicants />} />
+        <Route path='students' element={<Students/>} />
+        <Route path='majors' element={<Majors />} />
+        <Route path='programs' element={<Programs/>} />
+        <Route path='colleges' element={<Colleges/>} />
         <Route path='*' element={<PageNotFound />} />
       </Route>
     </Route>
