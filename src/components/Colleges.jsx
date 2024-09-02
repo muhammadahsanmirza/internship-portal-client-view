@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
@@ -8,8 +7,8 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
+import CollegeForm from "./CollegeForm";
 import axiosInstance from "../interceptors/axiosInstance";
-import EditOpportunity from "./EditOpportunity";
 
 
 function Colleges() {
@@ -19,17 +18,16 @@ function Colleges() {
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
-  const [collegeId, setCollegeId] = useState(0);
-  const [programId, setProgramId] = useState(null);
-  const [isEditOpportunity, setIsEditOpportunity] = useState(false);
+  const [collegeId, setcollegeId] = useState(null);
+  const [isCreateCollege, setIsCreateCollege] = useState(false)
+  const [isEditCollege, setIsEditCollege] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
 
-  const fetchPrograms = useCallback(
+  const fetchColleges = useCallback(
     debounce(() => {
       setLoading(true);
       const payload = {
@@ -85,17 +83,17 @@ function Colleges() {
 
   // To Delete and Opportunity 
 
-  const deleteProgram = (id) => {
+  const deleteCollege = (id) => {
     axiosInstance
-      .delete(`/program/${id}`)
+      .delete(`/college/${id}`)
       .then((res) => {
-        const message = res.data.message || "Program deleted successfully.";
+        const message = res.data.message || "College deleted successfully.";
         toast.success(message, { transition: Slide });
-        fetchPrograms(); // Refresh the list after deletion
+        fetchColleges(); // Refresh the list after deletion
       })
       .catch((err) => {
         const errorMessage =
-          err.response?.data || "Failed to delete program.";
+          err.response?.data || "Failed to delete College.";
           console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
@@ -108,28 +106,28 @@ function Colleges() {
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
   };
-  // To Close Edit Opportunity Dialog
-  const closeIsEditOpportunity = () => {
-    setIsEditOpportunity(false);
+  // To Close Edit College Dialog
+  const closeIsCollegeDialog = () => {
+    setIsEditCollege(false);
   };
 
  
   useEffect(() => {
-    fetchPrograms();
+    fetchColleges();
     return () => {
-        fetchPrograms.cancel();
+      fetchColleges.cancel();
     };
   }, [
     collegeSearch,
     collegeId,
-    fetchPrograms,
+    fetchColleges,
     currentPage,
     nextPrevPage,
   ]);
 
   function handleClearFilter() {
     setCollegeSearch("");
-    setCollegeId(0);
+    setcollegeId(0);
   }
 
   const breadcrumbs = [
@@ -177,7 +175,7 @@ function Colleges() {
                 className=" text-xs"
                 style={{ minWidth: "100px", padding: "5px 10px" }}
                 onClick={() => {
-                  navigate("/admin/create/opportunities");
+                  setIsCreateCollege(true);
                 }}
                 disabled={loading || error}
               >
@@ -262,7 +260,7 @@ function Colleges() {
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
                             //   setSelectedOpportunity(opportunity);
-                              setIsEditOpportunity(true);
+                              setIsEditCollege(true);
                             }}
                           >
                             Edit
@@ -271,7 +269,7 @@ function Colleges() {
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                                setProgramId(college.id);
+                              setcollegeId(college.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -379,7 +377,7 @@ function Colleges() {
                 </h3>
                 <button
                   className={`text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-6 py-2.5 text-center mr-2 `}
-                  onClick={() => deleteProgram(programId)}
+                  onClick={() => deleteCollege(collegeId)}
                 >
                   Yes
                 </button>
@@ -394,12 +392,9 @@ function Colleges() {
           </div>
         </div>
       )}
-      {isEditOpportunity && (
-        <EditOpportunity
-        //   {...selectedOpportunity}
-          onClose={closeIsEditOpportunity}
-          onOpportunityUpdate={fetchPrograms}
-        />
+      {isCreateCollege && <CollegeForm closeDialog= {closeIsCollegeDialog}/>}
+      {isEditCollege && (
+        <CollegeForm closeDialog= {closeIsCollegeDialog}/>
       )}
 
       <ToastContainer
