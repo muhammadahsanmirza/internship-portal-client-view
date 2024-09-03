@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react'; 
 import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
