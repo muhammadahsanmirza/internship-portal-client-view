@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import Header from './Header';
-import Loader from './Loader';
-import axiosInstance from '../interceptors/axiosInstance';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
+import Header from "./Header";
+import Loader from "./Loader";
+import axiosInstance from "../interceptors/axiosInstance";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { SiAdobeacrobatreader } from "react-icons/si";
 import { MdFileDownload, MdFileUpload } from "react-icons/md";
 import { TiWarning } from "react-icons/ti";
 
-import { ToastContainer, toast, Slide } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import ResumeDialog from './ResumeDialog';
+import { ToastContainer, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ResumeDialog from "./ResumeDialog";
 
 function StudentProfile() {
   const breadcrumbs = [
-    { title: 'Opportunities', href: '/student/opportunities', isDisabled: false },
-    { title: 'Student Profile', href: '#', isDisabled: true },
+    {
+      title: "Opportunities",
+      href: "/student/opportunities",
+      isDisabled: false,
+    },
+    { title: "Student Profile", href: "#", isDisabled: true },
   ];
 
   const [data, setData] = useState({});
@@ -23,18 +28,18 @@ function StudentProfile() {
   const [completeProfile, setCompleteProfile] = useState(false);
 
   const [fileBlob, setFileBlob] = useState(null);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState("");
   const [isFileUploaded, setIsFileUploaded] = useState(false);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [notFoundMessage, setNotFoundMessage] = useState('');
+  const [notFoundMessage, setNotFoundMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get('/student/profile');
+        const res = await axiosInstance.get("/student/profile");
         const profileData = res.data.data;
         console.log("User Data useEffect-->", profileData);
         setData(profileData);
@@ -45,24 +50,26 @@ function StudentProfile() {
           setResumeId(profileData.resume_id);
           if (res.data.file) {
             const byteCharacters = atob(res.data.file);
-            const byteNumbers = Array.from(byteCharacters).map(char => char.charCodeAt(0));
+            const byteNumbers = Array.from(byteCharacters).map((char) =>
+              char.charCodeAt(0)
+            );
             const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: 'application/pdf' });
+            const blob = new Blob([byteArray], { type: "application/pdf" });
             setFileBlob(blob);
           }
         } else {
           setUserId(null);
           setCompleteProfile(false);
-          setFileName('');
+          setFileName("");
           setResumeId(null);
           toggleDialog();
         }
       } catch (err) {
         if (err.response && err.response.status === 404) {
           console.log(err.response.data);
-          setNotFoundMessage(err.response.data || 'Profile not found.');
+          setNotFoundMessage(err.response.data || "Profile not found.");
         } else {
-          console.error('Error fetching profile:', err);
+          console.error("Error fetching profile:", err);
         }
       } finally {
         setLoading(false);
@@ -75,9 +82,9 @@ function StudentProfile() {
   const downloadFile = () => {
     if (fileBlob) {
       const url = URL.createObjectURL(fileBlob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `${fileName || 'resume'}.pdf`;
+      a.download = `${fileName || "resume"}.pdf`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -97,12 +104,12 @@ function StudentProfile() {
   return (
     <div className="w-full lg:w-[calc(100%-5rem)] lg:ml-20 z-0">
       <Header breadcrumbs={breadcrumbs} />
-      <div className=''>
+      <div className="">
         <div className="flex flex-row h-12 bg-blue-950 items-center justify-center sm:justify-start sm:pl-36">
           <div className="text-gray-400">
-            <RiAccountCircleFill className='w-10 h-8' />
+            <RiAccountCircleFill className="w-10 h-8" />
           </div>
-          <p className='text-lg text-white font-bold ml-2'>Student Profile</p>
+          <p className="text-lg text-white font-bold ml-2">Student Profile</p>
         </div>
 
         {loading && <Loader />}
@@ -115,29 +122,32 @@ function StudentProfile() {
         )}
 
         {!loading && !notFoundMessage && (
-          <div className='card rounded shadow-lg w-11/12 sm:w-8/12 lg:w-5/12 mt-8 h-96  sm:h-80 border mx-auto md:ml-36'>
-            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
-              <div className='text-sm font-bold'>Name</div>
-              <div className='text-gray-500 sm:ml-12'>{data.user_name}</div>
+          <div className="card rounded shadow-lg w-11/12 sm:w-8/12 lg:w-5/12 mt-8 h-96  sm:h-80 border mx-auto md:ml-36">
+            <div className="flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3">
+              <div className="text-sm font-bold">Name</div>
+              <div className="text-gray-500 sm:ml-12">{data.user_name}</div>
             </div>
-            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
-              <div className='text-sm font-bold'>Email</div>
-              <div className='text-gray-500 sm:ml-12'>{data.email}</div>
+            <div className="flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3">
+              <div className="text-sm font-bold">Email</div>
+              <div className="text-gray-500 sm:ml-12">{data.email}</div>
             </div>
-            <div className='flex flex-row gap-4 sm:gap-11 items-center border-b p-3 m-3'>
-              <div className='text-sm font-bold'>Program</div>
-              <div className='text-gray-500 sm:ml-12'>{data.program}</div>
+            <div className="flex flex-row gap-4 sm:gap-11 items-center border-b p-3 m-3">
+              <div className="text-sm font-bold">Program</div>
+              <div className="text-gray-500 sm:ml-12">{data.program}</div>
             </div>
-            <div className='flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3'>
-              <div className='text-sm font-bold'>Major</div>
-              <div className='text-gray-500 sm:ml-12'>{data.major}</div>
+            <div className="flex flex-row gap-9 sm:gap-16 items-center border-b p-3 m-3">
+              <div className="text-sm font-bold">Major</div>
+              <div className="text-gray-500 sm:ml-12">{data.major}</div>
             </div>
             {completeProfile ? (
-              <div className='flex flex-row flex-wrap items-center p-3 m-3 gap-4 sm:gap-0'>
-                <div className='text-sm font-bold'>Resume</div>
+              <div className="flex flex-row flex-wrap items-center p-3 m-3 gap-4 sm:gap-0">
+                <div className="text-sm font-bold">Resume</div>
                 <div className="flex flex-row rounded text-black py-1 text-sm items-center justify-center sm:ml-24 mr-6 p-1 border gap-0 sm:gap-1">
-                  <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
-                  <button className="mx-1 text-sm text-gray-500" onClick={downloadFile}>
+                  <SiAdobeacrobatreader className="w-4 h-4 text-red-800" />
+                  <button
+                    className="mx-1 text-sm text-gray-500"
+                    onClick={downloadFile}
+                  >
                     click to download
                   </button>
                   <MdFileDownload className="w-4 h-4 text-green-500" />
@@ -154,25 +164,30 @@ function StudentProfile() {
                 </div>
               </div>
             ) : (
-              <div className='flex flex-row items-center p-3 m-3'>
-                <div className='text-sm font-bold'>Resume</div>
+              <div className="flex flex-row items-center p-3 m-3">
+                <div className="text-sm font-bold">Resume</div>
                 <div className="flex flex-row rounded text-black py-1 text-lg items-center justify-center sm:ml-24 mx-8 p-1 border gap-10 h-10 px-2">
-                  <SiAdobeacrobatreader className='w-4 h-4 text-red-800' />
-                  <button className="mx-1 text-sm text-gray-500" onClick={toggleDialog}>
+                  <SiAdobeacrobatreader className="w-4 h-4 text-red-800" />
+                  <button
+                    className="mx-1 text-sm text-gray-500"
+                    onClick={toggleDialog}
+                  >
                     click to upload
                   </button>
                   <MdFileUpload className="w-4 h-4 text-green-500" />
                 </div>
               </div>
             )}
-            {isDialogOpen && <ResumeDialog
-              isOpen={isDialogOpen}
-              onClose={toggleDialog}
-              onUpload={handleFileUploadSuccess} // Pass success handler
-              resumeId={resumeId}
-              userId={userId}
-              setIsFileUploaded={setIsFileUploaded}
-            />}
+            {isDialogOpen && (
+              <ResumeDialog
+                isOpen={isDialogOpen}
+                onClose={toggleDialog}
+                onUpload={handleFileUploadSuccess} // Pass success handler
+                resumeId={resumeId}
+                userId={userId}
+                setIsFileUploaded={setIsFileUploaded}
+              />
+            )}
           </div>
         )}
       </div>

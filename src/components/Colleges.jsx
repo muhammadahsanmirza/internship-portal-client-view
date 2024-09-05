@@ -7,7 +7,7 @@ import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
-import CollegeForm from "./CollegeForm";
+import CollegeFormDialog from "./CollegeFormDialog";
 import axiosInstance from "../interceptors/axiosInstance";
 
 
@@ -107,11 +107,8 @@ function Colleges() {
     setConfirmDialogOpen(false);
   };
   // To Close Edit College Dialog
-  const closeIsCollegeDialog = () => {
-    setIsEditCollege(false);
-  };
-
- 
+  const handleOpenCollegeDialog = () => setIsCreateCollege(true);
+  const handleCloseCollegeDialog = () => setIsCreateCollege(false);
   useEffect(() => {
     fetchColleges();
     return () => {
@@ -174,9 +171,7 @@ function Colleges() {
               <button
                 className=" text-xs"
                 style={{ minWidth: "100px", padding: "5px 10px" }}
-                onClick={() => {
-                  setIsCreateCollege(true);
-                }}
+                onClick={handleOpenCollegeDialog}
                 disabled={loading || error}
               >
                 CREATE COLLEGE
@@ -392,9 +387,9 @@ function Colleges() {
           </div>
         </div>
       )}
-      {isCreateCollege && <CollegeForm closeDialog= {closeIsCollegeDialog}/>}
+      {isCreateCollege && <CollegeFormDialog openDialog= {handleOpenCollegeDialog} closeDialog= {handleCloseCollegeDialog}/>}
       {isEditCollege && (
-        <CollegeForm closeDialog= {closeIsCollegeDialog}/>
+        <CollegeFormDialog closeDialog= {handleCloseCollegeDialog}/>
       )}
 
       <ToastContainer

@@ -20,6 +20,7 @@ import Majors from "./components/Majors.jsx";
 import Programs from "./components/Programs.jsx";
 import Colleges from "./components/Colleges.jsx";
 import PageNotFound from './components/PageNotFound.jsx';
+
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 

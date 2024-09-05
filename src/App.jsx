@@ -1,9 +1,11 @@
 import './App.css';
 import { useEffect, useRef } from 'react';
+
 import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react'; 
-import { loginRequest } from './authentication/auth';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { loginRequest } from './authentication/auth';
 import { jwtDecode } from "jwt-decode";
+
 import AdminDashboard from './components/AdminDashboard';
 // import StudentDashboard from './components/StudentDashboard';
 import '@mantine/core/styles.css';
