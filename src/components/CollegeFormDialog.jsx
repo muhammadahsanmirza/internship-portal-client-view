@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
   Dialog,
@@ -13,41 +12,103 @@ import {
   InputLabel,
   Select,
   Button,
+  Portal,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
+import axiosInstance from "../interceptors/axiosInstance";
+import ConfirmationDialog from "./ConfirmDialog";
 // Custom theme for Material UI
 const theme = createTheme({
   palette: {
-    primary: {
-      main: "#1E3A8A", // Tailwind's blue-950 for the header
-    },
-    success: {
-      main: "#16A34A", // Tailwind's green-600 for the submit button
-    },
-    text: {
-      primary: "#9CA3AF", // Tailwind's gray-400 for form labels
-    },
+    primary: { main: "#172554" }, // Tailwind's blue-950 for the header
+    success: { main: "#059669" }, // Tailwind's green-600 for the submit button
+    text: { primary: "#374151" }, // Tailwind's gray-400 for form labels
   },
 });
 
-const CollegeFormDialog = ({ openDialog, closeDialog }) => {
+const CollegeFormDialog = ({
+  headerText,
+  openDialog,
+  closeDialog,
+  onCollegeUpdate,
+  editMode = false,
+  id = null,
+  status = null,
+  college_name = null,
+  admins = null,
+}) => {
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      collegeName: "",
-      status: "",
+      name: college_name || "",
+      status:
+        ((status === true || status === false) &&
+          (status ? "active" : "inactive")) ||
+        "",
+      admin: "",
     },
   });
+  // Snackbar state for success and error messages
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+  const [users,setUsers] = useState([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+
+  const handleOpenConfirmDialog = () => {
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+  };
+  useEffect(() => {
+    if (editMode) {
+      axiosInstance.get('/user/names')
+      .then((res)=>{
+        console.log(res.data.data)
+        setUsers(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    }
+  }, [editMode]);
+  
   const onSubmit = (data) => {
-    console.log(data);
-    // Handle form submission logic here
-    closeDialog(); // Close the dialog after submission
+    data.status = data.status === "active";
+
+    axiosInstance
+      .post("/college", data)
+      .then((res) => {
+        setSnackbarMessage(res.statusText || "College created successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+        console.log("College created successfully", res);
+      })
+      .catch((err) => {
+        setSnackbarMessage("Error creating college");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+        console.log("Error creating college", err.message);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          onCollegeUpdate();
+          closeDialog();
+        }, 1000);
+      });
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -56,19 +117,13 @@ const CollegeFormDialog = ({ openDialog, closeDialog }) => {
         open={openDialog}
         onClose={closeDialog}
         fullWidth
-        PaperProps={{
-          style: {
-            // backgroundColor: '#1E3A8A', //  Tailwind's blue-950 for the dialog background
-            backgroundColor: "white", //  Tailwind's blue-950 for the dialog background
-            color: "white",
-          },
-        }}
+        PaperProps={{ style: { backgroundColor: "white", color: "black" } }}
         sx={{ backdropFilter: "blur(5px)" }} // Apply blur effect to the background
       >
         {/* Dialog Header */}
         <DialogTitle style={{ backgroundColor: "#172554", color: "white" }}>
           <div className="flex justify-between items-center">
-            <span>Create College</span>
+            <span>{headerText}</span>
             <IconButton onClick={closeDialog} style={{ color: "white" }}>
               <CloseIcon />
             </IconButton>
@@ -83,9 +138,16 @@ const CollegeFormDialog = ({ openDialog, closeDialog }) => {
           >
             {/* College Name Input */}
             <Controller
-              name="collegeName"
+              name="name"
               control={control}
-              rules={{ required: "College Name is required" }}
+              rules={{
+                required: "College Name is required",
+                pattern: {
+                  value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
+                  message:
+                    "College Name cannot be only numbers or special characters",
+                },
+              }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -104,17 +166,14 @@ const CollegeFormDialog = ({ openDialog, closeDialog }) => {
                 />
               )}
             />
-
             {/* Status Dropdown */}
             <FormControl fullWidth margin="normal" error={!!errors.status}>
               <InputLabel id="status-label" sx={{ color: "#44403c" }}>
                 Status
-              </InputLabel>{" "}
-              {/* Label in gray-400 */}
+              </InputLabel>
               <Controller
                 name="status"
                 control={control}
-                rules={{ required: "Status is required" }}
                 render={({ field }) => (
                   <Select
                     {...field}
@@ -122,19 +181,17 @@ const CollegeFormDialog = ({ openDialog, closeDialog }) => {
                     id="status-select"
                     label="Status"
                     sx={{
-                      color: "#44403c", // Change text color to white
-                      "& .MuiSvgIcon-root": { color: "#44403c" }, // Change dropdown arrow color to white
+                      color: "#44403c",
+                      "& .MuiSvgIcon-root": { color: "#44403c" },
                     }}
                   >
                     <MenuItem value="">
                       <em>Select Status</em>
                     </MenuItem>
                     <MenuItem value="active" sx={{ color: "#44403c" }}>
-                      {/* Change text color to #44403c */}
                       Active
                     </MenuItem>
                     <MenuItem value="inactive" sx={{ color: "#44403c" }}>
-                      {/* Change text color to #44403c */}
                       Inactive
                     </MenuItem>
                   </Select>
@@ -144,21 +201,93 @@ const CollegeFormDialog = ({ openDialog, closeDialog }) => {
                 <p style={{ color: "red" }}>{errors.status.message}</p>
               )}
             </FormControl>
+            {/* Admins Dropdown */}
+            {editMode && (
+              <div>
+                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
+                  Admins:
+                </InputLabel>
+              </div>
+            )}
+            {editMode && (
+              <FormControl fullWidth margin="normal" error={!!errors.status}>
+                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
+                  Admin
+                </InputLabel>
+                <Controller
+                  name="admin"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      labelId="admin-label"
+                      id="admin-select"
+                      value=""
+                      label="admin"
+                      sx={{
+                        color: "#44403c",
+                        "& .MuiSvgIcon-root": { color: "#44403c" },
+                      }}
+                      onChange={handleOpenConfirmDialog}
+                    >
+                      <MenuItem value="">
+                        <em>Select Admin</em>
+                      </MenuItem>
+                      {users.map((user) => (
+                        <MenuItem
+                          key={user.id}
+                          value={user.id}
+                          sx={{ color: "#44403c" }}
+
+                        >
+                          {user.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                {errors.status && (
+                  <p style={{ color: "red" }}>{errors.status.message}</p>
+                )}
+              </FormControl>
+            )}
           </form>
         </DialogContent>
 
         {/* Dialog Actions */}
-        <DialogActions>
+        <DialogActions sx={{ borderTop: "1px solid #ccc" }}>
           <Button
             type="submit"
             variant="contained"
             color="success"
             onClick={handleSubmit(onSubmit)}
           >
-            Create College
+            {headerText}
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Portal>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          sx={{ zIndex: 9999 }} // You can still add a high z-index
+        >
+          <Alert
+            onClose={handleSnackbarClose}
+            severity={snackbarSeverity}
+            sx={{ width: "100%" }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Portal>
+      {editMode && openConfirmDialog &&(
+        <ConfirmationDialog openConfirmDialog={handleOpenConfirmDialog} closeConfirmDialog={handleCloseConfirmDialog}/>
+
+      )}
     </ThemeProvider>
   );
 };

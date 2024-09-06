@@ -18,6 +18,7 @@ function Colleges() {
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
+  const [college, setcollege] = useState(null);
   const [collegeId, setcollegeId] = useState(null);
   const [isCreateCollege, setIsCreateCollege] = useState(false)
   const [isEditCollege, setIsEditCollege] = useState(false);
@@ -109,6 +110,9 @@ function Colleges() {
   // To Close Edit College Dialog
   const handleOpenCollegeDialog = () => setIsCreateCollege(true);
   const handleCloseCollegeDialog = () => setIsCreateCollege(false);
+  
+  const handleOpenEditCollegeDialog = () => setIsEditCollege(true);
+  const handleCloseEditCollegeDialog = () => setIsEditCollege(false);
   useEffect(() => {
     fetchColleges();
     return () => {
@@ -255,7 +259,8 @@ function Colleges() {
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
                             //   setSelectedOpportunity(opportunity);
-                              setIsEditCollege(true);
+                            handleOpenEditCollegeDialog()
+                              setcollege(college);
                             }}
                           >
                             Edit
@@ -387,9 +392,9 @@ function Colleges() {
           </div>
         </div>
       )}
-      {isCreateCollege && <CollegeFormDialog openDialog= {handleOpenCollegeDialog} closeDialog= {handleCloseCollegeDialog}/>}
+      {isCreateCollege && <CollegeFormDialog headerText = {"Create College"} openDialog= {handleOpenCollegeDialog} closeDialog= {handleCloseCollegeDialog} onCollegeUpdate={fetchColleges}/>}
       {isEditCollege && (
-        <CollegeFormDialog closeDialog= {handleCloseCollegeDialog}/>
+        <CollegeFormDialog headerText = {"Update College"} openDialog= {handleOpenEditCollegeDialog} closeDialog= {handleCloseEditCollegeDialog} onCollegeUpdate={fetchColleges} editMode={true} {...college} />
       )}
 
       <ToastContainer
