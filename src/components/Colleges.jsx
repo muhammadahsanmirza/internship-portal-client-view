@@ -10,7 +10,6 @@ import Header from "./Header";
 import CollegeFormDialog from "./CollegeFormDialog";
 import axiosInstance from "../interceptors/axiosInstance";
 
-
 function Colleges() {
   const [data, setData] = useState([]);
   const [totalColleges, setTotalColleges] = useState(0);
@@ -20,13 +19,12 @@ function Colleges() {
   const [totalPages, setTotalPages] = useState(0);
   const [college, setcollege] = useState(null);
   const [collegeId, setcollegeId] = useState(null);
-  const [isCreateCollege, setIsCreateCollege] = useState(false)
+  const [isCreateCollege, setIsCreateCollege] = useState(false);
   const [isEditCollege, setIsEditCollege] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
 
   const fetchColleges = useCallback(
     debounce(() => {
@@ -38,7 +36,7 @@ function Colleges() {
       axiosInstance
         .get(`/colleges`, { params: payload })
         .then((response) => {
-            console.log(response.data)
+          console.log(response.data);
           const newData = response.data.data;
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
@@ -66,12 +64,7 @@ function Colleges() {
           setNextPrevPage(null);
         });
     }, 800),
-    [
-        collegeSearch,
-      collegeId,
-      currentPage,
-      nextPrevPage,
-    ]
+    [collegeSearch, collegeId, currentPage, nextPrevPage]
   );
 
   const btnArray = useMemo(() => {
@@ -82,7 +75,7 @@ function Colleges() {
     return btnArray;
   }, [currentPage]);
 
-  // To Delete and Opportunity 
+  // To Delete and Opportunity
 
   const deleteCollege = (id) => {
     axiosInstance
@@ -93,9 +86,8 @@ function Colleges() {
         fetchColleges(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage =
-          err.response?.data || "Failed to delete College.";
-          console.log(errorMessage);
+        const errorMessage = err.response?.data || "Failed to delete College.";
+        console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -110,21 +102,17 @@ function Colleges() {
   // To Close Edit College Dialog
   const handleOpenCollegeDialog = () => setIsCreateCollege(true);
   const handleCloseCollegeDialog = () => setIsCreateCollege(false);
-  
-  const handleOpenEditCollegeDialog = () => setIsEditCollege(true);
   const handleCloseEditCollegeDialog = () => setIsEditCollege(false);
+  const handleUpdateCollege = (updatedCollege) => {
+    // Refetch the colleges to get the updated admin list
+    fetchColleges();
+  };
   useEffect(() => {
     fetchColleges();
     return () => {
       fetchColleges.cancel();
     };
-  }, [
-    collegeSearch,
-    collegeId,
-    fetchColleges,
-    currentPage,
-    nextPrevPage,
-  ]);
+  }, [collegeSearch, collegeId, fetchColleges, currentPage, nextPrevPage]);
 
   function handleClearFilter() {
     setCollegeSearch("");
@@ -134,7 +122,7 @@ function Colleges() {
   const breadcrumbs = [
     { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
     { title: "College", href: "#", isDisabled: true },
-];
+  ];
 
   return (
     <div className="w-full sm:mt-0 sm:ml-20 z-0">
@@ -210,14 +198,14 @@ function Colleges() {
                     >
                       #
                     </th>
-                    
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
                       Name
                     </th>
-        
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
@@ -238,7 +226,7 @@ function Colleges() {
                     <tr key={college.id}>
                       <td className="px-6 py-4 text-center align-middle">
                         {college.id}
-                      </td>                      
+                      </td>
                       <td className="px-6 py-4 text-center align-middle">
                         {college.college_name}
                       </td>
@@ -258,14 +246,13 @@ function Colleges() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                            //   setSelectedOpportunity(opportunity);
-                            handleOpenEditCollegeDialog()
+                              setIsEditCollege(true);
                               setcollege(college);
                             }}
                           >
                             Edit
                           </button>
-                          
+
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
@@ -284,9 +271,7 @@ function Colleges() {
             </div>
             <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
               <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">
-                  Total Colleges : {totalColleges}
-                </p>
+                <p className="mx-6">Total Colleges : {totalColleges}</p>
                 <p className="mx-6">Page No. {currentPage}</p>
               </div>
               <div>
@@ -392,9 +377,23 @@ function Colleges() {
           </div>
         </div>
       )}
-      {isCreateCollege && <CollegeFormDialog headerText = {"Create College"} openDialog= {handleOpenCollegeDialog} closeDialog= {handleCloseCollegeDialog} onCollegeUpdate={fetchColleges}/>}
+      {isCreateCollege && (
+        <CollegeFormDialog
+          headerText={"Create College"}
+          open={isCreateCollege}
+          close={() => handleCloseCollegeDialog()}
+          onCollegeUpdate={fetchColleges}
+        />
+      )}
       {isEditCollege && (
-        <CollegeFormDialog headerText = {"Update College"} openDialog= {handleOpenEditCollegeDialog} closeDialog= {handleCloseEditCollegeDialog} onCollegeUpdate={fetchColleges} editMode={true} {...college} />
+        <CollegeFormDialog
+          headerText={"Update College"}
+          open={isEditCollege}
+          close={() => handleCloseEditCollegeDialog()}
+          onCollegeUpdate={handleUpdateCollege}
+          editMode={true}
+          {...college}
+        />
       )}
 
       <ToastContainer

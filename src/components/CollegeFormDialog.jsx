@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -15,6 +16,7 @@ import {
   Portal,
   Snackbar,
   Alert,
+  Chip,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -31,8 +33,8 @@ const theme = createTheme({
 
 const CollegeFormDialog = ({
   headerText,
-  openDialog,
-  closeDialog,
+  open,
+  close,
   onCollegeUpdate,
   editMode = false,
   id = null,
@@ -59,7 +61,8 @@ const CollegeFormDialog = ({
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  const [users,setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [newAdminId, setNewAdminId] = useState("");
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const handleOpenConfirmDialog = () => {
@@ -69,42 +72,103 @@ const CollegeFormDialog = ({
   const handleCloseConfirmDialog = () => {
     setOpenConfirmDialog(false);
   };
-  useEffect(() => {
-    if (editMode) {
-      axiosInstance.get('/user/names')
-      .then((res)=>{
-        console.log(res.data.data)
-        setUsers(res.data.data);
+  const handleCreateAdmin = () => {
+    axiosInstance
+      .post(`/college/admin/${id}`, null, { params: { admin_id: newAdminId } })
+      .then((res) => {
+        console.log(res);
+        console.log("Admin created successfully");
+        setSnackbarMessage("Admin created successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      })
+      .catch((err) => {
+        console.log(err);
+        setSnackbarMessage("Error creating admin");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      });
+  };
+  const handleDeleteAdmin = (adminId) => {
+    axiosInstance
+      .delete(`/college/admin/${id}`, {
+        params: { admin_id: parseInt(adminId) },
+      })
+      .then((res) => {
+        console.log(res);
+        console.log("Admin deleted successfully");
+        setSnackbarMessage("Admin deleted successfully");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
       })
       .catch((err) => {
         console.log(err.message);
-      });
-    }
-  }, [editMode]);
-  
-  const onSubmit = (data) => {
-    data.status = data.status === "active";
-
-    axiosInstance
-      .post("/college", data)
-      .then((res) => {
-        setSnackbarMessage(res.statusText || "College created successfully");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-        console.log("College created successfully", res);
-      })
-      .catch((err) => {
-        setSnackbarMessage("Error creating college");
+        setSnackbarMessage("Error deleting admin");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
-        console.log("Error creating college", err.message);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          onCollegeUpdate();
-          closeDialog();
-        }, 1000);
       });
+  };
+  useEffect(() => {
+    if (editMode) {
+      axiosInstance
+        .get("/user/names")
+        .then((res) => {
+          console.log("users-->", res.data.data);
+          setUsers(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, [editMode]);
+
+  const onSubmit = (data) => {
+    data.status = data.status === "active";
+    if (!editMode) {
+      axiosInstance
+        .post("/college", data)
+        .then((res) => {
+          setSnackbarMessage(res.statusText || "College created successfully");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
+          console.log("College created successfully", res);
+        })
+        .catch((err) => {
+          setSnackbarMessage("Error creating college");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          console.log("Error creating college", err.message);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            onCollegeUpdate();
+            close();
+          }, 1000);
+        });
+    }
+    if (editMode) {
+      axiosInstance
+        .put(`/college/${id}`, data)
+        .then((res) => {
+          console.log('put -->',res)
+          setSnackbarMessage(res.statusText || "College updated successfully");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
+          console.log("College updated successfully", res);
+        })
+        .catch((err) => {
+          setSnackbarMessage("Error creating college");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+          console.log("Error creating college", err.message);
+        })
+        .finally(() => {
+          setTimeout(() => {
+            onCollegeUpdate();
+            close();
+          }, 1000);
+        });
+    }
   };
 
   const handleSnackbarClose = () => {
@@ -114,8 +178,8 @@ const CollegeFormDialog = ({
   return (
     <ThemeProvider theme={theme}>
       <Dialog
-        open={openDialog}
-        onClose={closeDialog}
+        open={open}
+        onClose={close}
         fullWidth
         PaperProps={{ style: { backgroundColor: "white", color: "black" } }}
         sx={{ backdropFilter: "blur(5px)" }} // Apply blur effect to the background
@@ -124,7 +188,7 @@ const CollegeFormDialog = ({
         <DialogTitle style={{ backgroundColor: "#172554", color: "white" }}>
           <div className="flex justify-between items-center">
             <span>{headerText}</span>
-            <IconButton onClick={closeDialog} style={{ color: "white" }}>
+            <IconButton onClick={close} style={{ color: "white" }}>
               <CloseIcon />
             </IconButton>
           </div>
@@ -160,6 +224,7 @@ const CollegeFormDialog = ({
                     errors.collegeName ? errors.collegeName.message : ""
                   }
                   sx={{
+                    color: "#44403c",
                     "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
                     "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
                   }}
@@ -201,14 +266,27 @@ const CollegeFormDialog = ({
                 <p style={{ color: "red" }}>{errors.status.message}</p>
               )}
             </FormControl>
-            {/* Admins Dropdown */}
+            {/* Admins List */}
             {editMode && (
               <div>
                 <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
                   Admins:
                 </InputLabel>
+                {admins.map((admin) => (
+                  <Chip
+                    key={admin.user_id}
+                    label={admin.user_name}
+                    size="medium"
+                    variant="outlined"
+                    color="info"
+                    onDelete={() => handleDeleteAdmin(admin.user_id)}
+                    // className="m-10"
+                    style={{ margin: "0.2em" }}
+                  />
+                ))}
               </div>
             )}
+            {/* Admins Dropdown */}
             {editMode && (
               <FormControl fullWidth margin="normal" error={!!errors.status}>
                 <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
@@ -222,13 +300,16 @@ const CollegeFormDialog = ({
                       {...field}
                       labelId="admin-label"
                       id="admin-select"
-                      value=""
+                      value={String(newAdminId)}
+                      onChange={(e) => {
+                        setNewAdminId(e.target.value);
+                        handleOpenConfirmDialog();
+                      }}
                       label="admin"
                       sx={{
                         color: "#44403c",
                         "& .MuiSvgIcon-root": { color: "#44403c" },
                       }}
-                      onChange={handleOpenConfirmDialog}
                     >
                       <MenuItem value="">
                         <em>Select Admin</em>
@@ -238,7 +319,6 @@ const CollegeFormDialog = ({
                           key={user.id}
                           value={user.id}
                           sx={{ color: "#44403c" }}
-
                         >
                           {user.name}
                         </MenuItem>
@@ -284,9 +364,15 @@ const CollegeFormDialog = ({
           </Alert>
         </Snackbar>
       </Portal>
-      {editMode && openConfirmDialog &&(
-        <ConfirmationDialog openConfirmDialog={handleOpenConfirmDialog} closeConfirmDialog={handleCloseConfirmDialog}/>
-
+      {editMode && openConfirmDialog && (
+        <ConfirmationDialog
+          modalTitle={"Do You want to add new Admin?"}
+          open={openConfirmDialog}
+          close={() => handleCloseConfirmDialog()}
+          confirmOperation={handleCreateAdmin}
+          pathId={id}
+          queryId={newAdminId}
+        />
       )}
     </ThemeProvider>
   );
