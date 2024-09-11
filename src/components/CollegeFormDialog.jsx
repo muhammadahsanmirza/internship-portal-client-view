@@ -40,7 +40,7 @@ const CollegeFormDialog = ({
   id = null,
   status = null,
   college_name = null,
-  admins = null,
+  admins = [],
 }) => {
   const {
     handleSubmit,
@@ -53,7 +53,7 @@ const CollegeFormDialog = ({
         ((status === true || status === false) &&
           (status ? "active" : "inactive")) ||
         "",
-      admin: "",
+      admin: [],
     },
   });
   // Snackbar state for success and error messages

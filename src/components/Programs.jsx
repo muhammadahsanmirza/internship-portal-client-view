@@ -41,22 +41,22 @@ function Programs() {
       };
       axiosInstance
         .get(`/programs`, { params: payload })
-        .then((response) => {
-          const newData = response.data.data;
+        .then((res) => {
+          const newData = res.data.data;
 
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalPrograms(response.data.total_records);
-            setCurrentPage(response.data.current_page);
+            setTotalPrograms(res.data.total_records);
+            setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
-            setTotalPages(response.data.total_pages);
+            setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
             setTotalPrograms(0);
             setCurrentPage(1);
             setTotalPages(1);
-            setError(response.data.message || "No opportunities found");
+            setError(res.data.message || "No opportunities found");
           }
 
           setError(null);
@@ -297,7 +297,8 @@ function Programs() {
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
                               setProgram(program);
-
+                              setIsEditProgram(true);
+                              console.log(program);
                             }}
                           >
                             Edit
@@ -434,7 +435,7 @@ function Programs() {
           headerText={"Create Program"}
           open={isCreateProgram}
           close={() => handleCloseProgramDialog()}
-          onCollegeUpdate={fetchPrograms}
+          onProgramUpdate={fetchPrograms}
         />
       )}
       {isEditProgram && (
@@ -442,7 +443,7 @@ function Programs() {
           headerText={"Update Program"}
           open={isEditProgram}
           close={() => handleCloseEditProgramDialog()}
-          onCollegeUpdate={fetchPrograms}
+          onProgramUpdate={fetchPrograms}
           editMode={true}
           {...program}
         />

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
+  Grid,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -35,12 +36,15 @@ const ProgramFormDialog = ({
   headerText,
   open,
   close,
-  onCollegeUpdate,
+  onProgramUpdate,
   editMode = false,
   id = null,
+  program_name = null,
   status = null,
-  college_name = null,
-  admins = null,
+  description = "",
+  coordinators = [],
+  college_id=null,
+  college_name=null,
 }) => {
   const {
     handleSubmit,
@@ -48,12 +52,14 @@ const ProgramFormDialog = ({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: college_name || "",
+      name: program_name || "",
       status:
         ((status === true || status === false) &&
           (status ? "active" : "inactive")) ||
         "",
-      admin: "",
+      college_id: college_id || "",
+      description: description ||"",
+      coordinator: coordinators || [],
     },
   });
   // Snackbar state for success and error messages
@@ -61,8 +67,9 @@ const ProgramFormDialog = ({
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+  const [colleges, setColleges] = useState([]);
   const [users, setUsers] = useState([]);
-  const [newAdminId, setNewAdminId] = useState("");
+  const [newCoordinatorId, setNewCoordinatorId] = useState("");
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const handleOpenConfirmDialog = () => {
@@ -72,57 +79,66 @@ const ProgramFormDialog = ({
   const handleCloseConfirmDialog = () => {
     setOpenConfirmDialog(false);
   };
-  const handleCreateAdmin = () => {
+  const handleCreateCoordinator = () => {
     axiosInstance
-      .post(`/college/admin/${id}`, null, { params: { admin_id: newAdminId } })
+      .post(`/program/coordinators/${id}`, null, { params: { coordinator_id: newCoordinatorId } })
       .then((res) => {
         console.log(res);
-        console.log("Admin created successfully");
-        setSnackbarMessage("Admin created successfully");
+        console.log("Coordinator created successfully");
+        setSnackbarMessage("Coordinator created successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
       })
       .catch((err) => {
         console.log(err);
-        setSnackbarMessage("Error creating admin");
+        setSnackbarMessage("Error creating Coordinator");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       })
       .finally(() => {
         handleCloseConfirmDialog();
-        onCollegeUpdate();
-        setTimeout(()=>{
-         close();
-       },800)        
+        onProgramUpdate();
+        setTimeout(() => {
+          close();
+        }, 800);
       });
   };
-  const handleDeleteAdmin = (adminId) => {
+  const handleDeleteCoordinator = (coordinatorId) => {
     axiosInstance
-      .delete(`/college/admin/${id}`, {
-        params: { admin_id: parseInt(adminId) },
+      .delete(`/program/coordinator/${id}`, {
+        params: { coordinator_id: parseInt(coordinatorId) },
       })
       .then((res) => {
         console.log(res);
-        console.log("Admin deleted successfully");
-        setSnackbarMessage("Admin deleted successfully");
+        console.log("Coordinator deleted successfully");
+        setSnackbarMessage("Coordinator deleted successfully");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
       })
       .catch((err) => {
         console.log(err.message);
-        setSnackbarMessage("Error deleting admin");
+        setSnackbarMessage("Error deleting Coordinator");
         setSnackbarSeverity("error");
         setSnackbarOpen(true);
       })
       .finally(() => {
         handleCloseConfirmDialog();
-        onCollegeUpdate();
-        setTimeout(()=>{
-         close();
-       },800)        
+        onProgramUpdate();
+        setTimeout(() => {
+          close();
+        }, 800);
       });
   };
   useEffect(() => {
+    axiosInstance
+      .get("/college/names")
+      .then((res) => {
+        console.log("colleges-->", res.data.data);
+        setColleges(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
     if (editMode) {
       axiosInstance
         .get("/user/names")
@@ -138,49 +154,52 @@ const ProgramFormDialog = ({
 
   const onSubmit = (data) => {
     data.status = data.status === "active";
+    console.log(data)
     if (!editMode) {
       axiosInstance
-        .post("/college", data)
+        .post("/program", data)
         .then((res) => {
-          setSnackbarMessage(res.statusText || "College created successfully");
+          setSnackbarMessage(res.data.message || "Program created successfully");
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
-          console.log("College created successfully", res);
+          console.log("Program created successfully", res);
         })
         .catch((err) => {
           setSnackbarMessage("Error creating college");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
-          console.log("Error creating college", err.message);
+          console.log("Error creating Program", err.message);
         })
         .finally(() => {
           setTimeout(() => {
-            onCollegeUpdate();
+            onProgramUpdate();
             close();
-          }, 1000);
+          }, 800);
         });
     }
     if (editMode) {
+      data.college_id = id;
+      console.log('Put Data-->',data)
       axiosInstance
-        .put(`/college/${id}`, data)
+        .put(`/program/${id}`, data)
         .then((res) => {
-          console.log('put -->',res)
+          console.log("put -->", res);
           setSnackbarMessage(res.statusText || "College updated successfully");
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
           console.log("College updated successfully", res);
         })
         .catch((err) => {
-          setSnackbarMessage("Error creating college");
+          setSnackbarMessage("Error Updating Program");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
-          console.log("Error creating college", err.message);
+          console.log("Error Updating Program", err.message);
         })
         .finally(() => {
           setTimeout(() => {
-            onCollegeUpdate();
+            onProgramUpdate();
             close();
-          }, 1000);
+          }, 800);
         });
     }
   };
@@ -212,121 +231,192 @@ const ProgramFormDialog = ({
         <DialogContent>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            style={{ backgroundColor: "white" }}
+            style={{ backgroundColor: "white", marginTop: "20px" }}
           >
-            {/* College Name Input */}
-            <Controller
-              name="name"
-              control={control}
-              rules={{
-                required: "College Name is required",
-                pattern: {
-                  value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
-                  message:
-                    "College Name cannot be only numbers or special characters",
-                },
-              }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="College Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={!!errors.collegeName}
-                  helperText={
-                    errors.collegeName ? errors.collegeName.message : ""
-                  }
-                  sx={{
-                    color: "#44403c",
-                    "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
-                    "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
+            <Grid container spacing={2}>
+              {/* Program Name Input */}
+              <Grid item xs={12} sm={6}>
+                <Controller
+                  name="name"
+                  control={control}
+                  rules={{
+                    required: "Program Name is required",
+                    pattern: {
+                      value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
+                      message:
+                        "Program Name cannot be only numbers or special characters",
+                    },
                   }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Program Name"
+                      variant="outlined"
+                      fullWidth
+                      error={!!errors.collegeName}
+                      helperText={
+                        errors.collegeName ? errors.collegeName.message : ""
+                      }
+                      sx={{
+                        color: "#44403c",
+                        "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
+                        "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
+                      }}
+                    />
+                  )}
                 />
+              </Grid>
+
+              {/* College Dropdown */}
+              {!editMode && (
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth error={!!errors.status}>
+                    <InputLabel id="status-label" sx={{ color: "#44403c" }}>
+                      College Name
+                    </InputLabel>
+                    <Controller
+                      name="college_id"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          {...field}
+                          labelId="college-name-label"
+                          id="college-name-select"
+                          label="College Name"
+                          sx={{
+                            color: "#44403c",
+                            "& .MuiSvgIcon-root": { color: "#44403c" },
+                          }}
+                        >
+                          <MenuItem value="">
+                            <em>College Name</em>
+                          </MenuItem>
+                          {colleges.map((college) => (
+                            <MenuItem
+                              key={college.id}
+                              value={college.id}
+                              sx={{ color: "#44403c" }}
+                            >
+                              {college.name}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
               )}
-            />
-            {/* Status Dropdown */}
-            <FormControl fullWidth margin="normal" error={!!errors.status}>
-              <InputLabel id="status-label" sx={{ color: "#44403c" }}>
-                Status
-              </InputLabel>
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    labelId="status-label"
-                    id="status-select"
-                    label="Status"
-                    sx={{
-                      color: "#44403c",
-                      "& .MuiSvgIcon-root": { color: "#44403c" },
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Status</em>
-                    </MenuItem>
-                    <MenuItem value="active" sx={{ color: "#44403c" }}>
-                      Active
-                    </MenuItem>
-                    <MenuItem value="inactive" sx={{ color: "#44403c" }}>
-                      Inactive
-                    </MenuItem>
-                  </Select>
-                )}
-              />
-              {errors.status && (
-                <p style={{ color: "red" }}>{errors.status.message}</p>
-              )}
-            </FormControl>
-            {/* Admins List */}
+              {/* Status Dropdown */}
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errors.status}>
+                  <InputLabel id="status-label" sx={{ color: "#44403c" }}>
+                    Status
+                  </InputLabel>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        labelId="status-label"
+                        id="status-select"
+                        label="Status"
+                        sx={{
+                          color: "#44403c",
+                          "& .MuiSvgIcon-root": { color: "#44403c" },
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Select Status</em>
+                        </MenuItem>
+                        <MenuItem value="active" sx={{ color: "#44403c" }}>
+                          Active
+                        </MenuItem>
+                        <MenuItem value="inactive" sx={{ color: "#44403c" }}>
+                          Inactive
+                        </MenuItem>
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+
+              {/* Full-Width Description Field */}
+              <Grid item xs={12}>
+                <Controller
+                  name="description"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      name="description"
+                      label="Description"
+                      multiline
+                      rows={2}
+                      variant="outlined"
+                      fullWidth
+                      error={!!errors.collegeName}
+                      helperText={
+                        errors.collegeName ? errors.collegeName.message : ""
+                      }
+                      sx={{
+                        color: "#44403c",
+                        "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
+                        "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+
+            {/* Coordinator List (conditionally rendered) */}
             {editMode && (
               <div>
-                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
-                  Admins:
+                <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
+                Coordinators:
                 </InputLabel>
-                {admins.map((admin) => (
+                {coordinators.map((coordinator) => (
                   <Chip
-                    key={admin.user_id}
-                    label={admin.user_name}
+                    key={coordinator.user_id}
+                    label={coordinator.user_name}
                     size="medium"
                     variant="outlined"
                     color="info"
-                    onDelete={() => handleDeleteAdmin(admin.user_id)}
-                    // className="m-10"
+                    onDelete={() => handleDeleteCoordinator(coordinator.user_id)}
                     style={{ margin: "0.2em" }}
                   />
                 ))}
               </div>
             )}
-            {/* Admins Dropdown */}
+
+            {/* Coordinator Dropdown */}
             {editMode && (
               <FormControl fullWidth margin="normal" error={!!errors.status}>
-                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
-                  Admin
+                <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
+                Coordinator
                 </InputLabel>
                 <Controller
-                  name="admin"
+                  name="coordinator"
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      labelId="admin-label"
-                      id="admin-select"
-                      value={String(newAdminId)}
+                      labelId="coordinator-label"
+                      id="coordinator-select"
+                      value={String(newCoordinatorId)}
                       onChange={(e) => {
-                        setNewAdminId(e.target.value);
+                        setNewCoordinatorId(e.target.value);
                         handleOpenConfirmDialog();
                       }}
-                      label="admin"
+                      label="coordinator"
                       sx={{
                         color: "#44403c",
                         "& .MuiSvgIcon-root": { color: "#44403c" },
                       }}
                     >
                       <MenuItem value="">
-                        <em>Select Admin</em>
+                        <em>Select Coordinator</em>
                       </MenuItem>
                       {users.map((user) => (
                         <MenuItem
@@ -340,9 +430,6 @@ const ProgramFormDialog = ({
                     </Select>
                   )}
                 />
-                {errors.status && (
-                  <p style={{ color: "red" }}>{errors.status.message}</p>
-                )}
               </FormControl>
             )}
           </form>
@@ -380,12 +467,12 @@ const ProgramFormDialog = ({
       </Portal>
       {editMode && openConfirmDialog && (
         <ConfirmationDialog
-          modalTitle={"Do You want to add new Admin?"}
+          modalTitle={"Do You want to add new Coordinator?"}
           open={openConfirmDialog}
           close={() => handleCloseConfirmDialog()}
-          confirmOperation={handleCreateAdmin}
+          confirmOperation={handleCreateCoordinator}
           pathId={id}
-          queryId={newAdminId}
+          queryId={newCoordinatorId}
         />
       )}
     </ThemeProvider>
