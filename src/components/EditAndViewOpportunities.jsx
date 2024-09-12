@@ -12,7 +12,7 @@ import Header from "./Header";
 import ViewOpportunity from "./ViewOpportunity";
 import axiosInstance from "../interceptors/axiosInstance";
 import EditOpportunity from "./EditOpportunity";
-
+import Loader from "./Loader";
 const applicationStatus = [
   { id: 1, status: "Published", value: true },
   { id: 2, status: "Unpublished", value: false },
@@ -78,7 +78,7 @@ function EditAndViewOpportunities() {
         })
         .finally(() => {
           setLoading(false);
-          setNextPrevPage(null)
+          setNextPrevPage(null);
         });
     }, 800),
     [
@@ -97,7 +97,7 @@ function EditAndViewOpportunities() {
       btnArray.push(i);
     }
     return btnArray;
-  },[currentPage]);
+  }, [currentPage]);
 
   // To Delete and Opportunity
 
@@ -152,7 +152,6 @@ function EditAndViewOpportunities() {
       document.body.style.overflow = "auto";
     };
   }, [isEditOpportunity, isDialogOpen]);
-
 
   useEffect(() => {
     fetchOpportunities();
@@ -288,11 +287,7 @@ function EditAndViewOpportunities() {
             </button>
           </div>
         </div>
-        {loading && (
-          <p className="text-center mt-4 text-gray-500 font-bold text-xl">
-            Loading...
-          </p>
-        )}
+        {loading && <Loader />}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}

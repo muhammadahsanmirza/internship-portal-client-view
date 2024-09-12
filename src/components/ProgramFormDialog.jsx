@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import {
-  Grid,
+  Stack,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -43,8 +43,8 @@ const ProgramFormDialog = ({
   status = null,
   description = "",
   coordinators = [],
-  college_id=null,
-  college_name=null,
+  college_id = null,
+  college_name = null,
 }) => {
   const {
     handleSubmit,
@@ -58,7 +58,7 @@ const ProgramFormDialog = ({
           (status ? "active" : "inactive")) ||
         "",
       college_id: college_id || "",
-      description: description ||"",
+      description: description || "",
       coordinator: coordinators || [],
     },
   });
@@ -81,7 +81,9 @@ const ProgramFormDialog = ({
   };
   const handleCreateCoordinator = () => {
     axiosInstance
-      .post(`/program/coordinators/${id}`, null, { params: { coordinator_id: newCoordinatorId } })
+      .post(`/program/coordinators/${id}`, null, {
+        params: { coordinator_id: newCoordinatorId },
+      })
       .then((res) => {
         console.log(res);
         console.log("Coordinator created successfully");
@@ -154,12 +156,14 @@ const ProgramFormDialog = ({
 
   const onSubmit = (data) => {
     data.status = data.status === "active";
-    console.log(data)
+    console.log(data);
     if (!editMode) {
       axiosInstance
         .post("/program", data)
         .then((res) => {
-          setSnackbarMessage(res.data.message || "Program created successfully");
+          setSnackbarMessage(
+            res.data.message || "Program created successfully"
+          );
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
           console.log("Program created successfully", res);
@@ -179,7 +183,7 @@ const ProgramFormDialog = ({
     }
     if (editMode) {
       data.college_id = id;
-      console.log('Put Data-->',data)
+      console.log("Put Data-->", data);
       axiosInstance
         .put(`/program/${id}`, data)
         .then((res) => {
@@ -233,9 +237,9 @@ const ProgramFormDialog = ({
             onSubmit={handleSubmit(onSubmit)}
             style={{ backgroundColor: "white", marginTop: "20px" }}
           >
-            <Grid container spacing={2}>
+            <Stack spacing={2}>
               {/* Program Name Input */}
-              <Grid item xs={12} sm={6}>
+              <Stack direction="row" spacing={2}>
                 <Controller
                   name="name"
                   control={control}
@@ -259,55 +263,14 @@ const ProgramFormDialog = ({
                       }
                       sx={{
                         color: "#44403c",
-                        "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
-                        "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
+                        "& .MuiInputLabel-root": { color: "#9CA3AF" },
+                        "& .MuiOutlinedInput-root": { color: "#44403c" },
                       }}
                     />
                   )}
                 />
-              </Grid>
 
-              {/* College Dropdown */}
-              {!editMode && (
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth error={!!errors.status}>
-                    <InputLabel id="status-label" sx={{ color: "#44403c" }}>
-                      College Name
-                    </InputLabel>
-                    <Controller
-                      name="college_id"
-                      control={control}
-                      render={({ field }) => (
-                        <Select
-                          {...field}
-                          labelId="college-name-label"
-                          id="college-name-select"
-                          label="College Name"
-                          sx={{
-                            color: "#44403c",
-                            "& .MuiSvgIcon-root": { color: "#44403c" },
-                          }}
-                        >
-                          <MenuItem value="">
-                            <em>College Name</em>
-                          </MenuItem>
-                          {colleges.map((college) => (
-                            <MenuItem
-                              key={college.id}
-                              value={college.id}
-                              sx={{ color: "#44403c" }}
-                            >
-                              {college.name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      )}
-                    />
-                  </FormControl>
-                </Grid>
-              )}
-              {/* Status Dropdown */}
-              <Grid item xs={12} sm={6}>
+                {/* Status Dropdown */}
                 <FormControl fullWidth error={!!errors.status}>
                   <InputLabel id="status-label" sx={{ color: "#44403c" }}>
                     Status
@@ -339,99 +302,138 @@ const ProgramFormDialog = ({
                     )}
                   />
                 </FormControl>
-              </Grid>
+              </Stack>
+
+              {/* College  Dropdown */}
+              {!editMode && (
+                <FormControl fullWidth error={!!errors.status}>
+                  <InputLabel id="status-label" sx={{ color: "#44403c" }}>
+                    College Name
+                  </InputLabel>
+                  <Controller
+                    name="college_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        labelId="college-name-label"
+                        id="college-name-select"
+                        label="College Name"
+                        sx={{
+                          color: "#44403c",
+                          "& .MuiSvgIcon-root": { color: "#44403c" },
+                          width: "50%",
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>College Name</em>
+                        </MenuItem>
+                        {colleges.map((college) => (
+                          <MenuItem
+                            key={college.id}
+                            value={college.id}
+                            sx={{ color: "#44403c" }}
+                          >
+                            {college.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              )}
 
               {/* Full-Width Description Field */}
-              <Grid item xs={12}>
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      name="description"
-                      label="Description"
-                      multiline
-                      rows={2}
-                      variant="outlined"
-                      fullWidth
-                      error={!!errors.collegeName}
-                      helperText={
-                        errors.collegeName ? errors.collegeName.message : ""
-                      }
-                      sx={{
-                        color: "#44403c",
-                        "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
-                        "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
-                      }}
-                    />
-                  )}
-                />
-              </Grid>
-            </Grid>
-
-            {/* Coordinator List (conditionally rendered) */}
-            {editMode && (
-              <div>
-                <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
-                Coordinators:
-                </InputLabel>
-                {coordinators.map((coordinator) => (
-                  <Chip
-                    key={coordinator.user_id}
-                    label={coordinator.user_name}
-                    size="medium"
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    name="description"
+                    label="Description"
+                    multiline
+                    rows={2}
                     variant="outlined"
-                    color="info"
-                    onDelete={() => handleDeleteCoordinator(coordinator.user_id)}
-                    style={{ margin: "0.2em" }}
+                    fullWidth
+                    error={!!errors.collegeName}
+                    helperText={
+                      errors.collegeName ? errors.collegeName.message : ""
+                    }
+                    sx={{
+                      color: "#44403c",
+                      "& .MuiInputLabel-root": { color: "#9CA3AF" },
+                      "& .MuiOutlinedInput-root": { color: "#44403c" },
+                    }}
                   />
-                ))}
-              </div>
-            )}
+                )}
+              />
 
-            {/* Coordinator Dropdown */}
-            {editMode && (
-              <FormControl fullWidth margin="normal" error={!!errors.status}>
-                <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
-                Coordinator
-                </InputLabel>
-                <Controller
-                  name="coordinator"
-                  control={control}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      labelId="coordinator-label"
-                      id="coordinator-select"
-                      value={String(newCoordinatorId)}
-                      onChange={(e) => {
-                        setNewCoordinatorId(e.target.value);
-                        handleOpenConfirmDialog();
-                      }}
-                      label="coordinator"
-                      sx={{
-                        color: "#44403c",
-                        "& .MuiSvgIcon-root": { color: "#44403c" },
-                      }}
-                    >
-                      <MenuItem value="">
-                        <em>Select Coordinator</em>
-                      </MenuItem>
-                      {users.map((user) => (
-                        <MenuItem
-                          key={user.id}
-                          value={user.id}
-                          sx={{ color: "#44403c" }}
-                        >
-                          {user.name}
+              {/* Coordinator List (conditionally rendered) */}
+              {editMode && (
+                <div>
+                  <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
+                    Coordinators:
+                  </InputLabel>
+                  {coordinators.map((coordinator) => (
+                    <Chip
+                      key={coordinator.user_id}
+                      label={coordinator.user_name}
+                      size="medium"
+                      variant="outlined"
+                      color="info"
+                      onDelete={() =>
+                        handleDeleteCoordinator(coordinator.user_id)
+                      }
+                      style={{ margin: "0.2em" }}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Coordinator Dropdown */}
+              {editMode && (
+                <FormControl fullWidth error={!!errors.status}>
+                  <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
+                    Coordinator
+                  </InputLabel>
+                  <Controller
+                    name="coordinator"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        labelId="coordinator-label"
+                        id="coordinator-select"
+                        value={String(newCoordinatorId)}
+                        onChange={(e) => {
+                          setNewCoordinatorId(e.target.value);
+                          handleOpenConfirmDialog();
+                        }}
+                        label="coordinator"
+                        sx={{
+                          color: "#44403c",
+                          "& .MuiSvgIcon-root": { color: "#44403c" },
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Select Coordinator</em>
                         </MenuItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-              </FormControl>
-            )}
+                        {users.map((user) => (
+                          <MenuItem
+                            key={user.id}
+                            value={user.id}
+                            sx={{ color: "#44403c" }}
+                          >
+                            {user.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              )}
+            </Stack>
           </form>
         </DialogContent>
 
