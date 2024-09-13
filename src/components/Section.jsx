@@ -155,7 +155,7 @@ function Section() {
                         style={{ width: activeDetail ? '49%' : 'auto' }}
                     >
                         {data &&
-                            data.map((card) => (
+                            data?.map((card) => (
                                 <Card
                                     key={card.id}
                                     company_name={card.company_name}

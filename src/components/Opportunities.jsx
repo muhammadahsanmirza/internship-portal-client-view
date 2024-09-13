@@ -20,7 +20,7 @@ const applicationStatus = [
   { id: 2, status: "Unpublished", value: false },
 ];
 
-function EditAndViewOpportunities() {
+function Opportunities() {
   const [data, setData] = useState([]);
   const [totalOpportunities, setTotalOpportunities] = useState(0);
   const [opportunitySearch, setOpportunitySearch] = useState("");
@@ -441,7 +441,7 @@ function EditAndViewOpportunities() {
                 </button>
 
                 {btnArray.length > 0 &&
-                  btnArray.map((btnValue) => (
+                  btnArray?.map((btnValue) => (
                     <button
                       key={btnValue}
                       className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
@@ -510,4 +510,4 @@ function EditAndViewOpportunities() {
   );
 }
 
-export default EditAndViewOpportunities;
+export default Opportunities;

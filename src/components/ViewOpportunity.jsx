@@ -164,7 +164,7 @@ function ViewOpportunity({ opportunity, isOpen, onClose }) {
                     onChange={handleStudentSelection}
                   >
                       <option value=''>Select Student</option>
-                    {studentList.map((student) => (
+                    {studentList?.map((student) => (
                       <option key={student.id} value={student.id}>
                         {student.name}
                       </option>

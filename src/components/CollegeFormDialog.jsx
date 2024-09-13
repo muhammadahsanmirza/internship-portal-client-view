@@ -288,7 +288,7 @@ const CollegeFormDialog = ({
                 <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
                   Admins:
                 </InputLabel>
-                {admins.map((admin) => (
+                {admins?.map((admin) => (
                   <Chip
                     key={admin.user_id}
                     label={admin.user_name}
@@ -330,7 +330,7 @@ const CollegeFormDialog = ({
                       <MenuItem value="">
                         <em>Select Admin</em>
                       </MenuItem>
-                      {users.map((user) => (
+                      {users?.map((user) => (
                         <MenuItem
                           key={user.id}
                           value={user.id}

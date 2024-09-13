@@ -50,7 +50,7 @@ function StudentProfile() {
           setResumeId(profileData.resume_id);
           if (res.data.file) {
             const byteCharacters = atob(res.data.file);
-            const byteNumbers = Array.from(byteCharacters).map((char) =>
+            const byteNumbers = Array.from(byteCharacters)?.map((char) =>
               char.charCodeAt(0)
             );
             const byteArray = new Uint8Array(byteNumbers);

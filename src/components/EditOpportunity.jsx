@@ -357,7 +357,7 @@ function EditOpportunity(props) {
                       })}
                     >
                       <option value="">Select a program</option>
-                      {programs.map((program) => (
+                      {programs?.map((program) => (
                         <option
                           key={program.id}
                           value={program.id}
@@ -444,7 +444,7 @@ function EditOpportunity(props) {
                       })}
                     >
                       <option value="">Select Major</option>
-                      {majors.map((major) => (
+                      {majors?.map((major) => (
                         <option
                           key={major.id}
                           value={major.id}

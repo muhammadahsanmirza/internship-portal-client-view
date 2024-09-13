@@ -44,7 +44,7 @@ const ProgramFormDialog = ({
   description = "",
   coordinators = [],
   college_id = null,
-  college_name = null,
+  // college_name = null,
 }) => {
   const {
     handleSubmit,
@@ -327,7 +327,7 @@ const ProgramFormDialog = ({
                         <MenuItem value="">
                           <em>College Name</em>
                         </MenuItem>
-                        {colleges.map((college) => (
+                        {colleges?.map((college) => (
                           <MenuItem
                             key={college.id}
                             value={college.id}
@@ -379,7 +379,7 @@ const ProgramFormDialog = ({
                   <InputLabel id="coordinator-label" sx={{ color: "#44403c" }}>
                     Coordinators:
                   </InputLabel>
-                  {coordinators.map((coordinator) => (
+                  {coordinators?.map((coordinator) => (
                     <Chip
                       key={coordinator.user_id}
                       label={coordinator.user_name}
@@ -423,7 +423,7 @@ const ProgramFormDialog = ({
                         <MenuItem value="">
                           <em>Select Coordinator</em>
                         </MenuItem>
-                        {users.map((user) => (
+                        {users?.map((user) => (
                           <MenuItem
                             key={user.id}
                             value={user.id}

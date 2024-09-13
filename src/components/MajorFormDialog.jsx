@@ -257,7 +257,7 @@ const MajorFormDialog = ({
                       <MenuItem value="">
                         <em>Program Name</em>
                       </MenuItem>
-                      {programs.map((program) => (
+                      {programs?.map((program) => (
                         <MenuItem
                           key={program.id}
                           value={program.id}

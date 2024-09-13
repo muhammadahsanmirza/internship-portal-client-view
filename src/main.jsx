@@ -12,7 +12,7 @@ import { msalConfig } from './authentication/auth.js';
 import App from "./App.jsx";
 // import Section from "./components/Section.jsx";
 // import StudentProfile from "./components/StudentProfile.jsx";
-import EditAndViewOpportunities from "./components/EditAndViewOpportunities.jsx";
+import Opportunities from "./components/Opportunities.jsx";
 import OpportunityForm from "./components/OpportunityForm.jsx";
 import Applicants from "./components/Applicants.jsx";
 import Students from "./components/Students.jsx";
@@ -33,7 +33,7 @@ const router = createBrowserRouter(
       {/* Define admin routes */}
       <Route path='/admin/' element={<App />}>
         <Route index element={<Navigate to="opportunities" />} /> {/* Redirect to opportunities by default */}
-        <Route path='opportunities' element={<EditAndViewOpportunities />} />
+        <Route path='opportunities' element={<Opportunities />} />
         <Route path='create/opportunities' element={<OpportunityForm />} />
         <Route path='applicants' element={<Applicants />} />
         <Route path='students' element={<Students/>} />
