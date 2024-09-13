@@ -191,7 +191,7 @@ function EditAndViewOpportunities() {
   const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 sm:ml-20 z-0 overflow-x-hidden">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
