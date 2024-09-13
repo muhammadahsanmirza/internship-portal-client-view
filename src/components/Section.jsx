@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axiosInstance from '../interceptors/axiosInstance';
 import { IoIosSearch } from 'react-icons/io';
 import { RiCloseCircleLine } from 'react-icons/ri';

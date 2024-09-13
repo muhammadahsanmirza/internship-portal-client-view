@@ -9,9 +9,8 @@ import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
 import axiosInstance from "../interceptors/axiosInstance";
-import EditOpportunity from "./EditOpportunity";
-
-
+import MajorFormDialog from "./MajorFormDialog";
+import Loader from "./Loader";
 function Majors() {
   const [data, setData] = useState([]);
   const [totalMajors, setTotalMajors] = useState(0);
@@ -22,13 +21,18 @@ function Majors() {
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
   const [majorId, setMajorId] = useState(null);
-  const [isEditOpportunity, setIsEditOpportunity] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
+
+  const [major, setMajor] = useState(null);
+  const [isCreateMajor, setIsCreateMajor] = useState(false);
+  const [isEditMajor, setIsEditMajor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const navigate = useNavigate();
+  const handleOpenMajorDialog = () => setIsCreateMajor(true);
+  const handleCloseMajorDialog = () => setIsCreateMajor(false);
+  const handleCloseEditMajorDialog = () => setIsEditMajor(false);
 
   const fetchMajors = useCallback(
     debounce(() => {
@@ -40,23 +44,23 @@ function Majors() {
       };
       axiosInstance
         .get(`/majors`, { params: payload })
-        .then((response) => {
-            console.log(response)
-          const newData = response.data.data;
+        .then((res) => {
+            console.log("MAJORS===>",res)
+          const newData = res.data.data;
 
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalMajors(response.data.total_records);
-            setCurrentPage(response.data.current_page);
+            setTotalMajors(res.data.total_records);
+            setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
-            setTotalPages(response.data.total_pages);
+            setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
             setTotalMajors(0);
             setCurrentPage(1);
             setTotalPages(1);
-            setError(response.data.message || "No opportunities found");
+            setError(res.data.message || "No opportunities found");
           }
 
           setError(null);
@@ -111,10 +115,6 @@ function Majors() {
 
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
-  };
-  // To Close Edit Opportunity Dialog
-  const closeIsEditOpportunity = () => {
-    setIsEditOpportunity(false);
   };
 
  
@@ -208,9 +208,7 @@ function Majors() {
               <button
                 className=" text-xs"
                 style={{ minWidth: "100px", padding: "5px 10px" }}
-                onClick={() => {
-                  navigate("/admin/create/opportunities");
-                }}
+                onClick={handleOpenMajorDialog}
                 disabled={loading || error}
               >
                 CREATE MAJOR
@@ -218,11 +216,7 @@ function Majors() {
             </div>
           </div>
         </div>
-        {loading && (
-          <p className="text-center mt-4 text-gray-500 font-bold text-xl">
-            Loading...
-          </p>
-        )}
+        {loading && (<Loader/>)}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}
@@ -310,8 +304,9 @@ function Majors() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                            //   setSelectedOpportunity(opportunity);
-                              setIsEditOpportunity(true);
+                              setMajor(major);
+                              setIsEditMajor(true);
+                              console.log(major);
                             }}
                           >
                             Edit
@@ -443,11 +438,22 @@ function Majors() {
           </div>
         </div>
       )}
-      {isEditOpportunity && (
-        <EditOpportunity
-        //   {...selectedOpportunity}
-          onClose={closeIsEditOpportunity}
-          onOpportunityUpdate={fetchMajors}
+      {isCreateMajor && (
+        <MajorFormDialog
+          headerText={"Create Major"}
+          open={isCreateMajor}
+          close={() => handleCloseMajorDialog()}
+          onMajorUpdate={fetchMajors}
+        />
+      )}
+      {isEditMajor && (
+        <MajorFormDialog
+          headerText={"Update Major"}
+          open={isEditMajor}
+          close={() => handleCloseEditMajorDialog()}
+          onMajorUpdate={fetchMajors}
+          editMode={true}
+          {...major}
         />
       )}
 

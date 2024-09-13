@@ -257,10 +257,8 @@ const ProgramFormDialog = ({
                       label="Program Name"
                       variant="outlined"
                       fullWidth
-                      error={!!errors.collegeName}
-                      helperText={
-                        errors.collegeName ? errors.collegeName.message : ""
-                      }
+                      error={!!errors.name}
+                      helperText={errors.name ? errors.name.message : ""}
                       sx={{
                         color: "#44403c",
                         "& .MuiInputLabel-root": { color: "#9CA3AF" },
@@ -306,13 +304,14 @@ const ProgramFormDialog = ({
 
               {/* College  Dropdown */}
               {!editMode && (
-                <FormControl fullWidth error={!!errors.status}>
-                  <InputLabel id="status-label" sx={{ color: "#44403c" }}>
+                <FormControl fullWidth error={!!errors.college_id}>
+                  <InputLabel id="college-label" sx={{ color: "#44403c" }}>
                     College Name
                   </InputLabel>
                   <Controller
                     name="college_id"
                     control={control}
+                    rules={{ required: "College Name is required" }}
                     render={({ field }) => (
                       <Select
                         {...field}
@@ -340,6 +339,11 @@ const ProgramFormDialog = ({
                       </Select>
                     )}
                   />
+                  {errors.college_id && (
+                    <p style={{ color: "#d32f2f" }} className="mx-4 text-sm">
+                      {errors.college_id.message}
+                    </p>
+                  )}
                 </FormControl>
               )}
 

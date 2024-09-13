@@ -4,6 +4,7 @@ import { IoIosSearch } from "react-icons/io";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
 import axiosInstance from "../interceptors/axiosInstance";
+import Loader from "./Loader";
 
 
 function Students() {
@@ -201,11 +202,7 @@ function Students() {
             </button>
           </div>
         </div>
-        {loading && (
-          <p className="text-center mt-4 text-gray-500 font-bold text-xl">
-            Loading...
-          </p>
-        )}
+        {loading && (<Loader/>)}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}

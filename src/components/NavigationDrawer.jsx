@@ -1,5 +1,4 @@
-// NavigationDrawer.jsx
-import React from "react";
+/* eslint-disable react/prop-types */
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import { BsFillMortarboardFill } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";

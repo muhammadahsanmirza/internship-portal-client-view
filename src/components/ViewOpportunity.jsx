@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import parse from "html-react-parser";
 import { CiGlobe } from "react-icons/ci";
 import { RxCross2 } from "react-icons/rx";
@@ -7,7 +8,6 @@ import { GoClockFill } from "react-icons/go";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../interceptors/axiosInstance";
-import { BiErrorAlt } from "react-icons/bi";
 
 function ViewOpportunity({ opportunity, isOpen, onClose }) {
   const [studentList, setStudentList] = useState([]);
@@ -58,7 +58,7 @@ function ViewOpportunity({ opportunity, isOpen, onClose }) {
       })
       .catch((err) => {
         console.error("Error sending application:", err);
-        const message = res.data.message || 'Error Occured';
+        const message = err.data.message || 'Error Occured';
         toast.error(message, { transition: Slide });
       });
     

@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable react/prop-types */
 
 function Card({ company_name, name, program_name, start_date, end_date, detail }) {
     const calculateDaysAgo = (date) => {

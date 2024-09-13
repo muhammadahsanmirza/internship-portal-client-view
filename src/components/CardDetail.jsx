@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
 import parse from 'html-react-parser';
 import axiosInstance from '../interceptors/axiosInstance';
 import ResumeDialog from './ResumeDialog';

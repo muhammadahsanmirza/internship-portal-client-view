@@ -4,7 +4,7 @@ function PageNotFound() {
     return (
         <div className="flex flex-col items-center mx-auto justify-center h-screen w-full z-0">
             <h1 className="mb-4 text-6xl font-semibold text-red-500">404</h1>
-            <p className="mb-4 text-lg text-gray-600">Oops! Looks like you're lost.</p>
+            <p className="mb-4 text-lg text-gray-600">Oops! Looks like you are lost.</p>
             <div className="animate-bounce">
                 <svg
                     className="mx-auto h-16 w-16 text-red-500"

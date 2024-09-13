@@ -138,6 +138,7 @@ const CollegeFormDialog = ({
 
   const onSubmit = (data) => {
     data.status = data.status === "active";
+    console.log("data-->",data);
     if (!editMode) {
       axiosInstance
         .post("/college", data)
@@ -161,6 +162,7 @@ const CollegeFormDialog = ({
         });
     }
     if (editMode) {
+      console.log("put---->",data,id)
       axiosInstance
         .put(`/college/${id}`, data)
         .then((res) => {
@@ -233,9 +235,9 @@ const CollegeFormDialog = ({
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  error={!!errors.collegeName}
+                  error={!!errors.name}
                   helperText={
-                    errors.collegeName ? errors.collegeName.message : ""
+                    errors.name ? errors.name.message : ""
                   }
                   sx={{
                     color: "#44403c",
