@@ -2,8 +2,9 @@ import "./index.css";
 
 import ReactDOM from "react-dom/client";
 
-import { RouterProvider, Navigate } from "react-router-dom";
 import {
+  RouterProvider, 
+  Navigate,
   createBrowserRouter,
   createRoutesFromElements,
   Route,
@@ -13,7 +14,6 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authentication/auth.js";
 
-import { ErrorBoundary } from "react-error-boundary";
 import App from "./App.jsx";
 // import Section from "./components/Section.jsx";
 // import StudentProfile from "./components/StudentProfile.jsx";
@@ -25,8 +25,11 @@ import Majors from "./components/Majors.jsx";
 import Programs from "./components/Programs.jsx";
 import Colleges from "./components/Colleges.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
-
+import AdminDashboard from "./components/AdminDashboard.jsx";
 const msalInstance = new PublicClientApplication(msalConfig);
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core';
+
 msalInstance.initialize();
 
 const router = createBrowserRouter(
@@ -53,9 +56,9 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <ErrorBoundary fallback={<div>Something went wrong</div>}>
+  <MantineProvider>
     <MsalProvider instance={msalInstance}>
       <RouterProvider router={router} />
     </MsalProvider>
-  </ErrorBoundary>
+  </MantineProvider>
 );

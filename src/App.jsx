@@ -5,11 +5,13 @@ import { useMsal, MsalAuthenticationTemplate } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { loginRequest } from './authentication/auth';
 import { jwtDecode } from "jwt-decode";
+import { ErrorBoundary } from "react-error-boundary";
+
+import ErrorFallback from "./components/ErrorFallback"
 
 import AdminDashboard from './components/AdminDashboard';
 // import StudentDashboard from './components/StudentDashboard';
-import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+
 
 const MAX_RETRIES = 3; // Set a maximum retry limit
 
@@ -18,6 +20,7 @@ function App() {
   const refreshTokenTimeout = useRef(null);
   const retryCount = useRef(0); // Track retry attempts
 
+  
   useEffect(() => {
     const fetchToken = async () => {
       if (accounts.length > 0) {
@@ -91,11 +94,13 @@ function App() {
   };
 
   return (
-    <MantineProvider>
+  // <ErrorBoundary fallback={<div>Something went wrong.</div>} onReset={() => window.location.reload()}>
+  <ErrorBoundary fallback={<ErrorFallback />}>
       <MsalAuthenticationTemplate interactionType="redirect" authenticationRequest={loginRequest}>
         <AuthenticatedApp />
       </MsalAuthenticationTemplate>
-    </MantineProvider>
+  </ErrorBoundary>
+
   );
 }
 
