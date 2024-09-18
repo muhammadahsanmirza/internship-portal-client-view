@@ -25,11 +25,11 @@ import Majors from "./components/Majors.jsx";
 import Programs from "./components/Programs.jsx";
 import Colleges from "./components/Colleges.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
-import AdminDashboard from "./components/AdminDashboard.jsx";
-const msalInstance = new PublicClientApplication(msalConfig);
+// import AdminDashboard from "./components/AdminDashboard.jsx";
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 
+const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 
 const router = createBrowserRouter(

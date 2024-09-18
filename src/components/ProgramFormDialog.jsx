@@ -32,6 +32,8 @@ const theme = createTheme({
   },
 });
 
+//TODO: Clean Code---> Too many college_id unused props
+
 const ProgramFormDialog = ({
   headerText,
   open,
@@ -187,11 +189,11 @@ const ProgramFormDialog = ({
       axiosInstance
         .put(`/program/${id}`, data)
         .then((res) => {
-          console.log("put -->", res);
-          setSnackbarMessage(res.statusText || "College updated successfully");
+          console.log("Inside put edit request ==>", res);
+          setSnackbarMessage(res.statusText || "Program updated successfully");
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
-          console.log("College updated successfully", res);
+          console.log("Program updated successfully", res);
         })
         .catch((err) => {
           setSnackbarMessage("Error Updating Program");
