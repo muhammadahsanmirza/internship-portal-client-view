@@ -32,8 +32,6 @@ const theme = createTheme({
   },
 });
 
-//TODO: Clean Code---> Too many college_id unused props
-
 const ProgramFormDialog = ({
   headerText,
   open,
