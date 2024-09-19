@@ -165,9 +165,9 @@ const MajorFormDialog = ({
             onSubmit={handleSubmit(onSubmit)}
             style={{ backgroundColor: "white", marginTop: "20px" }}
           >
-            <Stack spacing={2}>
+
               {/* Major Name Input */}
-              <Stack direction="row" spacing={2}>
+              <Stack  spacing={2}>
                 <Controller
                   name="name"
                   control={control}
@@ -230,7 +230,7 @@ const MajorFormDialog = ({
                     )}
                   />
                 </FormControl>
-              </Stack>
+
 
               {/* Program  Dropdown */}
 
@@ -251,7 +251,6 @@ const MajorFormDialog = ({
                       sx={{
                         color: "#44403c",
                         "& .MuiSvgIcon-root": { color: "#44403c" },
-                        width: "50%",
                       }}
                     >
                       <MenuItem value="">

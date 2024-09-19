@@ -21,7 +21,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
 
     return (
         <div
-            className={`fixed top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
+            className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
                 }`}
         >
             <div className="flex flex-col h-full">

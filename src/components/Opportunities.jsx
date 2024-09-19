@@ -56,7 +56,7 @@ function Opportunities() {
         .get(`opportunities/admin`, { params: payload })
         .then((res) => {
           const newData = res.data.data;
-          console.log('Opportunities Response===>',res)
+          console.log("Opportunities Response===>", res);
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
@@ -192,16 +192,16 @@ function Opportunities() {
   const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0 overflow-x-hidden">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 overflow-x-hidden">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">
           Opportunities
         </p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col sm:flex-row md:flex-wrap lg:flex-nowrap gap-2 md:justify-around my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0">
+            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search opportunity name"
@@ -214,7 +214,7 @@ function Opportunities() {
                 <TbBulb className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:h-8 lg:mx-1 xl:w-52">
               <input
                 type="text"
                 placeholder="Search company name"
@@ -227,7 +227,7 @@ function Opportunities() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7 md:w-80 md:h-10 lg:w-44 lg:h-8 lg:mx-1 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={programId}
@@ -244,7 +244,7 @@ function Opportunities() {
                 ))}
               </select>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7 md:w-80 md:h-10 lg:w-44 lg:h-8 lg:mx-1 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={statusValue}
@@ -253,7 +253,7 @@ function Opportunities() {
                   const value = e.target.value;
                   setStatusValue(
                     value === "true" ? true : value === "false" ? false : ""
-                  ); // Convert to boolean
+                  );
                 }}
               >
                 <option value="">Select Status</option>
@@ -265,29 +265,33 @@ function Opportunities() {
               </select>
             </div>
           </div>
-          <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
-            <RxCrossCircled />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
-              disabled={loading || error}
-            >
-              CLEAR FILTERS
-            </button>
-          </div>
-          <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
-            <IoIosAddCircleOutline className="text-white" />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={() => {
-                navigate("/admin/create/opportunities");
-              }}
-              disabled={loading || error}
-            >
-              CREATE OPPORTUNITY
-            </button>
+
+          {/* Buttons */}
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-end  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+              <RxCrossCircled />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={handleClearFilter}
+                disabled={loading || error}
+              >
+                CLEAR FILTERS
+              </button>
+            </div>
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+              <IoIosAddCircleOutline className="text-white" />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={() => {
+                  navigate("/admin/create/opportunities");
+                }}
+                disabled={loading || error}
+              >
+                CREATE OPPORTUNITY
+              </button>
+            </div>
           </div>
         </div>
         {loading && <Loader />}
@@ -478,15 +482,13 @@ function Opportunities() {
           onClose={closeDialog}
         />
       )}
-      {confirmDialogOpen && (        
-      <DeleteDialog
-        title={"Opportunity"}
-        noCallback={closeConfirmDialog}
-        yesCallback={() => deleteOpportunity(programId)}
-
-      />
-      )
-      }
+      {confirmDialogOpen && (
+        <DeleteDialog
+          title={"Opportunity"}
+          noCallback={closeConfirmDialog}
+          yesCallback={() => deleteOpportunity(programId)}
+        />
+      )}
       {isEditOpportunity && (
         <EditOpportunity
           {...selectedOpportunity}

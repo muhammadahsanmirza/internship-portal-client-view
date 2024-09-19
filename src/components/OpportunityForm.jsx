@@ -115,7 +115,7 @@ function OpportunityForm() {
     }
   };
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-10 md:mt-0 lg:ml-20 lg:mt-0  z-0">
       <Header breadcrumbs={breadcrumbs} />
       <form
         className="rounded border mt-4 sm:mx-6 md:mx-auto md:my-10 md:max-w-5xl"

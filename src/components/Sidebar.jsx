@@ -4,12 +4,14 @@ import { CgProfile } from "react-icons/cg";
 import { MdViewHeadline } from "react-icons/md";
 // import NavigationDrawer from './NavigationDrawer';
 import AdminNavigationDrawer from './AdminNavigationDrawer';
+
+//TODO: Hamburger Stops Working on Small Screens --> FIXIT
 function Sidebar() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
-        console.log("Drawer Valu->", isDrawerOpen)
+        console.log("Button Clicked - Value->", isDrawerOpen)
     };
 
     return (
@@ -30,8 +32,8 @@ function Sidebar() {
             </div>
 
             {/* Sidebar for small screens */}
-            <div className="lg:hidden bg-white p-2 h-12 border-b-2 border-gray-300 fixed top-0 left-0 right-0" >
-            <button onClick={toggleDrawer}><MdViewHeadline className='text-3xl ml-6'/></button>
+            <div className="lg:hidden bg-white p-2 h-12 border-b-2 border-gray-300 fixed top-0 left-0 right-0 z-30" >
+            <button className=' text-center w-20 ' onClick={toggleDrawer}><MdViewHeadline className='text-3xl mx-auto'/></button>
                 
             </div>
 
