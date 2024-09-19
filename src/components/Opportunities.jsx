@@ -54,22 +54,22 @@ function Opportunities() {
       };
       axiosInstance
         .get(`opportunities/admin`, { params: payload })
-        .then((response) => {
-          const newData = response.data.data;
-
+        .then((res) => {
+          const newData = res.data.data;
+          console.log('Opportunities Response===>',res)
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalOpportunities(response.data.total_records);
-            setCurrentPage(response.data.current_page);
+            setTotalOpportunities(res.data.total_records);
+            setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
-            setTotalPages(response.data.total_pages);
+            setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
             setTotalOpportunities(0);
             setCurrentPage(1);
             setTotalPages(1);
-            setError(response.data.message || "No opportunities found");
+            setError(res.data.message || "No opportunities found");
           }
 
           setError(null);
@@ -174,6 +174,7 @@ function Opportunities() {
     axiosInstance
       .get("/program/names")
       .then((res) => {
+        console.log("Proram Names===>", res);
         setPrograms(res.data.data);
       })
       .catch((error) => {
