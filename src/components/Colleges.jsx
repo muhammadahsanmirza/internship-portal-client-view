@@ -104,7 +104,7 @@ function Colleges() {
   const handleOpenCollegeDialog = () => setIsCreateCollege(true);
   const handleCloseCollegeDialog = () => setIsCreateCollege(false);
   const handleCloseEditCollegeDialog = () => setIsEditCollege(false);
-  
+
   useEffect(() => {
     fetchColleges();
     return () => {
@@ -123,14 +123,14 @@ function Colleges() {
   ];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 overflow-x-hidden">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Colleges</p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap lg:gap-0 mx-2">
+          <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search college name"
@@ -144,8 +144,10 @@ function Colleges() {
               </button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
+
+          {/* Buttons */}
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -156,7 +158,7 @@ function Colleges() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
@@ -169,7 +171,7 @@ function Colleges() {
             </div>
           </div>
         </div>
-        {loading && (<Loader/>)}
+        {loading && <Loader />}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}
@@ -263,14 +265,14 @@ function Colleges() {
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
-              <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">Total Colleges : {totalColleges}</p>
-                <p className="mx-6">Page No. {currentPage}</p>
+            <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+                <p className=" mx-0 md:mx-6">Total Colleges : {totalColleges}</p>
+                <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
               </div>
               <div>
                 <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="py-1 md:py-2 px-1 md:px-4 text-center hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === 1}
                   onClick={() => {
                     setNextPrevPage(currentPage - 1);
@@ -283,20 +285,20 @@ function Colleges() {
                   btnArray?.map((btnValue) => (
                     <button
                       key={btnValue}
-                      className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                       onClick={() => setCurrentPage(btnValue)}
                     >
                       <p className="">{btnValue}</p>
                     </button>
                   ))}
                 {currentPage > 3 && (
-                  <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                     ...
                   </button>
                 )}
 
                 <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === totalPages}
                   onClick={() => {
                     setNextPrevPage(currentPage + 1);
@@ -309,15 +311,13 @@ function Colleges() {
           </div>
         )}
       </div>
-      {confirmDialogOpen && (        
-      <DeleteDialog
-        title={"College"}
-        noCallback={closeConfirmDialog}
-        yesCallback={() => deleteCollege(collegeId)}
-
-      />
-      )
-      }
+      {confirmDialogOpen && (
+        <DeleteDialog
+          title={"College"}
+          noCallback={closeConfirmDialog}
+          yesCallback={() => deleteCollege(collegeId)}
+        />
+      )}
       {isCreateCollege && (
         <CollegeFormDialog
           headerText={"Create College"}

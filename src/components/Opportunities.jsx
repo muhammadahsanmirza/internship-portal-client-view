@@ -192,7 +192,7 @@ function Opportunities() {
   const breadcrumbs = [{ title: "Opportunities", href: "#", isDisabled: true }];
 
   return (
-    <div className="w-full sm:mt-0 lg:ml-20 z-0 overflow-x-hidden">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">

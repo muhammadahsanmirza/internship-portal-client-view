@@ -239,7 +239,7 @@ const ProgramFormDialog = ({
           >
             <Stack spacing={2}>
               {/* Program Name Input */}
-              <Stack direction="row" spacing={2}>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                 <Controller
                   name="name"
                   control={control}
@@ -304,7 +304,13 @@ const ProgramFormDialog = ({
 
               {/* College  Dropdown */}
               {!editMode && (
-                <FormControl fullWidth error={!!errors.college_id}>
+                <FormControl
+                  fullWidth
+                  error={!!errors.college_id}
+                  sx={{
+                    width: { xs: "100%", sm: "48.5%" }, // Full width on small screens, half width on tablet and larger screens
+                  }}
+                >
                   <InputLabel id="college-label" sx={{ color: "#44403c" }}>
                     College Name
                   </InputLabel>
@@ -321,7 +327,6 @@ const ProgramFormDialog = ({
                         sx={{
                           color: "#44403c",
                           "& .MuiSvgIcon-root": { color: "#44403c" },
-                          width: "50%",
                         }}
                       >
                         <MenuItem value="">

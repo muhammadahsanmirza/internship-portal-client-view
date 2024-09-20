@@ -32,6 +32,8 @@ function Programs() {
   const handleCloseProgramDialog = () => setIsCreateProgram(false);
   const handleCloseEditProgramDialog = () => setIsEditProgram(false);
 
+//TODO: Make Program Page Responsive for all screens , Program Form is responsive for all screens
+
   const fetchPrograms = useCallback(
     debounce(() => {
       setLoading(true);
@@ -71,12 +73,7 @@ function Programs() {
           setNextPrevPage(null);
         });
     }, 800),
-    [
-        programSearch,
-      collegeId,
-      currentPage,
-      nextPrevPage,
-    ]
+    [programSearch, collegeId, currentPage, nextPrevPage]
   );
 
   const btnArray = useMemo(() => {
@@ -98,9 +95,8 @@ function Programs() {
         fetchPrograms(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage =
-          err.response?.data || "Failed to delete program.";
-          console.log(errorMessage);
+        const errorMessage = err.response?.data || "Failed to delete program.";
+        console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -112,25 +108,19 @@ function Programs() {
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
   };
- 
+
   useEffect(() => {
     fetchPrograms();
     return () => {
-        fetchPrograms.cancel();
+      fetchPrograms.cancel();
     };
-  }, [
-    programSearch,
-    collegeId,
-    fetchPrograms,
-    currentPage,
-    nextPrevPage,
-  ]);
+  }, [programSearch, collegeId, fetchPrograms, currentPage, nextPrevPage]);
 
   useEffect(() => {
     axiosInstance
       .get("/college/names")
       .then((res) => {
-        console.log(res)
+        console.log(res);
         setColleges(res.data.data);
       })
       .catch((error) => {
@@ -146,17 +136,17 @@ function Programs() {
   const breadcrumbs = [
     { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
     { title: "Programs", href: "#", isDisabled: true },
-];
+  ];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Programs</p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 gap-2">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap gap-2  md:justify-evenly lg:flex-nowrap sm:gap-2 lg:gap-0 mx-2 my-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search program name"
@@ -169,13 +159,13 @@ function Programs() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={collegeId}
                 disabled={loading || error}
                 onChange={(e) => {
-                    setCollegeId(e.target.value);
+                  setCollegeId(e.target.value);
                 }}
               >
                 <option value="">Select College</option>
@@ -187,8 +177,8 @@ function Programs() {
               </select>
             </div>
           </div>
-          <div className="flex gap-2">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-end  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -199,7 +189,7 @@ function Programs() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
@@ -212,7 +202,7 @@ function Programs() {
             </div>
           </div>
         </div>
-        {loading && (<Loader/>)}
+        {loading && <Loader />}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}
@@ -241,14 +231,14 @@ function Programs() {
                     >
                       Name
                     </th>
-                    
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
                     >
                       College
                     </th>
-        
+
                     <th
                       scope="col"
                       className="px-6 py-3 text-center align-middle"
@@ -273,7 +263,7 @@ function Programs() {
                       <td className="px-6 py-4 text-center align-middle">
                         {program.program_name}
                       </td>
-                      
+
                       <td className="px-6 py-4 text-center align-middle">
                         {program.college_name}
                       </td>
@@ -300,11 +290,11 @@ function Programs() {
                           >
                             Edit
                           </button>
-                          
+
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                                setProgramId(program.id);
+                              setProgramId(program.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -319,9 +309,7 @@ function Programs() {
             </div>
             <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
               <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">
-                  Total Programs : {totalPrograms}
-                </p>
+                <p className="mx-6">Total Programs : {totalPrograms}</p>
                 <p className="mx-6">Page No. {currentPage}</p>
               </div>
               <div>
@@ -365,15 +353,13 @@ function Programs() {
           </div>
         )}
       </div>
-      {confirmDialogOpen && (        
-      <DeleteDialog
-        title={"Program"}
-        noCallback={closeConfirmDialog}
-        yesCallback={() => deleteProgram(programId)}
-
-      />
-      )
-      }
+      {confirmDialogOpen && (
+        <DeleteDialog
+          title={"Program"}
+          noCallback={closeConfirmDialog}
+          yesCallback={() => deleteProgram(programId)}
+        />
+      )}
       {isCreateProgram && (
         <ProgramFormDialog
           headerText={"Create Program"}
@@ -410,4 +396,3 @@ function Programs() {
 }
 
 export default Programs;
- 
