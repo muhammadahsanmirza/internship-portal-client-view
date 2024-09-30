@@ -24,7 +24,6 @@ function Majors() {
   const [majorId, setMajorId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-
   const [major, setMajor] = useState(null);
   const [isCreateMajor, setIsCreateMajor] = useState(false);
   const [isEditMajor, setIsEditMajor] = useState(false);
@@ -46,7 +45,7 @@ function Majors() {
       axiosInstance
         .get(`/majors`, { params: payload })
         .then((res) => {
-            console.log("MAJORS===>",res)
+          console.log("MAJORS===>", res);
           const newData = res.data.data;
 
           // Check if the received data is an array, else set it to an empty array
@@ -75,12 +74,7 @@ function Majors() {
           setNextPrevPage(null);
         });
     }, 800),
-    [
-      majorSearch,
-      programId,
-      currentPage,
-      nextPrevPage,
-    ]
+    [majorSearch, programId, currentPage, nextPrevPage]
   );
 
   const btnArray = useMemo(() => {
@@ -99,13 +93,12 @@ function Majors() {
       .then((res) => {
         const message = res.data.message || "Major deleted successfully.";
         toast.success(message, { transition: Slide });
-        setMajorId(null)
+        setMajorId(null);
         fetchMajors(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage =
-          err.response?.data || "Failed to delete Major.";
-          console.log(errorMessage);
+        const errorMessage = err.response?.data || "Failed to delete Major.";
+        console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
       })
@@ -118,19 +111,12 @@ function Majors() {
     setConfirmDialogOpen(false);
   };
 
- 
   useEffect(() => {
     fetchMajors();
     return () => {
-        fetchMajors.cancel();
+      fetchMajors.cancel();
     };
-  }, [
-    majorSearch,
-    programId,
-    fetchMajors,
-    currentPage,
-    nextPrevPage,
-  ]);
+  }, [majorSearch, programId, fetchMajors, currentPage, nextPrevPage]);
 
   useEffect(() => {
     axiosInstance
@@ -151,11 +137,10 @@ function Majors() {
   const breadcrumbs = [
     { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
     { title: "Majors", href: "#", isDisabled: true },
-];
+  ];
 
   return (
     <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
-
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
@@ -218,63 +203,53 @@ function Majors() {
             </div>
           </div>
         </div>
-        {loading && (<Loader/>)}
-        {error && (
-          <p className="mt-4 text-red-500 text-center font-bold text-xl">
-            Error: {error}
-          </p>
-        )}
-        {data.length === 0 && !loading && (
-          <p className="text-center mt-4 text-gray-500">
-            {error || "No records found."}
-          </p>
-        )}
-        {data.length !== 0 && (
-          <div>
-            <div className="relative overflow-x-auto">
-              <table className="w-full text-sm rtl:text-right">
-                <thead className="text-xs text-gray-700 bg-gray-100">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Program
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      College
-                    </th>
-        
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
+        {loading && <Loader />}
 
+        <div>
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm rtl:text-right">
+              <thead className="text-xs text-gray-700 bg-gray-100">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    #
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Program
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    College
+                  </th>
+
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              {data.length !== 0 && (
                 <tbody>
                   {data?.map((major) => (
                     <tr key={major.id}>
@@ -313,7 +288,7 @@ function Majors() {
                           >
                             Edit
                           </button>
-                          
+
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
@@ -328,65 +303,79 @@ function Majors() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              )}
+              {error && (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                      Error: {error}
+                    </p>
+                  </td>
+                </tr>
+              )}
+              {data.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    <p className="text-center mt-4 text-gray-500">
+                      {error || "No records found."}
+                    </p>
+                  </td>
+                </tr>
+              )}
+            </table>
+          </div>
+          <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+            <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+              <p className=" mx-0 md:mx-6">Total Majors : {totalMajors}</p>
+              <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
-              <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">
-                  Total Majors : {totalMajors}
-                </p>
-                <p className="mx-6">Page No. {currentPage}</p>
-              </div>
-              <div>
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                  onClick={() => {
-                    setNextPrevPage(currentPage - 1);
-                  }}
-                >
-                  Prev
-                </button>
+            <div>
+              <button
+                className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setNextPrevPage(currentPage - 1);
+                }}
+              >
+                Prev
+              </button>
 
-                {btnArray.length > 0 &&
-                  btnArray?.map((btnValue) => (
-                    <button
-                      key={btnValue}
-                      className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                      onClick={() => setCurrentPage(btnValue)}
-                    >
-                      <p className="">{btnValue}</p>
-                    </button>
-                  ))}
-                {currentPage > 3 && (
-                  <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
-                    ...
+              {btnArray.length > 0 &&
+                btnArray?.map((btnValue) => (
+                  <button
+                    key={btnValue}
+                    className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(btnValue)}
+                  >
+                    <p className="">{btnValue}</p>
                   </button>
-                )}
-
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                  onClick={() => {
-                    setNextPrevPage(currentPage + 1);
-                  }}
-                >
-                  Next
+                ))}
+              {currentPage > 3 && (
+                <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  ...
                 </button>
-              </div>
+              )}
+
+              <button
+                className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+                onClick={() => {
+                  setNextPrevPage(currentPage + 1);
+                }}
+              >
+                Next
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
-      {confirmDialogOpen && (        
-      <DeleteDialog
-        title={"Major"}
-        noCallback={closeConfirmDialog}
-        yesCallback={() => deleteMajor(programId)}
-
-      />
-      )
-      }
+      {confirmDialogOpen && (
+        <DeleteDialog
+          title={"Major"}
+          noCallback={closeConfirmDialog}
+          yesCallback={() => deleteMajor(programId)}
+        />
+      )}
       {isCreateMajor && (
         <MajorFormDialog
           headerText={"Create Major"}

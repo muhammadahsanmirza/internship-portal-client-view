@@ -199,9 +199,9 @@ function Opportunities() {
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">
           Opportunities
         </p>
-        <div className="flex flex-col sm:flex-row md:flex-wrap lg:flex-nowrap gap-2 md:justify-around my-4 mx-3 ">
-          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-0 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search opportunity name"
@@ -214,7 +214,7 @@ function Opportunities() {
                 <TbBulb className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:h-8 lg:mx-1 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search company name"
@@ -227,7 +227,7 @@ function Opportunities() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7 md:w-80 md:h-10 lg:w-44 lg:h-8 lg:mx-1 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={programId}
@@ -244,7 +244,7 @@ function Opportunities() {
                 ))}
               </select>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7 md:w-80 md:h-10 lg:w-44 lg:h-8 lg:mx-1 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={statusValue}
@@ -267,8 +267,8 @@ function Opportunities() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-end  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+          <div className="flex flex-col md:flex-row-reverse lg:flex-row mx-2 md:mx-0  sm:mt-0 md:mx-18  gap-0 md:gap-0 lg:gap-0 xl:ml-36 justify-evenly sm:justify-around md:justify-start xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 md:mx-2 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -279,7 +279,7 @@ function Opportunities() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-2 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
@@ -295,185 +295,192 @@ function Opportunities() {
           </div>
         </div>
         {loading && <Loader />}
-        {error && (
-          <p className="mt-4 text-red-500 text-center font-bold text-xl">
-            Error: {error}
-          </p>
-        )}
-        {data.length === 0 && !loading && (
-          <p className="text-center mt-4 text-gray-500">
-            {error || "No records found."}
-          </p>
-        )}
-        {data.length !== 0 && (
-          <div>
-            <div className="relative overflow-x-auto">
-              <table className="w-full text-sm rtl:text-right">
-                <thead className="text-xs text-gray-700 bg-gray-100">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Contact Person
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Company Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Program Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Published
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Action
-                    </th>
+
+        <div>
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm rtl:text-right">
+              <thead className="text-xs text-gray-700 bg-gray-100">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    #
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Email
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Contact Person
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Company Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Program Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Published
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              {data.length !== 0 && (
+
+              <tbody>
+                {data?.map((opportunity) => (
+                  <tr key={opportunity.id}>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.id}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.name}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.email}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.contact_person}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.company_name}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.program_name}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      {opportunity.published ? (
+                        <span className="text-green-600 px-4 inline-block">
+                          <BsCheckCircle />
+                        </span>
+                      ) : (
+                        <span className="text-red-600 inline-block">
+                          <RxCrossCircled />
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 text-center align-middle">
+                      <div className="flex flex-col sm:flex-row justify-center items-center">
+                        <button
+                          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                          onClick={() => {
+                            setSelectedOpportunity(opportunity);
+                            setIsEditOpportunity(true);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                          onClick={() => openOpportunity(opportunity)}
+                        >
+                          View
+                        </button>
+                        <button
+                          className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                          onClick={() => {
+                            setOpportunityId(opportunity.id);
+                            setConfirmDialogOpen(true);
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-
-                <tbody>
-                  {data?.map((opportunity) => (
-                    <tr key={opportunity.id}>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.id}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.email}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.contact_person}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.company_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.program_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {opportunity.published ? (
-                          <span className="text-green-600 px-4 inline-block">
-                            <BsCheckCircle />
-                          </span>
-                        ) : (
-                          <span className="text-red-600 inline-block">
-                            <RxCrossCircled />
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        <div className="flex flex-col sm:flex-row justify-center items-center">
-                          <button
-                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                            onClick={() => {
-                              setSelectedOpportunity(opportunity);
-                              setIsEditOpportunity(true);
-                            }}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                            onClick={() => openOpportunity(opportunity)}
-                          >
-                            View
-                          </button>
-                          <button
-                            className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                            onClick={() => {
-                              setOpportunityId(opportunity.id);
-                              setConfirmDialogOpen(true);
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                ))}
+              </tbody>
+              )}
+              {error && (
+                <tr>
+                  <td colSpan="8" className="text-center">
+                    <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                      Error: {error}
+                    </p>
+                  </td>
+                </tr>
+              )}
+              {data.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="8" className="text-center">
+                    <p className="text-center mt-4 text-gray-500">
+                      {error || "No records found."}
+                    </p>
+                  </td>
+                </tr>
+              )}
+            </table>
+          </div>
+          <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+                <p className=" mx-0 md:mx-6">Total Opportunities : {totalOpportunities}</p>
+              <p className="mx-6">Page No. {currentPage}</p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
-              <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">
-                  Total Opportunities : {totalOpportunities}
-                </p>
-                <p className="mx-6">Page No. {currentPage}</p>
-              </div>
-              <div>
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                  onClick={() => {
-                    setNextPrevPage(currentPage - 1);
-                  }}
-                >
-                  Prev
-                </button>
+            <div>
+              <button
+                className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setNextPrevPage(currentPage - 1);
+                }}
+              >
+                Prev
+              </button>
 
-                {btnArray.length > 0 &&
-                  btnArray?.map((btnValue) => (
-                    <button
-                      key={btnValue}
-                      className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                      onClick={() => setCurrentPage(btnValue)}
-                    >
-                      <p className="">{btnValue}</p>
-                    </button>
-                  ))}
+              {btnArray.length > 0 &&
+                btnArray?.map((btnValue) => (
+                  <button
+                    key={btnValue}
+                     className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(btnValue)}
+                  >
+                    <p className="">{btnValue}</p>
+                  </button>
+                ))}
                 {currentPage > 3 && (
-                  <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                     ...
                   </button>
                 )}
 
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                  onClick={() => {
-                    setNextPrevPage(currentPage + 1);
-                  }}
-                >
-                  Next
-                </button>
-              </div>
+              <button
+                className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+                onClick={() => {
+                  setNextPrevPage(currentPage + 1);
+                }}
+              >
+                Next
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
       {isDialogOpen && (
         <ViewOpportunity

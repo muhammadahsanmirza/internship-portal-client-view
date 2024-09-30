@@ -7,7 +7,6 @@ import Header from "./Header";
 import Loader from "./Loader";
 import axiosInstance from "../interceptors/axiosInstance";
 
-
 function Applicants() {
   const [data, setData] = useState([]);
   const [totalApplicants, setTotalApplicants] = useState(0);
@@ -22,7 +21,6 @@ function Applicants() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
   const fetchApplicants = useCallback(
     debounce(() => {
       setLoading(true);
@@ -35,7 +33,7 @@ function Applicants() {
       axiosInstance
         .get(`opportunity/applicants`, { params: payload })
         .then((response) => {
-            console.log(response);
+          console.log(response);
           const newData = response.data.data;
 
           // Check if the received data is an array, else set it to an empty array
@@ -45,7 +43,7 @@ function Applicants() {
             setCurrentPage(response.data.current_page);
             setTotalPages(response.data.total_pages);
           } else {
-            setData([]); 
+            setData([]);
             setTotalApplicants(0);
             setCurrentPage(null);
             setTotalPages(1);
@@ -63,13 +61,7 @@ function Applicants() {
           setNextPrevPage(null);
         });
     }, 800),
-    [
-      opportunitySearch,
-      studentSearch,
-      programId,
-      currentPage,
-      nextPrevPage,
-    ]
+    [opportunitySearch, studentSearch, programId, currentPage, nextPrevPage]
   );
 
   const btnArray = useMemo(() => {
@@ -80,11 +72,10 @@ function Applicants() {
     return btnArray;
   }, [currentPage]);
 
-  
   useEffect(() => {
     fetchApplicants();
     return () => {
-        fetchApplicants.cancel();
+      fetchApplicants.cancel();
     };
   }, [
     opportunitySearch,
@@ -110,7 +101,7 @@ function Applicants() {
     setOpportunitySearch("");
     setStudentSearch("");
     setProgramId(0);
-    setCurrentPage(null)
+    setCurrentPage(null);
   }
 
   const breadcrumbs = [
@@ -119,14 +110,14 @@ function Applicants() {
   ];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Applicants</p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search opportunity name"
@@ -139,7 +130,7 @@ function Applicants() {
                 <TbBulb className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search student name"
@@ -152,7 +143,7 @@ function Applicants() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={programId}
@@ -170,74 +161,67 @@ function Applicants() {
               </select>
             </div>
           </div>
-          <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
-            <RxCrossCircled />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
-              disabled={loading || error}
-            >
-              CLEAR FILTERS
-            </button>
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly md:justify-end sm:justify-around mx-2  sm:mt-0 md:mx-18 gap-0 md:gap-0 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7 md:w-56">
+              <RxCrossCircled />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={handleClearFilter}
+                disabled={loading || error}
+              >
+                CLEAR FILTERS
+              </button>
+            </div>
           </div>
         </div>
-        {loading && (<Loader/>)}
-        {error && (
-          <p className="mt-4 text-red-500 text-center font-bold text-xl">
-            Error: {error}
-          </p>
-        )}
-        {data.length === 0 && !loading && (
-          <p className="text-center mt-4 text-gray-500">
-            {error || "No records found."}
-          </p>
-        )}
-        {data.length !== 0 && (
-          <div>
-            <div className="relative overflow-x-auto">
-              <table className="w-full text-sm rtl:text-right">
-                <thead className="text-xs text-gray-700 bg-gray-100">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Student Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Email
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Opportunity
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Program Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Applied On
-                    </th>
-                  </tr>
-                </thead>
+        {loading && <Loader />}
 
+        <div>
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm rtl:text-right">
+              <thead className="text-xs text-gray-700 bg-gray-100">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    #
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Student Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Email
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Opportunity
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Program Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Applied On
+                  </th>
+                </tr>
+              </thead>
+
+              {data.length !== 0 && (
                 <tbody>
                   {data?.map((applicant) => (
                     <tr key={applicant.id}>
@@ -258,59 +242,75 @@ function Applicants() {
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
                         {applicant.applied_on}
-                      </td>                      
+                      </td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
+              )}
+              {error && (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                      Error: {error}
+                    </p>
+                  </td>
+                </tr>
+              )}
+              {data.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    <p className="text-center mt-4 text-gray-500">
+                      {error || "No records found."}
+                    </p>
+                  </td>
+                </tr>
+              )}
+            </table>
+          </div>
+          <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+                <p className=" mx-0 md:mx-6">Total Applicants : {totalApplicants}</p>
+              <p className="mx-0 md:mx-6">Page No. {currentPage || 1}</p>
             </div>
-            <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
-              <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">
-                  Total Applicants : {totalApplicants}
-                </p>
-                <p className="mx-6">Page No. {currentPage}</p>
-              </div>
-              <div>
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                  onClick={() => {
-                    setNextPrevPage(currentPage - 1);
-                  }}
-                >
-                  Prev
-                </button>
+            <div>
+              <button
+                className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setNextPrevPage(currentPage - 1);
+                }}
+              >
+                Prev
+              </button>
 
-                {btnArray.length > 0 &&
-                  btnArray?.map((btnValue) => (
-                    <button
-                      key={btnValue}
-                      className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                      onClick={() => setCurrentPage(btnValue)}
-                    >
-                      <p className="">{btnValue}</p>
-                    </button>
-                  ))}
+              {btnArray.length > 0 &&
+                btnArray?.map((btnValue) => (
+                  <button
+                    key={btnValue}
+                    className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(btnValue)}
+                  >
+                    <p className="">{btnValue}</p>
+                  </button>
+                ))}
                 {currentPage > 3 && (
-                  <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                     ...
                   </button>
                 )}
 
-                <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                  onClick={() => {
-                    setNextPrevPage(currentPage + 1);
-                  }}
-                >
-                  Next
-                </button>
-              </div>
+              <button
+                className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+                onClick={() => {
+                  setNextPrevPage(currentPage + 1);
+                }}
+              >
+                Next
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
