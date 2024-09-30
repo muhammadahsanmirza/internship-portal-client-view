@@ -6,15 +6,14 @@ import Header from "./Header";
 import axiosInstance from "../interceptors/axiosInstance";
 import Loader from "./Loader";
 
-
 function Students() {
   const [data, setData] = useState([]);
-//   const [totalStudents, setTotalStudents] = useState(0);
+  //   const [totalStudents, setTotalStudents] = useState(0);
   const [opportunitySearch, setOpportunitySearch] = useState("");
   const [studentSearch, setStudentSearch] = useState("");
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
-//   const [totalPages, setTotalPages] = useState(0);
+  //   const [currentPage, setCurrentPage] = useState(1);
+  //   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
+  //   const [totalPages, setTotalPages] = useState(0);
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
   const [majors, setMajors] = useState([]);
@@ -22,7 +21,6 @@ function Students() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
 
   const fetchApplicants = useCallback(
     debounce(() => {
@@ -33,12 +31,12 @@ function Students() {
         major_id: majorId || undefined,
         // page_number: nextPrevPage || currentPage || undefined,
       };
-      console.log("Payload-->",payload)
+      console.log("Payload-->", payload);
       axiosInstance
         .get(`/students`, { params: payload })
         .then((response) => {
-            console.log(response)
-            // console.log("response.data--->",response.data);
+          console.log(response);
+          // console.log("response.data--->",response.data);
           const newData = response.data;
 
           // Check if the received data is an array, else set it to an empty array
@@ -48,7 +46,7 @@ function Students() {
             // setCurrentPage(response.data.current_page);
             // setTotalPages(response.data.total_pages);
           } else {
-            setData([]); 
+            setData([]);
             // setTotalStudents(0);
             // setCurrentPage(null);
             // setTotalPages(1);
@@ -63,7 +61,7 @@ function Students() {
         })
         .finally(() => {
           setLoading(false);
-        //   setNextPrevPage(null);
+          //   setNextPrevPage(null);
         });
     }, 800),
     [
@@ -71,24 +69,23 @@ function Students() {
       studentSearch,
       programId,
       majorId,
-    //   currentPage,
-    //   nextPrevPage,
+      //   currentPage,
+      //   nextPrevPage,
     ]
   );
 
-//   const btnArray = useMemo(() => {
-//     const btnArray = [];
-//     for (let i = 1; i < currentPage; i++) {
-//       btnArray.push(i);
-//     }
-//     return btnArray;
-//   }, [currentPage]);
+  //   const btnArray = useMemo(() => {
+  //     const btnArray = [];
+  //     for (let i = 1; i < currentPage; i++) {
+  //       btnArray.push(i);
+  //     }
+  //     return btnArray;
+  //   }, [currentPage]);
 
-  
   useEffect(() => {
     fetchApplicants();
     return () => {
-        fetchApplicants.cancel();
+      fetchApplicants.cancel();
     };
   }, [
     opportunitySearch,
@@ -104,16 +101,16 @@ function Students() {
     axiosInstance
       .get("/program/names")
       .then((res) => {
-        console.log('Programs-->', res.data.data)
+        console.log("Programs-->", res.data.data);
         setPrograms(res.data.data);
       })
       .catch((error) => {
         setError(error.message);
       });
-      axiosInstance
+    axiosInstance
       .get("/majors")
       .then((res) => {
-        console.log('Majors-->', res.data.data)
+        console.log("Majors-->", res.data.data);
         setMajors(res.data.data);
       })
       .catch((error) => {
@@ -140,9 +137,9 @@ function Students() {
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Students</p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search student name"
@@ -155,7 +152,7 @@ function Students() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={programId}
@@ -172,7 +169,7 @@ function Students() {
                 ))}
               </select>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={majorId}
@@ -190,19 +187,21 @@ function Students() {
               </select>
             </div>
           </div>
-          <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
-            <RxCrossCircled />
-            <button
-              className=" text-xs"
-              style={{ minWidth: "100px", padding: "5px 10px" }}
-              onClick={handleClearFilter}
-              disabled={loading || error}
-            >
-              CLEAR FILTERS
-            </button>
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly md:justify-end sm:justify-around mx-2  sm:mt-0 md:mx-18 gap-0 md:gap-0 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-56 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+              <RxCrossCircled />
+              <button
+                className=" text-xs"
+                style={{ minWidth: "100px", padding: "5px 10px" }}
+                onClick={handleClearFilter}
+                disabled={loading || error}
+              >
+                CLEAR FILTERS
+              </button>
+            </div>
           </div>
         </div>
-        {loading && (<Loader/>)}
+        {loading && <Loader />}
         {error && (
           <p className="mt-4 text-red-500 text-center font-bold text-xl">
             Error: {error}
@@ -269,7 +268,7 @@ function Students() {
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
                         {student.program_name}
-                      </td>                      
+                      </td>
                     </tr>
                   ))}
                 </tbody>
