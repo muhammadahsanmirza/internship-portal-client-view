@@ -32,8 +32,6 @@ function Programs() {
   const handleCloseProgramDialog = () => setIsCreateProgram(false);
   const handleCloseEditProgramDialog = () => setIsEditProgram(false);
 
-//TODO: Make Program Page Responsive for all screens , Program Form is responsive for all screens
-
   const fetchPrograms = useCallback(
     debounce(() => {
       setLoading(true);
@@ -144,9 +142,9 @@ function Programs() {
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Programs</p>
-        <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 gap-2">
-          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap gap-2  md:justify-evenly lg:flex-nowrap sm:gap-2 lg:gap-0 mx-2 my-2">
-            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search program name"
@@ -159,7 +157,7 @@ function Programs() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={collegeId}
@@ -177,8 +175,8 @@ function Programs() {
               </select>
             </div>
           </div>
-          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-end  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+          <div className="flex flex-col md:flex-row-reverse lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 gap-0 md:gap-0 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -189,7 +187,7 @@ function Programs() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
@@ -307,14 +305,16 @@ function Programs() {
                 </tbody>
               </table>
             </div>
-            <div className="flex flex-col sm:flex-row justify-around items-center py-4 bg-gray-100">
-              <div className="flex flex-row justify-between text-xs">
-                <p className="mx-6">Total Programs : {totalPrograms}</p>
-                <p className="mx-6">Page No. {currentPage}</p>
+            <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+                <p className=" mx-0 md:mx-6">
+                  Total Programs : {totalPrograms}
+                </p>
+                <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
               </div>
               <div>
                 <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="py-1 md:py-2 px-1 md:px-4 text-center hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === 1}
                   onClick={() => {
                     setNextPrevPage(currentPage - 1);
@@ -327,20 +327,20 @@ function Programs() {
                   btnArray?.map((btnValue) => (
                     <button
                       key={btnValue}
-                      className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                      className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                       onClick={() => setCurrentPage(btnValue)}
                     >
                       <p className="">{btnValue}</p>
                     </button>
                   ))}
                 {currentPage > 3 && (
-                  <button className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
                     ...
                   </button>
                 )}
 
                 <button
-                  className="py-2 px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                  className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                   disabled={currentPage === totalPages}
                   onClick={() => {
                     setNextPrevPage(currentPage + 1);

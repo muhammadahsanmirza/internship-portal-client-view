@@ -130,7 +130,7 @@ function Colleges() {
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Colleges</p>
         <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 ">
           <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap lg:gap-0 mx-2">
-          <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search college name"
@@ -146,7 +146,7 @@ function Colleges() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 md:justify-between gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
+          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 md:justify-between gap-0 md:gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
             <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
@@ -267,7 +267,9 @@ function Colleges() {
             </div>
             <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
               <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
-                <p className=" mx-0 md:mx-6">Total Colleges : {totalColleges}</p>
+                <p className=" mx-0 md:mx-6">
+                  Total Colleges : {totalColleges}
+                </p>
                 <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
               </div>
               <div>
