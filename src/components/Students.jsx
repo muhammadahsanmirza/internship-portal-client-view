@@ -135,7 +135,7 @@ function Students() {
   ];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">

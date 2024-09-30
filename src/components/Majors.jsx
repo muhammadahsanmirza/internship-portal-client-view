@@ -154,14 +154,15 @@ function Majors() {
 ];
 
   return (
-    <div className="w-full sm:mt-0 sm:ml-20 z-0">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
+
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Majors</p>
-        <div className="flex flex-col sm:flex-row my-4 mx-3 justify-between">
-          <div className="flex flex-col sm:flex-row justify-evenly">
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-52 h-7">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
                 placeholder="Search major name"
@@ -174,7 +175,7 @@ function Majors() {
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
-            <div className="flex flex-row rounded border mx-2 mb-2 sm:mb-1 w-full sm:w-44 h-7">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
                 value={programId}
@@ -192,8 +193,8 @@ function Majors() {
               </select>
             </div>
           </div>
-          <div className="flex gap-2">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black px-2 text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7">
+          <div className="flex flex-col md:flex-row-reverse lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 gap-0 md:gap-0 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -204,7 +205,7 @@ function Majors() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mx-1 sm:mx-1 mt-2 sm:mt-0 h-7">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
