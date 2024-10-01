@@ -122,7 +122,7 @@ function DeleteDialog({ title, noCallback, yesCallback, open }) {
           padding: "0px 22px",
         }}
       >
-        This can't be undone
+        {"This can't be undone"}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "end", padding: "20px" }}>
       <Button
