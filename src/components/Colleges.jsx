@@ -252,6 +252,7 @@ function Colleges() {
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
+                              console.log("Button Clicked");
                               setCollegeId(college.id);
                               setConfirmDialogOpen(true);
                             }}
@@ -316,6 +317,7 @@ function Colleges() {
       {confirmDialogOpen && (
         <DeleteDialog
           title={"College"}
+          open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
           yesCallback={() => deleteCollege(collegeId)}
         />
