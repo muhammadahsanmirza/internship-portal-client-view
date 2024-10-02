@@ -304,24 +304,26 @@ function Majors() {
                   ))}
                 </tbody>
               )}
-              {error && (
-                <tr>
-                  <td colSpan="6" className="text-center">
-                    <p className="mt-4 text-red-500 text-center font-bold text-xl">
-                      Error: {error}
-                    </p>
-                  </td>
-                </tr>
-              )}
-              {data.length === 0 && !loading && (
-                <tr>
-                  <td colSpan="6" className="text-center">
-                    <p className="text-center mt-4 text-gray-500">
-                      {error || "No records found."}
-                    </p>
-                  </td>
-                </tr>
-              )}
+              <tfoot>
+                {error && (
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                        Error: {error}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+                {data.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      <p className="text-center mt-4 text-gray-500">
+                        {error || "No records found."}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tfoot>
             </table>
           </div>
           <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">

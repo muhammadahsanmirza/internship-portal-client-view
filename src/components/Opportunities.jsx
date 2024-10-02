@@ -352,94 +352,97 @@ function Opportunities() {
                 </tr>
               </thead>
               {data.length !== 0 && (
-
-              <tbody>
-                {data?.map((opportunity) => (
-                  <tr key={opportunity.id}>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.id}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.name}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.email}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.contact_person}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.company_name}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.program_name}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      {opportunity.published ? (
-                        <span className="text-green-600 px-4 inline-block">
-                          <BsCheckCircle />
-                        </span>
-                      ) : (
-                        <span className="text-red-600 inline-block">
-                          <RxCrossCircled />
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-center align-middle">
-                      <div className="flex flex-col sm:flex-row justify-center items-center">
-                        <button
-                          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                          onClick={() => {
-                            setSelectedOpportunity(opportunity);
-                            setIsEditOpportunity(true);
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                          onClick={() => openOpportunity(opportunity)}
-                        >
-                          View
-                        </button>
-                        <button
-                          className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
-                          onClick={() => {
-                            setOpportunityId(opportunity.id);
-                            setConfirmDialogOpen(true);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
+                <tbody>
+                  {data?.map((opportunity) => (
+                    <tr key={opportunity.id}>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.id}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.name}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.email}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.contact_person}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.company_name}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.program_name}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {opportunity.published ? (
+                          <span className="text-green-600 px-4 inline-block">
+                            <BsCheckCircle />
+                          </span>
+                        ) : (
+                          <span className="text-red-600 inline-block">
+                            <RxCrossCircled />
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        <div className="flex flex-col sm:flex-row justify-center items-center">
+                          <button
+                            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => {
+                              setSelectedOpportunity(opportunity);
+                              setIsEditOpportunity(true);
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => openOpportunity(opportunity)}
+                          >
+                            View
+                          </button>
+                          <button
+                            className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
+                            onClick={() => {
+                              setOpportunityId(opportunity.id);
+                              setConfirmDialogOpen(true);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              )}
+              <tfoot>
+                {error && (
+                  <tr>
+                    <td colSpan="8" className="text-center">
+                      <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                        Error: {error}
+                      </p>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-              )}
-              {error && (
-                <tr>
-                  <td colSpan="8" className="text-center">
-                    <p className="mt-4 text-red-500 text-center font-bold text-xl">
-                      Error: {error}
-                    </p>
-                  </td>
-                </tr>
-              )}
-              {data.length === 0 && !loading && (
-                <tr>
-                  <td colSpan="8" className="text-center">
-                    <p className="text-center mt-4 text-gray-500">
-                      {error || "No records found."}
-                    </p>
-                  </td>
-                </tr>
-              )}
+                )}
+                {data.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan="8" className="text-center">
+                      <p className="text-center mt-4 text-gray-500">
+                        {error || "No records found."}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tfoot>
             </table>
           </div>
           <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
-              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
-                <p className=" mx-0 md:mx-6">Total Opportunities : {totalOpportunities}</p>
+            <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+              <p className=" mx-0 md:mx-6">
+                Total Opportunities : {totalOpportunities}
+              </p>
               <p className="mx-6">Page No. {currentPage}</p>
             </div>
             <div>
@@ -457,17 +460,17 @@ function Opportunities() {
                 btnArray?.map((btnValue) => (
                   <button
                     key={btnValue}
-                     className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                     onClick={() => setCurrentPage(btnValue)}
                   >
                     <p className="">{btnValue}</p>
                   </button>
                 ))}
-                {currentPage > 3 && (
-                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
-                    ...
-                  </button>
-                )}
+              {currentPage > 3 && (
+                <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  ...
+                </button>
+              )}
 
               <button
                 className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"

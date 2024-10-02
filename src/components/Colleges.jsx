@@ -36,22 +36,22 @@ function Colleges() {
       };
       axiosInstance
         .get(`/colleges`, { params: payload })
-        .then((response) => {
-          console.log(response.data);
-          const newData = response.data.data;
+        .then((res) => {
+          console.log(res.data);
+          const newData = res.data.data;
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalColleges(response.data.total_records);
-            setCurrentPage(response.data.current_page);
+            setTotalColleges(res.data.total_records);
+            setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
-            setTotalPages(response.data.total_pages);
+            setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
             setTotalColleges(0);
             setCurrentPage(1);
             setTotalPages(1);
-            setError(response.data.message || "No opportunities found");
+            setError(res.data.message || "No opportunities found");
           }
 
           setError(null);
@@ -172,51 +172,41 @@ function Colleges() {
           </div>
         </div>
         {loading && <Loader />}
-        {error && (
-          <p className="mt-4 text-red-500 text-center font-bold text-xl">
-            Error: {error}
-          </p>
-        )}
-        {data.length === 0 && !loading && (
-          <p className="text-center mt-4 text-gray-500">
-            {error || "No records found."}
-          </p>
-        )}
-        {data.length !== 0 && (
-          <div>
-            <div className="relative overflow-x-auto">
-              <table className="w-full text-sm rtl:text-right">
-                <thead className="text-xs text-gray-700 bg-gray-100">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      #
-                    </th>
 
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Name
-                    </th>
+        <div>
+          <div className="relative overflow-x-auto">
+            <table className="w-full text-sm rtl:text-right">
+              <thead className="text-xs text-gray-700 bg-gray-100">
+                <tr>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    #
+                  </th>
 
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-center align-middle"
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Name
+                  </th>
 
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              {data.length !== 0 && (
                 <tbody>
                   {data?.map((college) => (
                     <tr key={college.id}>
@@ -264,55 +254,73 @@ function Colleges() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
-            <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
-              <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
-                <p className=" mx-0 md:mx-6">
-                  Total Colleges : {totalColleges}
-                </p>
-                <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
-              </div>
-              <div>
-                <button
-                  className="py-1 md:py-2 px-1 md:px-4 text-center hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === 1}
-                  onClick={() => {
-                    setNextPrevPage(currentPage - 1);
-                  }}
-                >
-                  Prev
-                </button>
-
-                {btnArray.length > 0 &&
-                  btnArray?.map((btnValue) => (
-                    <button
-                      key={btnValue}
-                      className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                      onClick={() => setCurrentPage(btnValue)}
-                    >
-                      <p className="">{btnValue}</p>
-                    </button>
-                  ))}
-                {currentPage > 3 && (
-                  <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
-                    ...
-                  </button>
+              )}
+              <tfoot>
+                {error && (
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      <p className="mt-4 text-red-500 text-center font-bold text-xl">
+                        Error: {error}
+                      </p>
+                    </td>
+                  </tr>
                 )}
+                {data.length === 0 && !loading && (
+                  <tr>
+                    <td colSpan="6" className="text-center">
+                      <p className="text-center mt-4 text-gray-500">
+                        {error || "No records found."}
+                      </p>
+                    </td>
+                  </tr>
+                )}
+              </tfoot>
+            </table>
+          </div>
+          <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
+            <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
+              <p className=" mx-0 md:mx-6">Total Colleges : {totalColleges}</p>
+              <p className="mx-0 md:mx-6">Page No. {currentPage}</p>
+            </div>
+            <div>
+              <button
+                className="py-1 md:py-2 px-1 md:px-4 text-center hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === 1}
+                onClick={() => {
+                  setNextPrevPage(currentPage - 1);
+                }}
+              >
+                Prev
+              </button>
 
-                <button
-                  className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                  disabled={currentPage === totalPages}
-                  onClick={() => {
-                    setNextPrevPage(currentPage + 1);
-                  }}
-                >
-                  Next
+              {btnArray.length > 0 &&
+                btnArray?.map((btnValue) => (
+                  <button
+                    key={btnValue}
+                    className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    onClick={() => setCurrentPage(btnValue)}
+                  >
+                    <p className="">{btnValue}</p>
+                  </button>
+                ))}
+              {currentPage > 3 && (
+                <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+                  ...
                 </button>
-              </div>
+              )}
+
+              <button
+                className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+                disabled={currentPage === totalPages}
+                onClick={() => {
+                  setNextPrevPage(currentPage + 1);
+                }}
+              >
+                Next
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </div>
       {confirmDialogOpen && (
         <DeleteDialog

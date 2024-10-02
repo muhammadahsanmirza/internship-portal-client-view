@@ -262,7 +262,8 @@ function Students() {
                   ))}
                 </tbody>
                 )}
-                {error && (
+                <tfoot>
+                  {error && (
                 <tr>
                   <td colSpan="5" className="text-center">
                     <p className="mt-4 text-red-500 text-center font-bold text-xl">
@@ -280,6 +281,7 @@ function Students() {
                   </td>
                 </tr>
               )}
+                </tfoot>
               </table>
             </div>
           </div>

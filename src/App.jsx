@@ -11,7 +11,7 @@ import ErrorFallback from "./components/ErrorFallback"
 
 import AdminDashboard from './components/AdminDashboard';
 // import StudentDashboard from './components/StudentDashboard';
-
+import axiosInstance from './interceptors/axiosInstance';
 
 const MAX_RETRIES = 3; // Set a maximum retry limit
 
@@ -20,7 +20,12 @@ function App() {
   const refreshTokenTimeout = useRef(null);
   const retryCount = useRef(0); // Track retry attempts
 
-  
+  useEffect(() => {
+    axiosInstance.get('/user/detail')
+      .then((res)=>{
+        console.log(res.data.data);
+      })
+  })
   useEffect(() => {
     const fetchToken = async () => {
       if (accounts.length > 0) {
