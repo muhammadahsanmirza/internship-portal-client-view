@@ -5,7 +5,6 @@ import { MdViewHeadline } from "react-icons/md";
 // import NavigationDrawer from './NavigationDrawer';
 import AdminNavigationDrawer from './AdminNavigationDrawer';
 
-//TODO: Hamburger Stops Working on Small Screens --> FIXIT
 function Sidebar() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 

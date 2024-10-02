@@ -28,6 +28,7 @@ import PageNotFound from "./components/PageNotFound.jsx";
 // import AdminDashboard from "./components/AdminDashboard.jsx";
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
+import Rbac from "./components/Rbac.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
@@ -36,7 +37,8 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       {/* Root path redirect to /admin/opportunities */}
-      <Route path="/" element={<Navigate to="/admin/opportunities" />} />
+      {/* <Route path="/" element={<Navigate to="/admin/opportunities" />} /> */}
+      <Route path="/" element={<Rbac />} />
 
       {/* Define admin routes */}
       <Route path="/admin/" element={<App />}>
@@ -51,6 +53,7 @@ const router = createBrowserRouter(
         <Route path="colleges" element={<Colleges />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
+      <Route path="/notFound" element={<PageNotFound />} />
     </Route>
   )
 );
