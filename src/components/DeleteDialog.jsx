@@ -124,13 +124,14 @@ function DeleteDialog({ title, noCallback, yesCallback, open }) {
       >
         {"This can't be undone"}
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "end", padding: "20px" }}>
+            <DialogActions sx={{ justifyContent: "end", padding: "10px 20px" ,borderTop: "2px solid lightGray",}}>
       <Button
           onClick={noCallback}
           sx={{
             backgroundColor: "white",
             color: "black",
             border: "2px solid gray",
+            fontWeight: "bold",
           }}
         >
           Cancel
@@ -138,8 +139,10 @@ function DeleteDialog({ title, noCallback, yesCallback, open }) {
         <Button
           onClick={yesCallback}
           sx={{
-            backgroundColor: "red",
+            backgroundColor: "#CC0000",
             color: "white",
+            border: "2px solid #CC0000",
+            fontWeight: "bold",
           }}
         >
           Delete

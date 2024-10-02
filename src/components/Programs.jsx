@@ -356,6 +356,7 @@ function Programs() {
       {confirmDialogOpen && (
         <DeleteDialog
           title={"Program"}
+          open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
           yesCallback={() => deleteProgram(programId)}
         />

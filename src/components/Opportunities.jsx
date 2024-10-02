@@ -492,6 +492,7 @@ function Opportunities() {
       {confirmDialogOpen && (
         <DeleteDialog
           title={"Opportunity"}
+          open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
           yesCallback={() => deleteOpportunity(programId)}
         />

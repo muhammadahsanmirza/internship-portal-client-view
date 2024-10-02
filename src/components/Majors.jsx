@@ -372,6 +372,7 @@ function Majors() {
       {confirmDialogOpen && (
         <DeleteDialog
           title={"Major"}
+          open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
           yesCallback={() => deleteMajor(programId)}
         />
