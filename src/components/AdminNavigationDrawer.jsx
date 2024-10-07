@@ -1,11 +1,10 @@
+/* eslint-disable react/prop-types */
 // AdminNavigationDrawer.jsx
 import { IoIosArrowDropleftCircle } from "react-icons/io";
-import { BsFillMortarboardFill } from "react-icons/bs";
+import { BsFillMortarboardFill, BsPeopleFill } from "react-icons/bs";
 import { RxCrossCircled } from "react-icons/rx";
-import { BsPeopleFill } from "react-icons/bs";
-import { FaListUl } from "react-icons/fa6";
+import { FaListUl, FaGraduationCap } from "react-icons/fa6";
 import { GiDiploma } from "react-icons/gi";
-import { FaGraduationCap } from "react-icons/fa6";
 import { RiCollageFill } from "react-icons/ri";
 import { NavLink } from "react-router-dom";
 
@@ -21,7 +20,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
 
     return (
         <div
-            className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white z-10 shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
+            className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white shadow-lg transform transition-transform ease-in-out duration-300 ${isOpen ? "translate-x-0" : "-translate-x-full sm:hidden"
                 }`}
         >
             <div className="flex flex-col h-full">

@@ -3,7 +3,7 @@ import "./index.css";
 import ReactDOM from "react-dom/client";
 
 import {
-  RouterProvider, 
+  RouterProvider,
   Navigate,
   createBrowserRouter,
   createRoutesFromElements,
@@ -26,8 +26,11 @@ import Programs from "./components/Programs.jsx";
 import Colleges from "./components/Colleges.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
 // import AdminDashboard from "./components/AdminDashboard.jsx";
-import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+
+import StudentProfile from "./components/StudentProfile.jsx";
+
+import "@mantine/core/styles.css";
+import { MantineProvider } from "@mantine/core";
 import Rbac from "./components/Rbac.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
@@ -36,11 +39,10 @@ msalInstance.initialize();
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      {/* Root path redirect to /admin/opportunities */}
-      {/* <Route path="/" element={<Navigate to="/admin/opportunities" />} /> */}
-      <Route path="/" element={<Rbac />} />
+      <Route path="/" element={<Rbac/>} />
+      {/* <Route path="/" element={<Rbac />} /> */}
 
-      {/* Define admin routes */}
+      {/* Admin routes */}
       <Route path="/admin/" element={<App />}>
         <Route index element={<Navigate to="opportunities" />} />{" "}
         {/* Redirect to opportunities by default */}
@@ -53,6 +55,14 @@ const router = createBrowserRouter(
         <Route path="colleges" element={<Colleges />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
+
+      {/* Student Routes */}
+      <Route path="/student/" element={<App />}>
+        <Route path="opportunities" element={<Opportunities />} />
+        <Route path="profile" element={<StudentProfile />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Route>
+
       <Route path="/notFound" element={<PageNotFound />} />
     </Route>
   )
