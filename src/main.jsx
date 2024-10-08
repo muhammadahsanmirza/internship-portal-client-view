@@ -25,42 +25,47 @@ import Majors from "./components/Majors.jsx";
 import Programs from "./components/Programs.jsx";
 import Colleges from "./components/Colleges.jsx";
 import PageNotFound from "./components/PageNotFound.jsx";
-// import AdminDashboard from "./components/AdminDashboard.jsx";
-
+import AdminDashboard from "./components/AdminDashboard.jsx";
+import StudentDashboard from "./components/StudentDashboard.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
 
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import Rbac from "./components/Rbac.jsx";
+// import Rbac from "./components/Rbac.jsx";
+import RouteGuard from "./components/RouteGuard.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route>
-      <Route path="/" element={<Rbac/>} />
-      {/* <Route path="/" element={<Rbac />} /> */}
-
+    <Route >
+     {/* <Route path="/" element={<App />}> */}
       {/* Admin routes */}
-      <Route path="/admin/" element={<App />}>
-        <Route index element={<Navigate to="opportunities" />} />{" "}
-        {/* Redirect to opportunities by default */}
-        <Route path="opportunities" element={<Opportunities />} />
-        <Route path="create/opportunities" element={<OpportunityForm />} />
-        <Route path="applicants" element={<Applicants />} />
-        <Route path="students" element={<Students />} />
-        <Route path="majors" element={<Majors />} />
-        <Route path="programs" element={<Programs />} />
-        <Route path="colleges" element={<Colleges />} />
-        <Route path="*" element={<PageNotFound />} />
+      <Route path="/admin/" element={<RouteGuard role={"admin"} />}>
+        <Route element={<AdminDashboard />}>
+          <Route index element={<Navigate to="opportunities" />} />
+          <Route path="opportunities" element={<Opportunities />} />
+          <Route path="create/opportunities" element={<OpportunityForm />} />
+          <Route path="applicants" element={<Applicants />} />
+          <Route path="students" element={<Students />} />
+          <Route path="majors" element={<Majors />} />
+          <Route path="programs" element={<Programs />} />
+          <Route path="colleges" element={<Colleges />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Route>
 
       {/* Student Routes */}
-      <Route path="/student/" element={<App />}>
-        <Route path="opportunities" element={<Opportunities />} />
-        <Route path="profile" element={<StudentProfile />} />
-        <Route path="*" element={<PageNotFound />} />
+      <Route
+        path="/student/"
+        element={<RouteGuard allowedRoles={"student"} />}
+      >
+        <Route element={<StudentDashboard />}>
+          <Route path="opportunities" element={<Opportunities />} />
+          <Route path="profile" element={<StudentProfile />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Route>
       </Route>
 
       <Route path="/notFound" element={<PageNotFound />} />

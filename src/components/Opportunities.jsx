@@ -56,7 +56,7 @@ function Opportunities() {
         .get(`opportunities/admin`, { params: payload })
         .then((res) => {
           const newData = res.data.data;
-          console.log("Opportunities Response===>", res);
+          console.log("Admin Opportunities Response===>", res);
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
