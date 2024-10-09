@@ -28,11 +28,14 @@ import PageNotFound from "./components/PageNotFound.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import StudentDashboard from "./components/StudentDashboard.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
+// import Rbac from "./components/Rbac.jsx";
+import RouteGuard from "./components/RouteGuard.jsx";
 
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-// import Rbac from "./components/Rbac.jsx";
-import RouteGuard from "./components/RouteGuard.jsx";
+import { store } from './redux/store/store.js';
+import { Provider } from 'react-redux';
+
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
@@ -40,7 +43,7 @@ msalInstance.initialize();
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route >
-     {/* <Route path="/" element={<App />}> */}
+     <Route path="/" element={<App />}/>
       {/* Admin routes */}
       <Route path="/admin/" element={<RouteGuard role={"admin"} />}>
         <Route element={<AdminDashboard />}>
@@ -74,9 +77,11 @@ const router = createBrowserRouter(
 );
 
 ReactDOM.createRoot(document.getElementById("root")).render(
+  <Provider store={store}>
   <MantineProvider>
     <MsalProvider instance={msalInstance}>
       <RouterProvider router={router} />
     </MsalProvider>
   </MantineProvider>
+  </Provider>
 );

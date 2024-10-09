@@ -4,6 +4,7 @@ import { useNavigate, Outlet } from "react-router-dom";
 import axiosInstance from "../interceptors/axiosInstance";
 // import { useState } from "react";
 
+//Todo: Implement Redux store for user role and context
 function RouteGuard({ role }) {
 //   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
