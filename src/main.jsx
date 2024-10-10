@@ -15,8 +15,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authentication/auth.js";
 
 import App from "./App.jsx";
-// import Section from "./components/Section.jsx";
-// import StudentProfile from "./components/StudentProfile.jsx";
+
 import Opportunities from "./components/Opportunities.jsx";
 import OpportunityForm from "./components/OpportunityForm.jsx";
 import Applicants from "./components/Applicants.jsx";

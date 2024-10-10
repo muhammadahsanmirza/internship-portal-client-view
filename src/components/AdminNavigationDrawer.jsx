@@ -40,7 +40,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                 <div className="flex-grow">
                     <div className="flex flex-col justify-between mt-1">
                         <NavLink
-                            to="opportunities"
+                            to="/admin/opportunities"
                             className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
@@ -49,7 +49,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                         </NavLink>
 
                         <NavLink
-                            to="applicants"
+                            to="/admin/applicants"
                             className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
@@ -58,7 +58,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                         </NavLink>
 
                         <NavLink
-                            to="students"
+                            to="/admin/students"
                             className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
@@ -67,7 +67,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                         </NavLink>
 
                         <NavLink
-                            to="majors"
+                            to="/admin/majors"
                             className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
@@ -76,7 +76,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                         </NavLink>
 
                         <NavLink
-                            to="programs"
+                            to="/admin/programs"
                             className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >
@@ -85,7 +85,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                         </NavLink>
 
                         <NavLink
-                            to="colleges"
+                            to="/admin/colleges"
                             className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                             onClick={onClose}
                         >

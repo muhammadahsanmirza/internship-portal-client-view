@@ -1,32 +1,41 @@
-import "./App.css";
 import { useState, useEffect, useRef } from "react";
-
 import { useMsal, MsalAuthenticationTemplate } from "@azure/msal-react";
-import { InteractionRequiredAuthError } from "@azure/msal-browser";
 import { loginRequest } from "./authentication/auth";
 import { jwtDecode } from "jwt-decode";
 import { ErrorBoundary } from "react-error-boundary";
-
 import ErrorFallback from "./components/ErrorFallback";
-
 import AdminDashboard from "./components/AdminDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 import PageNotFound from "./components/PageNotFound";
+import Opportunities from "./components/Opportunities"; // Default component
 import axiosInstance from "./interceptors/axiosInstance";
-// import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-// import { selectUserDetails } from "./redux/slices/userSlice.js";
 import { setUserDetails } from "./redux/slices/userSlice.js";
-const MAX_RETRIES = 3; // Set a maximum retry limit
+import Sidebar from "./components/Sidebar.jsx";
+const MAX_RETRIES = 3;
 
 function App() {
-  // const [userRole, setUserRole] = useState(null);
-  // const [userContext, setUserContext] = useState(null);
-  console.log("APP----->");
+  const [role, setRole] = useState(null); // Holds the user's role (admin or student)
+  const [initialLoad, setInitialLoad] = useState(true); // Tracks if it's the initial render
+  const dispatch = useDispatch();
+
+  const getUserDetails = () => {
+    axiosInstance
+      .get("/user/detail")
+      .then((res) => {
+        setRole(res.data.data.role);
+        dispatch(setUserDetails(res.data.data));
+        console.log("App Component User Details-->", res.data.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching user details", err);
+      });
+  };
 
   const { instance, accounts } = useMsal();
   const refreshTokenTimeout = useRef(null);
-  const retryCount = useRef(0); // Track retry attempts
+  const retryCount = useRef(0);
+
   useEffect(() => {
     const fetchToken = async () => {
       if (accounts.length > 0) {
@@ -56,23 +65,21 @@ function App() {
     };
 
     fetchToken();
+    getUserDetails();
   }, [accounts, instance]);
 
   const handleTokenSuccess = (token) => {
     localStorage.setItem("idToken", token);
-    retryCount.current = 0; // Reset retry count on success
+    retryCount.current = 0;
     scheduleTokenRefresh(token);
   };
 
   const handleTokenFailure = (error) => {
-    console.error("Token acquisition error:", error);
     retryCount.current += 1;
-
     if (retryCount.current < MAX_RETRIES) {
-      scheduleTokenRefresh(); // Retry token acquisition
+      scheduleTokenRefresh();
     } else {
       console.error("Max retry attempts reached.");
-      // Optionally, log out the user or redirect to an error page.
     }
   };
 
@@ -80,7 +87,7 @@ function App() {
     const decodedToken = jwtDecode(token);
     const expiryTime = decodedToken.exp * 1000;
     const currentTime = new Date().getTime();
-    const timeout = expiryTime - currentTime - 5 * 60 * 1000; // Refresh 5 minutes before expiry
+    const timeout = expiryTime - currentTime - 5 * 60 * 1000;
 
     if (refreshTokenTimeout.current) {
       clearTimeout(refreshTokenTimeout.current);
@@ -108,43 +115,18 @@ function App() {
         interactionType="redirect"
         authenticationRequest={loginRequest}
       >
-        <AuthenticatedApp />
+        <Sidebar />
+        <div>
+          {role === "admin" ? (
+            <Opportunities />
+          ) : role === "student" ? (
+            <Opportunities />
+          ) : (
+            <PageNotFound />
+          )}
+        </div>
       </MsalAuthenticationTemplate>
     </ErrorBoundary>
-  );
-}
-
-function AuthenticatedApp() {
-  console.log("Authenticated App----->");
-
-  const [detail, setDetail] = useState(null);
-  const [role,setRole] = useState(null);
-  const dispatch = useDispatch();
-
-  // const { role, context } = useSelector(se
-  // console.log("Store role",role,"Store context-->",context);lectUserDetails);
-
-  useEffect(() => {
-    axiosInstance
-      .get("/user/detail")
-      .then((res) => {
-        console.log(res.data.data);
-        setDetail(res.data.data);
-        setRole(res.data.data.role);
-        dispatch(setUserDetails(res.data.data));
-      })
-      .catch((err) => {
-        console.error("Error fetching user details", err);
-        setDetail({});
-      });
-  }, []);
-  return (
-    <div>
-      {/* {role === "admin" ? <AdminDashboard /> 
-      : role === "student" ? <StudentDashboard />
-      : <PageNotFound />} */}
-      <div>{role}</div>
-    </div>
   );
 }
 
