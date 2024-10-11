@@ -25,7 +25,6 @@ function PageNotFound() {
                 <NavLink
                     to="/"
                     className="text-blue-500 ml-2 hover:text-blue-700"
-                    activeClassName="text-blue-700"
                 >
                     Home
                 </NavLink>

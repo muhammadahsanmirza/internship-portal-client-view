@@ -4,9 +4,10 @@ import { loginRequest } from "./authentication/auth";
 import { jwtDecode } from "jwt-decode";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./components/ErrorFallback";
-import AdminDashboard from "./components/AdminDashboard";
-import StudentDashboard from "./components/StudentDashboard";
-import PageNotFound from "./components/PageNotFound";
+// import AdminDashboard from "./components/AdminDashboard";
+// import StudentDashboard from "./components/StudentDashboard";
+// import PageNotFound from "./components/PageNotFound";
+import Section from "./components/Section";
 import Opportunities from "./components/Opportunities"; // Default component
 import axiosInstance from "./interceptors/axiosInstance";
 import { useDispatch } from "react-redux";
@@ -16,7 +17,6 @@ const MAX_RETRIES = 3;
 
 function App() {
   const [role, setRole] = useState(null); // Holds the user's role (admin or student)
-  const [initialLoad, setInitialLoad] = useState(true); // Tracks if it's the initial render
   const dispatch = useDispatch();
 
   const getUserDetails = () => {
@@ -116,15 +116,7 @@ function App() {
         authenticationRequest={loginRequest}
       >
         <Sidebar />
-        <div>
-          {role === "admin" ? (
-            <Opportunities />
-          ) : role === "student" ? (
-            <Opportunities />
-          ) : (
-            <PageNotFound />
-          )}
-        </div>
+        <div>{role === "admin" ? <Opportunities /> : <Section />}</div>
       </MsalAuthenticationTemplate>
     </ErrorBoundary>
   );
