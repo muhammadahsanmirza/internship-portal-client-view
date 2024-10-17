@@ -44,6 +44,7 @@ const MajorFormDialog = ({
 //   college_id = null,
 //   college_name = null,
 }) => {
+  console.log("Program Name-->",program_name)
   const {
     handleSubmit,
     control,

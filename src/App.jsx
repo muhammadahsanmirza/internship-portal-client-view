@@ -45,9 +45,11 @@ function App() {
           forceRefresh: true,
           account: account,
         };
-
+        // console.log("Login Request-->",loginRequest);
+        // console.log("Account-->",request.account);
         try {
           const response = await instance.acquireTokenSilent(request);
+          console.log("Response-->", response);
           handleTokenSuccess(response.idToken);
         } catch (error) {
           if (error instanceof InteractionRequiredAuthError) {
@@ -80,6 +82,7 @@ function App() {
       scheduleTokenRefresh();
     } else {
       console.error("Max retry attempts reached.");
+      console.errors(error);
     }
   };
 

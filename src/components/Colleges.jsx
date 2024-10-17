@@ -59,6 +59,8 @@ function Colleges() {
         .catch((error) => {
           setData([]); // Clear previous data
           setError(error.message);
+          console.log("error");
+
         })
         .finally(() => {
           setLoading(false);
