@@ -17,7 +17,7 @@ const userSlice = createSlice({
       state.role = null;
       state.context = null;
     }
-  },
+  }, 
 });
 
 // Export actions

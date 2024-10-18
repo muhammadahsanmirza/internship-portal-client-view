@@ -1,36 +1,20 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+
 import { useMsal, MsalAuthenticationTemplate } from "@azure/msal-react";
 import { loginRequest } from "./authentication/auth";
+import { InteractionRequiredAuthError } from '@azure/msal-common';
 import { jwtDecode } from "jwt-decode";
+
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./components/ErrorFallback";
-// import AdminDashboard from "./components/AdminDashboard";
-// import StudentDashboard from "./components/StudentDashboard";
-// import PageNotFound from "./components/PageNotFound";
-import Section from "./components/Section";
-import Opportunities from "./components/Opportunities"; // Default component
-import axiosInstance from "./interceptors/axiosInstance";
+import Dashboard from "./components/Dashboard.jsx";
+
 import { useDispatch } from "react-redux";
-import { setUserDetails } from "./redux/slices/userSlice.js";
-import Sidebar from "./components/Sidebar.jsx";
+import {clearUserDetails} from "./redux/slices/userSlice.js";
 const MAX_RETRIES = 3;
 
 function App() {
-  const [role, setRole] = useState(null); // Holds the user's role (admin or student)
   const dispatch = useDispatch();
-
-  const getUserDetails = () => {
-    axiosInstance
-      .get("/user/detail")
-      .then((res) => {
-        setRole(res.data.data.role);
-        dispatch(setUserDetails(res.data.data));
-        console.log("App Component User Details-->", res.data.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching user details", err);
-      });
-  };
 
   const { instance, accounts } = useMsal();
   const refreshTokenTimeout = useRef(null);
@@ -45,11 +29,8 @@ function App() {
           forceRefresh: true,
           account: account,
         };
-        // console.log("Login Request-->",loginRequest);
-        // console.log("Account-->",request.account);
         try {
           const response = await instance.acquireTokenSilent(request);
-          console.log("Response-->", response);
           handleTokenSuccess(response.idToken);
         } catch (error) {
           if (error instanceof InteractionRequiredAuthError) {
@@ -67,7 +48,13 @@ function App() {
     };
 
     fetchToken();
-    getUserDetails();
+
+
+    return () => {
+      if (refreshTokenTimeout.current) {
+        clearTimeout(refreshTokenTimeout.current);
+      }
+    };
   }, [accounts, instance]);
 
   const handleTokenSuccess = (token) => {
@@ -83,6 +70,7 @@ function App() {
     } else {
       console.error("Max retry attempts reached.");
       console.errors(error);
+      dispatch(clearUserDetails());
     }
   };
 
@@ -118,8 +106,7 @@ function App() {
         interactionType="redirect"
         authenticationRequest={loginRequest}
       >
-        <Sidebar />
-        <div>{role === "admin" ? <Opportunities /> : <Section />}</div>
+        <Dashboard />
       </MsalAuthenticationTemplate>
     </ErrorBoundary>
   );
