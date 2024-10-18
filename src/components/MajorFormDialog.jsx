@@ -37,14 +37,15 @@ const MajorFormDialog = ({
   onMajorUpdate,
   editMode = false,
   id = null,
-  program_name = null,
+  program_name = "",
   status = null,
+  program_id = "",
 //   description = "",
 //   coordinators = [],
-//   college_id = null,
 //   college_name = null,
 }) => {
   console.log("Program Name-->",program_name)
+  console.log("Program Id-->",program_id)
   const {
     handleSubmit,
     control,
@@ -56,7 +57,8 @@ const MajorFormDialog = ({
         ((status === true || status === false) &&
           (status ? "active" : "inactive")) ||
         "",
-      program_id:  "",
+      // program_id: String(program_id) || "",
+      program_id: program_id !== null ? String(program_id) : null,
     },
   });
   // Snackbar state for success and error messages
@@ -71,7 +73,6 @@ const MajorFormDialog = ({
     axiosInstance
       .get("/program/names")
       .then((res) => {
-        console.log("Programs-->", res.data.data);
         setPrograms(res.data.data);
       })
       .catch((err) => {
@@ -81,10 +82,7 @@ const MajorFormDialog = ({
 
   const onSubmit = (data) => {
     data.status = data.status === "active";
-    console.log("Type of college_id before Parsing-->", typeof(data.program_id));
     data.program_id = parseInt(data.program_id);
-    console.log("Type of college_id after Parsing-->", typeof(data.program_id));
-    console.log("Data for request body--->",data);
     if (!editMode) {
       axiosInstance
         .post("/major", data)
@@ -111,22 +109,18 @@ const MajorFormDialog = ({
         });
     }
     if (editMode) {
-      data.program_id = id;
-      console.log("Put Program Data-->", data);
+      data.program_id = program_id;
       axiosInstance
-        .put(`/program/${id}`, data)
+        .put(`/major/${id}`, data)
         .then((res) => {
-          console.log("put -->", res);
           setSnackbarMessage(res.statusText || "College updated successfully");
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
-          console.log("College updated successfully", res);
         })
         .catch((err) => {
-          setSnackbarMessage("Error Updating Program");
+          setSnackbarMessage(err.message || "Error Updating Program");
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
-          console.log("Error Updating Program", err.message);
         })
         .finally(() => {
           setTimeout(() => {

@@ -376,7 +376,7 @@ function Majors() {
           title={"Major"}
           open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
-          yesCallback={() => deleteMajor(programId)}
+          yesCallback={() => deleteMajor(majorId)}
         />
       )}
       {isCreateMajor && (
