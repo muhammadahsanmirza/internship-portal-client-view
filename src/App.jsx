@@ -70,7 +70,7 @@ function App() {
     } else {
       console.error("Max retry attempts reached.");
       console.errors(error);
-      dispatch(clearUserDetails());
+      // dispatch(clearUserDetails());
     }
   };
 

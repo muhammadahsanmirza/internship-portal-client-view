@@ -6,6 +6,8 @@ import { RxCrossCircled } from "react-icons/rx";
 import { FaListUl, FaGraduationCap } from "react-icons/fa6";
 import { GiDiploma } from "react-icons/gi";
 import { RiCollageFill } from "react-icons/ri";
+import { CgProfile } from "react-icons/cg";
+
 import { NavLink } from "react-router-dom";
 
 import { useMsal } from "@azure/msal-react";
@@ -14,7 +16,8 @@ import { useSelector } from "react-redux";
 import { selectUserDetails } from "../redux/slices/userSlice.js";
 
 function AdminNavigationDrawer({ isOpen, onClose }) {
-    const userDetails = useSelector(selectUserDetails);
+  const userDetails = useSelector(selectUserDetails);
+  console.log("Drawer User Details-->", userDetails);
   const { instance, accounts } = useMsal();
 
   const handleLogout = () => {
@@ -48,7 +51,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
 
             {userDetails.role === "student" && (
               <NavLink
-                to="opportunities"
+                to="/student/opportunities"
                 className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                 onClick={onClose}
               >
@@ -60,7 +63,7 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
             )}
             {userDetails.role === "student" && (
               <NavLink
-                to="profile"
+                to="/student/profile"
                 className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
                 onClick={onClose}
               >
@@ -68,61 +71,78 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
                 <span className="mx-4 text-center sm:text-left">Profile</span>
               </NavLink>
             )}
-            <NavLink
-              to="/admin/opportunities"
-              className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <BsFillMortarboardFill className="mx-4 text-xl" />
-              <span className="mx-4 text-center lg:text-left">
-                Opportunities
-              </span>
-            </NavLink>
 
-            <NavLink
-              to="/admin/applicants"
-              className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <BsPeopleFill className="mx-4 text-xl" />
-              <span className="mx-4 text-center sm:text-left">Applicants</span>
-            </NavLink>
+            {/* Admin Navigation Links */}
 
-            <NavLink
-              to="/admin/students"
-              className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <FaListUl className="mx-4 text-xl" />
-              <span className="mx-4 text-center sm:text-left">Students</span>
-            </NavLink>
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/opportunities"
+                className="flex flex-row  items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <BsFillMortarboardFill className="mx-4 text-xl" />
+                <span className="mx-4 text-center lg:text-left">
+                  Opportunities
+                </span>
+              </NavLink>
+            )}
 
-            <NavLink
-              to="/admin/majors"
-              className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <GiDiploma className="mx-4 text-xl" />
-              <span className="mx-4 text-center sm:text-left">Majors</span>
-            </NavLink>
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/applicants"
+                className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <BsPeopleFill className="mx-4 text-xl" />
+                <span className="mx-4 text-center sm:text-left">
+                  Applicants
+                </span>
+              </NavLink>
+            )}
 
-            <NavLink
-              to="/admin/programs"
-              className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <FaGraduationCap className="mx-4 text-xl" />
-              <span className="mx-4 text-center sm:text-left">Programs</span>
-            </NavLink>
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/students"
+                className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <FaListUl className="mx-4 text-xl" />
+                <span className="mx-4 text-center sm:text-left">Students</span>
+              </NavLink>
+            )}
 
-            <NavLink
-              to="/admin/colleges"
-              className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
-              onClick={onClose}
-            >
-              <RiCollageFill className="mx-4 text-xl" />
-              <span className="mx-4 text-center sm:text-left">Colleges</span>
-            </NavLink>
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/majors"
+                className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <GiDiploma className="mx-4 text-xl" />
+                <span className="mx-4 text-center sm:text-left">Majors</span>
+              </NavLink>
+            )}
+
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/programs"
+                className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <FaGraduationCap className="mx-4 text-xl" />
+                <span className="mx-4 text-center sm:text-left">Programs</span>
+              </NavLink>
+            )}
+
+            {userDetails.role === "admin" && (
+              <NavLink
+                to="/admin/colleges"
+                className="flex flex-row items-center py-4 rounded-3xl justify-start hover:cursor-pointer sm:justify-start w-full lg:hover:bg-slate-500"
+                onClick={onClose}
+              >
+                <RiCollageFill className="mx-4 text-xl" />
+                <span className="mx-4 text-center sm:text-left">Colleges</span>
+              </NavLink>
+            )}
           </div>
         </div>
         <div className="flex justify-center items-center mt-auto border-t-2">

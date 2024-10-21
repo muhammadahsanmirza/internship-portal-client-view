@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import axiosInstance from "../interceptors/axiosInstance";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,10 +32,13 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
+    <>
       <Sidebar />
-      <div>{userDetails.role === "admin" ? <Opportunities /> : <Section />}</div>
-    </div>
+      <div className="flex w-screen">
+        {userDetails.role === "admin" && <Opportunities />}
+      </div>
+      {userDetails.role === "student" && <Section />}
+    </>
   );
 }
 

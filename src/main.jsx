@@ -15,7 +15,7 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authentication/auth.js";
 
 import App from "./App.jsx";
-
+import Dashboard from "./components/Dashboard.jsx";
 import Opportunities from "./components/Opportunities.jsx";
 import OpportunityForm from "./components/OpportunityForm.jsx";
 import Applicants from "./components/Applicants.jsx";
@@ -32,17 +32,17 @@ import RouteGuard from "./components/RouteGuard.jsx";
 
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import { store } from './redux/store/store.js';
-import { Provider } from 'react-redux';
-
+import { store } from "./redux/store/store.js";
+import { Provider } from "react-redux";
+import Section from "./components/Section.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route >
-     <Route path="/" element={<App />}/>
+    <Route>
+      <Route path="/" element={<App />} />
       {/* Admin routes */}
       <Route path="/admin/" element={<RouteGuard role={"admin"} />}>
         <Route element={<AdminDashboard />}>
@@ -57,14 +57,10 @@ const router = createBrowserRouter(
           <Route path="*" element={<PageNotFound />} />
         </Route>
       </Route>
-
-      {/* Student Routes */}
-      <Route
-        path="/student/"
-        element={<RouteGuard allowedRoles={"student"} />}
-      >
+      <Route path="/student/" element={<RouteGuard role={"student"} />}>
         <Route element={<StudentDashboard />}>
-          <Route path="opportunities" element={<Opportunities />} />
+          <Route index element={<Navigate to="opportunities" />} />
+          <Route path="opportunities" element={<Section />} />
           <Route path="profile" element={<StudentProfile />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
@@ -77,10 +73,10 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-  <MantineProvider>
-    <MsalProvider instance={msalInstance}>
-      <RouterProvider router={router} />
-    </MsalProvider>
-  </MantineProvider>
+    <MantineProvider>
+      <MsalProvider instance={msalInstance}>
+        <RouterProvider router={router} />
+      </MsalProvider>
+    </MantineProvider>
   </Provider>
 );
