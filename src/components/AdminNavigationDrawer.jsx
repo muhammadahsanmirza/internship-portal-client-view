@@ -20,6 +20,10 @@ function AdminNavigationDrawer({ isOpen, onClose }) {
   console.log("Drawer User Details-->", userDetails);
   const { instance, accounts } = useMsal();
 
+  if (!userDetails.role) {
+    return null; // Wait until user details are available
+  }
+  
   const handleLogout = () => {
     localStorage.clear();
     instance.logout({ account: accounts[0] });
