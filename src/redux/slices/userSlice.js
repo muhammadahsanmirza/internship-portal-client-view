@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 
 const initialState = {
   role: null,
@@ -23,10 +24,16 @@ const userSlice = createSlice({
 // Export actions
 export const { setUserDetails, clearUserDetails } = userSlice.actions;
 
-// Selector to get user details (role and context)
-export const selectUserDetails = (state) => ({
-  role: state.user.role,
-  context: state.user.context,
-});
+// Base selector
+const selectUserState = (state) => state.user;
+
+// Memoized selector to get user details (role and context)
+export const selectUserDetails = createSelector(
+  [selectUserState],
+  (user) => ({
+    role: user.role,
+    context: user.context,
+  })
+);
 
 export default userSlice.reducer;

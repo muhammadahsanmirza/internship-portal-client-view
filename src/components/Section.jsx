@@ -39,15 +39,16 @@ function Section() {
             setLoading(true);
             axiosInstance
                 .get(`/opportunities?query_search=${querySearch}&program_id=${programId}`)
-                .then((response) => {
-                    const opportunities = response.data.data || [];
-                    console.log(opportunities);
+                .then((res) => {
+                    console.log(res);
+                    const opportunities = res.data.data || [];
+                    console.log(res);
                     setError(null);
                     setData(opportunities);
 
                     if (opportunities.length === 0) {
                         setSelectedCard(null);
-                        setError(response.data.message || 'No Opportunity Found');
+                        setError(res.data.message || 'No Opportunity Found');
                     }
                 })
                 .catch((error) => {

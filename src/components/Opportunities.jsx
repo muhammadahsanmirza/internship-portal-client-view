@@ -497,7 +497,7 @@ function Opportunities() {
           title={"Opportunity"}
           open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
-          yesCallback={() => deleteOpportunity(programId)}
+          yesCallback={() => deleteOpportunity(opportunityId)}
         />
       )}
       {isEditOpportunity && (

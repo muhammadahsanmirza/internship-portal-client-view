@@ -5,8 +5,9 @@ import { setUserDetails, selectUserDetails } from '../redux/slices/userSlice.js'
 import Sidebar from './Sidebar.jsx';
 import Section from './Section';
 import Opportunities from './Opportunities';
-
+import { saveState } from '../utils/localstorage.js';
 function Dashboard() {
+  console.log("Dashboard")
   const dispatch = useDispatch();
   const userDetails = useSelector(selectUserDetails);
 
@@ -23,9 +24,9 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    if (!userDetails.role) {
+    // if (!userDetails.role) {
       getUserDetails();
-    }
+    // }
   }, []);
 
   return (
