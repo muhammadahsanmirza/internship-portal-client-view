@@ -8,12 +8,8 @@ import Loader from "./Loader";
 
 function Students() {
   const [data, setData] = useState([]);
-  //   const [totalStudents, setTotalStudents] = useState(0);
   const [opportunitySearch, setOpportunitySearch] = useState("");
   const [studentSearch, setStudentSearch] = useState("");
-  //   const [currentPage, setCurrentPage] = useState(1);
-  //   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
-  //   const [totalPages, setTotalPages] = useState(0);
   const [programs, setPrograms] = useState([]);
   const [programId, setProgramId] = useState(0);
   const [majors, setMajors] = useState([]);
@@ -34,23 +30,15 @@ function Students() {
       console.log("Payload-->", payload);
       axiosInstance
         .get(`/students`, { params: payload })
-        .then((response) => {
-          console.log(response);
-          // console.log("response.data--->",response.data);
-          const newData = response.data;
+        .then((res) => {
+          console.log(res);
+          const newData = res.data;
 
-          // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            // setTotalStudents(response.data.total_records);
-            // setCurrentPage(response.data.current_page);
-            // setTotalPages(response.data.total_pages);
           } else {
             setData([]);
-            // setTotalStudents(0);
-            // setCurrentPage(null);
-            // setTotalPages(1);
-            setError(response.data.message || "No Applicant found");
+            setError(res.data.message || "No Applicant found");
           }
 
           setError(null);
@@ -69,18 +57,8 @@ function Students() {
       studentSearch,
       programId,
       majorId,
-      //   currentPage,
-      //   nextPrevPage,
     ]
   );
-
-  //   const btnArray = useMemo(() => {
-  //     const btnArray = [];
-  //     for (let i = 1; i < currentPage; i++) {
-  //       btnArray.push(i);
-  //     }
-  //     return btnArray;
-  //   }, [currentPage]);
 
   useEffect(() => {
     fetchApplicants();
@@ -93,8 +71,6 @@ function Students() {
     programId,
     fetchApplicants,
     majorId,
-    // currentPage,
-    // nextPrevPage,
   ]);
 
   useEffect(() => {
@@ -123,7 +99,6 @@ function Students() {
     setStudentSearch("");
     setProgramId(0);
     setMajorId(0);
-    // setCurrentPage(null)
   }
 
   const breadcrumbs = [

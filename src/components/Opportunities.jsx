@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +14,7 @@ import axiosInstance from "../interceptors/axiosInstance";
 import EditOpportunity from "./EditOpportunity";
 import Loader from "./Loader";
 import DeleteDialog from "./DeleteDialog";
-
+import Pagination from "./Pagination";
 const applicationStatus = [
   { id: 1, status: "Published", value: true },
   { id: 2, status: "Unpublished", value: false },
@@ -93,15 +93,7 @@ function Opportunities() {
     ]
   );
 
-  const btnArray = useMemo(() => {
-    const btnArray = [];
-    for (let i = 1; i < currentPage; i++) {
-      btnArray.push(i);
-    }
-    return btnArray;
-  }, [currentPage]);
-
-  // To Delete and Opportunity
+  // To Delete an Opportunity
 
   const deleteOpportunity = (id) => {
     axiosInstance
@@ -438,51 +430,16 @@ function Opportunities() {
               </tfoot>
             </table>
           </div>
-          <div className="flex flex-row justify-around  items-center py-4 bg-gray-100">
-            <div className="flex flex-col items-center md:flex-row sm:justify-around  md:justify-between text-xs">
-              <p className=" mx-0 md:mx-6">
-                Total Opportunities : {totalOpportunities}
-              </p>
-              <p className="mx-6">Page No. {currentPage}</p>
-            </div>
-            <div>
-              <button
-                className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                disabled={currentPage === 1}
-                onClick={() => {
-                  setNextPrevPage(currentPage - 1);
-                }}
-              >
-                Prev
-              </button>
-
-              {btnArray.length > 0 &&
-                btnArray?.map((btnValue) => (
-                  <button
-                    key={btnValue}
-                    className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                    onClick={() => setCurrentPage(btnValue)}
-                  >
-                    <p className="">{btnValue}</p>
-                  </button>
-                ))}
-              {currentPage > 3 && (
-                <button className="py-1 md:py-2 px-0 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
-                  ...
-                </button>
-              )}
-
-              <button
-                className="py-1 md:py-2 px-1 md:px-4 hover:bg-slate-200 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-                disabled={currentPage === totalPages}
-                onClick={() => {
-                  setNextPrevPage(currentPage + 1);
-                }}
-              >
-                Next
-              </button>
-            </div>
-          </div>
+          
+          <Pagination
+            totalText={"Opportunities"}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalOpportunities}
+            onPageChange={() => {
+              setNextPrevPage(currentPage + 1);
+            }}
+          />
         </div>
       </div>
       {isDialogOpen && (
