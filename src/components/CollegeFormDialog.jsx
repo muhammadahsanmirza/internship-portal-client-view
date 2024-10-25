@@ -22,6 +22,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axiosInstance from "../interceptors/axiosInstance";
 import ConfirmationDialog from "./ConfirmDialog";
+import DeleteDialog from "./DeleteDialog";
+
 // Custom theme for Material UI
 const theme = createTheme({
   palette: {
@@ -64,7 +66,8 @@ const CollegeFormDialog = ({
   const [users, setUsers] = useState([]);
   const [newAdminId, setNewAdminId] = useState("");
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-
+  const [adminId, setAdminId] = useState(null);
+  const [isDeleteAdmin, setIsDeleteAdmin] = useState(false);
   const handleOpenConfirmDialog = () => {
     setOpenConfirmDialog(true);
   };
@@ -72,6 +75,9 @@ const CollegeFormDialog = ({
   const handleCloseConfirmDialog = () => {
     setOpenConfirmDialog(false);
   };
+  const handleConfirmDelete = ()=>{
+    setIsDeleteAdmin(false);
+  }
   const handleCreateAdmin = () => {
     axiosInstance
       .post(`/college/admin/${id}`, null, { params: { admin_id: newAdminId } })
@@ -91,9 +97,9 @@ const CollegeFormDialog = ({
       .finally(() => {
         handleCloseConfirmDialog();
         onCollegeUpdate();
-        setTimeout(()=>{
-         close();
-       },800)        
+        setTimeout(() => {
+          close();
+        }, 800);
       });
   };
   const handleDeleteAdmin = (adminId) => {
@@ -117,9 +123,9 @@ const CollegeFormDialog = ({
       .finally(() => {
         handleCloseConfirmDialog();
         onCollegeUpdate();
-        setTimeout(()=>{
-         close();
-       },800)        
+        setTimeout(() => {
+          close();
+        }, 800);
       });
   };
   useEffect(() => {
@@ -138,7 +144,7 @@ const CollegeFormDialog = ({
 
   const onSubmit = (data) => {
     data.status = data.status === "active";
-    console.log("data-->",data);
+    console.log("data-->", data);
     if (!editMode) {
       axiosInstance
         .post("/college", data)
@@ -162,11 +168,11 @@ const CollegeFormDialog = ({
         });
     }
     if (editMode) {
-      console.log("put---->",data,id)
+      console.log("put---->", data, id);
       axiosInstance
         .put(`/college/${id}`, data)
         .then((res) => {
-          console.log('put -->',res)
+          console.log("put -->", res);
           setSnackbarMessage(res.statusText || "College updated successfully");
           setSnackbarSeverity("success");
           setSnackbarOpen(true);
@@ -192,153 +198,88 @@ const CollegeFormDialog = ({
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Dialog
-        open={open}
-        onClose={close}
-        fullWidth
-        PaperProps={{ style: { backgroundColor: "white", color: "black" } }}
-        sx={{ backdropFilter: "blur(5px)" }} // Apply blur effect to the background
-      >
-        {/* Dialog Header */}
-        <DialogTitle style={{ backgroundColor: "#172554", color: "white" }}>
-          <div className="flex justify-between items-center">
-            <span>{headerText}</span>
-            <IconButton onClick={close} style={{ color: "white" }}>
-              <CloseIcon />
-            </IconButton>
-          </div>
-        </DialogTitle>
+    <>
+      <ThemeProvider theme={theme}>
+        <Dialog
+          open={open}
+          onClose={close}
+          fullWidth
+          PaperProps={{ style: { backgroundColor: "white", color: "black" } }}
+          sx={{ backdropFilter: "blur(5px)" }} // Apply blur effect to the background
+        >
+          {/* Dialog Header */}
+          <DialogTitle style={{ backgroundColor: "#172554", color: "white" }}>
+            <div className="flex justify-between items-center">
+              <span>{headerText}</span>
+              <IconButton onClick={close} style={{ color: "white" }}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </DialogTitle>
 
-        {/* Dialog Content */}
-        <DialogContent>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            style={{ backgroundColor: "white" }}
-          >
-            {/* College Name Input */}
-            <Controller
-              name="name"
-              control={control}
-              rules={{
-                required: "College Name is required",
-                pattern: {
-                  value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
-                  message:
-                    "College Name cannot be only numbers or special characters",
-                },
-              }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="College Name"
-                  variant="outlined"
-                  fullWidth
-                  margin="normal"
-                  error={!!errors.name}
-                  helperText={
-                    errors.name ? errors.name.message : ""
-                  }
-                  sx={{
-                    color: "#44403c",
-                    "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
-                    "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
-                  }}
-                />
-              )}
-            />
-            {/* Status Dropdown */}
-            <FormControl fullWidth margin="normal" error={!!errors.status}>
-              <InputLabel id="status-label" sx={{ color: "#44403c" }}>
-                Status
-              </InputLabel>
+          {/* Dialog Content */}
+          <DialogContent>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              style={{ backgroundColor: "white" }}
+            >
+              {/* College Name Input */}
               <Controller
-                name="status"
+                name="name"
                 control={control}
+                rules={{
+                  required: "College Name is required",
+                  pattern: {
+                    value: /^(?=.*[A-Za-z])[\S\sA-Za-z0-9]*$/,
+                    message:
+                      "College Name cannot be only numbers or special characters",
+                  },
+                }}
                 render={({ field }) => (
-                  <Select
+                  <TextField
                     {...field}
-                    labelId="status-label"
-                    id="status-select"
-                    label="Status"
+                    label="College Name"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    error={!!errors.name}
+                    helperText={errors.name ? errors.name.message : ""}
                     sx={{
                       color: "#44403c",
-                      "& .MuiSvgIcon-root": { color: "#44403c" },
+                      "& .MuiInputLabel-root": { color: "#9CA3AF" }, // Tailwind gray-400 for label
+                      "& .MuiOutlinedInput-root": { color: "#44403c" }, // Change text color to Gray
                     }}
-                  >
-                    <MenuItem value="">
-                      <em>Select Status</em>
-                    </MenuItem>
-                    <MenuItem value="active" sx={{ color: "#44403c" }}>
-                      Active
-                    </MenuItem>
-                    <MenuItem value="inactive" sx={{ color: "#44403c" }}>
-                      Inactive
-                    </MenuItem>
-                  </Select>
+                  />
                 )}
               />
-              {errors.status && (
-                <p style={{ color: "red" }}>{errors.status.message}</p>
-              )}
-            </FormControl>
-            {/* Admins List */}
-            {editMode && (
-              <div>
-                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
-                  Admins:
-                </InputLabel>
-                {admins?.map((admin) => (
-                  <Chip
-                    key={admin.user_id}
-                    label={admin.user_name}
-                    size="medium"
-                    variant="outlined"
-                    color="info"
-                    onDelete={() => handleDeleteAdmin(admin.user_id)}
-                    // className="m-10"
-                    style={{ margin: "0.2em" }}
-                  />
-                ))}
-              </div>
-            )}
-            {/* Admins Dropdown */}
-            {editMode && (
+              {/* Status Dropdown */}
               <FormControl fullWidth margin="normal" error={!!errors.status}>
-                <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
-                  Admin
+                <InputLabel id="status-label" sx={{ color: "#44403c" }}>
+                  Status
                 </InputLabel>
                 <Controller
-                  name="admin"
+                  name="status"
                   control={control}
                   render={({ field }) => (
                     <Select
                       {...field}
-                      labelId="admin-label"
-                      id="admin-select"
-                      value={String(newAdminId)}
-                      onChange={(e) => {
-                        setNewAdminId(e.target.value);
-                        handleOpenConfirmDialog();
-                      }}
-                      label="admin"
+                      labelId="status-label"
+                      id="status-select"
+                      label="Status"
                       sx={{
                         color: "#44403c",
                         "& .MuiSvgIcon-root": { color: "#44403c" },
                       }}
                     >
                       <MenuItem value="">
-                        <em>Select Admin</em>
+                        <em>Select Status</em>
                       </MenuItem>
-                      {users?.map((user) => (
-                        <MenuItem
-                          key={user.id}
-                          value={user.id}
-                          sx={{ color: "#44403c" }}
-                        >
-                          {user.name}
-                        </MenuItem>
-                      ))}
+                      <MenuItem value="active" sx={{ color: "#44403c" }}>
+                        Active
+                      </MenuItem>
+                      <MenuItem value="inactive" sx={{ color: "#44403c" }}>
+                        Inactive
+                      </MenuItem>
                     </Select>
                   )}
                 />
@@ -346,51 +287,126 @@ const CollegeFormDialog = ({
                   <p style={{ color: "red" }}>{errors.status.message}</p>
                 )}
               </FormControl>
-            )}
-          </form>
-        </DialogContent>
+              {/* Admins List */}
+              {editMode && (
+                <div>
+                  <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
+                    Admins:
+                  </InputLabel>
+                  {admins?.map((admin) => (
+                    <Chip
+                      key={admin.user_id}
+                      label={admin.user_name}
+                      size="medium"
+                      variant="outlined"
+                      color="info"
+                      onDelete={() => {
+                        setAdminId(admin.user_id)
+                        setIsDeleteAdmin(true);
+                      }}
+                      style={{ margin: "0.2em" }}
+                    />
+                  ))}
+                </div>
+              )}
+              {/* Admins Dropdown */}
+              {editMode && (
+                <FormControl fullWidth margin="normal" error={!!errors.status}>
+                  <InputLabel id="admin-label" sx={{ color: "#44403c" }}>
+                    Admin
+                  </InputLabel>
+                  <Controller
+                    name="admin"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        labelId="admin-label"
+                        id="admin-select"
+                        value={String(newAdminId)}
+                        onChange={(e) => {
+                          setNewAdminId(e.target.value);
+                          handleOpenConfirmDialog();
+                        }}
+                        label="admin"
+                        sx={{
+                          color: "#44403c",
+                          "& .MuiSvgIcon-root": { color: "#44403c" },
+                        }}
+                      >
+                        <MenuItem value="">
+                          <em>Select Admin</em>
+                        </MenuItem>
+                        {users?.map((user) => (
+                          <MenuItem
+                            key={user.id}
+                            value={user.id}
+                            sx={{ color: "#44403c" }}
+                          >
+                            {user.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                  {errors.status && (
+                    <p style={{ color: "red" }}>{errors.status.message}</p>
+                  )}
+                </FormControl>
+              )}
+            </form>
+          </DialogContent>
 
-        {/* Dialog Actions */}
-        <DialogActions sx={{ borderTop: "1px solid #ccc" }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="success"
-            onClick={handleSubmit(onSubmit)}
-          >
-            {headerText}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {/* Dialog Actions */}
+          <DialogActions sx={{ borderTop: "1px solid #ccc" }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="success"
+              onClick={handleSubmit(onSubmit)}
+            >
+              {headerText}
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-      <Portal>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={3000}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          sx={{ zIndex: 9999 }} // You can still add a high z-index
-        >
-          <Alert
+        <Portal>
+          <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000}
             onClose={handleSnackbarClose}
-            severity={snackbarSeverity}
-            sx={{ width: "100%" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            sx={{ zIndex: 9999 }} // You can still add a high z-index
           >
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
-      </Portal>
-      {editMode && openConfirmDialog && (
-        <ConfirmationDialog
-          modalTitle={"Do You want to add new Admin?"}
-          open={openConfirmDialog}
-          close={() => handleCloseConfirmDialog()}
-          confirmOperation={handleCreateAdmin}
-          pathId={id}
-          queryId={newAdminId}
+            <Alert
+              onClose={handleSnackbarClose}
+              severity={snackbarSeverity}
+              sx={{ width: "100%" }}
+            >
+              {snackbarMessage}
+            </Alert>
+          </Snackbar>
+        </Portal>
+        {editMode && openConfirmDialog && (
+          <ConfirmationDialog
+            modalTitle={"Do You want to add new Admin?"}
+            open={openConfirmDialog}
+            close={() => handleCloseConfirmDialog()}
+            confirmOperation={handleCreateAdmin}
+            pathId={id}
+            queryId={newAdminId}
+          />
+        )}
+      </ThemeProvider>
+      {isDeleteAdmin && (
+        <DeleteDialog
+          title={"Admin"}
+          open={isDeleteAdmin}
+          noCallback={handleConfirmDelete}
+          yesCallback={() => handleDeleteAdmin(adminId)}
         />
       )}
-    </ThemeProvider>
+    </>
   );
 };
 
