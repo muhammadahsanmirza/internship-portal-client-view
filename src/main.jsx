@@ -27,7 +27,6 @@ import PageNotFound from "./components/PageNotFound.jsx";
 import AdminDashboard from "./components/AdminDashboard.jsx";
 import StudentDashboard from "./components/StudentDashboard.jsx";
 import StudentProfile from "./components/StudentProfile.jsx";
-// import Rbac from "./components/Rbac.jsx";
 import RouteGuard from "./components/RouteGuard.jsx";
 
 import "@mantine/core/styles.css";
