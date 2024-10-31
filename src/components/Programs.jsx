@@ -11,6 +11,7 @@ import ProgramFormDialog from "./ProgramFormDialog";
 import DeleteDialog from "./DeleteDialog";
 import Loader from "./Loader";
 import Pagination from "./Pagination";
+import { LegendToggle } from "@mui/icons-material";
 function Programs() {
   const [data, setData] = useState([]);
   const [totalPrograms, setTotalPrograms] = useState(0);
@@ -81,12 +82,20 @@ function Programs() {
     axiosInstance
       .delete(`/program/${id}`)
       .then((res) => {
+        console.log("then");
         const message = res.data.message || "Program deleted successfully.";
         toast.success(message, { transition: Slide });
         fetchPrograms(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage = err.response?.data || "Failed to delete program.";
+        console.log("catch");
+        console.log("Err msg-->",err.message);
+        
+        let errorMessage = err.response?.data || "Failed to delete program.";
+        if (err.response && err.response.status === 409) {
+          errorMessage = "Program cannot be deleted, Majors Exist in program";
+      }
+  
         console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
