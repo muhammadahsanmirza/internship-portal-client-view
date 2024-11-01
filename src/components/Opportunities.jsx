@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoIosAddCircleOutline } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
-import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import Header from "./Header";
@@ -191,7 +190,7 @@ function Opportunities() {
         <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">
           Opportunities
         </p>
-        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-0 ">
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-wrap md:justify-between my-4 mx-0 ">
           <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
             <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
@@ -259,8 +258,8 @@ function Opportunities() {
           </div>
 
           {/* Buttons */}
-          <div className="flex flex-col md:flex-row-reverse lg:flex-row mx-2 md:mx-0  sm:mt-0 md:mx-18  gap-0 md:gap-0 lg:gap-0 xl:ml-36 justify-evenly sm:justify-around md:justify-start xl:justify-evenly">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 md:mx-2 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+          <div className="flex flex-col md:flex-row-reverse lg:flex-row mx-2 md:mx-0  sm:mt-0 md:mx-18  gap-0 md:gap-0 lg:gap-0 lg:ml-0  justify-evenly sm:justify-around md:justify-start xl:justify-around">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 md:mx-2 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 lg:w-32 lg:h-8 lg:mx-2">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -271,7 +270,7 @@ function Opportunities() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-2 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-2 lg:w-32 lg:h-8 lg:mx-2 ">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"

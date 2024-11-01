@@ -29,13 +29,11 @@ function Dashboard() {
   }, []);
 
   return (
-    <>
+    <div className='flex sm:flex-row h-screen'>
       <Sidebar />
-      <div className="flex w-screen">
-        {userDetails.role === 'admin' && <Opportunities />}
-      </div>
+      {userDetails.role === 'admin' && <Opportunities />}
       {userDetails.role === 'student' && <Section />}
-    </>
+    </div>
   );
 }
 

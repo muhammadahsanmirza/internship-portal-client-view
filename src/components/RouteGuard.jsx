@@ -2,14 +2,13 @@
 import { useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import axiosInstance from "../interceptors/axiosInstance";
-// import { useState } from "react";
-
+import { getToken } from "../utils/TokenManager";
 function RouteGuard({ role }) {
 //   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("idToken");
+console.log("Route Gaurd Component");
+  useEffect( () => {
+    const token =  getToken();
     if (!token) {
       navigate("/notFound");
       return;
