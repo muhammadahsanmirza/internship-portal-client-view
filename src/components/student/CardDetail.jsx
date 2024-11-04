@@ -1,14 +1,15 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import parse from 'html-react-parser';
-import axiosInstance from '../interceptors/axiosInstance';
-import ResumeDialog from './ResumeDialog';
 import { CiGlobe } from 'react-icons/ci';
 import { RxCross2 } from 'react-icons/rx';
 import { SlCalender } from 'react-icons/sl';
 import { GoClockFill } from 'react-icons/go';
 import { TiWarning } from 'react-icons/ti';
 import { FaSpinner } from 'react-icons/fa';
+import axiosInstance from '../../interceptors/axiosInstance';
+
+import {ResumeDialog} from '../index.js';
 
 function CardDetail({ card, setApplied, onClose }) {
   const [completeProfile, setCompleteProfile] = useState(false);

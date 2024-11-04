@@ -2,10 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import JoditEditor from "jodit-react";
 import { useForm } from "react-hook-form";
-import axiosInstance from "../interceptors/axiosInstance";
-import Header from "./Header";
+import axiosInstance from "../../interceptors/axiosInstance";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+
+import {Header} from "../index.js";
 
 const breadcrumbs = [
   { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },

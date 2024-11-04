@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import Header from "./Header";
-import Loader from "./Loader";
-import axiosInstance from "../interceptors/axiosInstance";
+
+import axiosInstance from "../../interceptors/axiosInstance";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { SiAdobeacrobatreader } from "react-icons/si";
 import { MdFileDownload, MdFileUpload } from "react-icons/md";
 import { TiWarning } from "react-icons/ti";
-
 import { ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ResumeDialog from "./ResumeDialog";
+
+import {ResumeDialog, Header, Loader} from "../index.js";
 
 function StudentProfile() {
   const breadcrumbs = [

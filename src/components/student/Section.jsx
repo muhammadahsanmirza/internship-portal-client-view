@@ -1,13 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import axiosInstance from '../interceptors/axiosInstance';
+import axiosInstance from '../../interceptors/axiosInstance';
 import { IoIosSearch } from 'react-icons/io';
 import { RiCloseCircleLine } from 'react-icons/ri';
 import { debounce } from 'lodash';
 
-import Card from './Card';
-import CardDetail from './CardDetail';
-import Header from './Header';
-import Loader from './Loader';
+import {Card, CardDetail, Header, Loader} from '../index.js'
 
 function Section() {
     const [activeDetail, setActiveDetail] = useState(false);

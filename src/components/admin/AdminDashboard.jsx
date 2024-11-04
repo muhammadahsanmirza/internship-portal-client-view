@@ -1,4 +1,4 @@
-import Sidebar from './Sidebar'
+import {Sidebar} from '../index.js'
 import { Outlet } from 'react-router-dom'
 function AdminDashboard() {
   console.log('Admin Dashboard');

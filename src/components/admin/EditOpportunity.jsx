@@ -4,7 +4,7 @@ import { RxCross2 } from "react-icons/rx";
 import JoditEditor from "jodit-react";
 // import 'jodit/build/jodit.min.css';
 import { useForm } from "react-hook-form";
-import axiosInstance from "../interceptors/axiosInstance";
+import axiosInstance from "../../interceptors/axiosInstance";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 function EditOpportunity(props) {

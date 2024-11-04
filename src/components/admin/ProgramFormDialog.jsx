@@ -21,9 +21,10 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import axiosInstance from "../interceptors/axiosInstance";
-import ConfirmationDialog from "./ConfirmDialog";
-import DeleteDialog from "./DeleteDialog";
+import axiosInstance from "../../interceptors/axiosInstance";
+
+import {ConfirmationDialog, DeleteDialog} from '../index.js'
+
 // Custom theme for Material UI
 const theme = createTheme({
   palette: {

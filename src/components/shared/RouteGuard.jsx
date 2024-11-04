@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
-import axiosInstance from "../interceptors/axiosInstance";
-import { getToken } from "../utils/TokenManager";
+import axiosInstance from "../../interceptors/axiosInstance";
+import { getToken } from "../../utils/TokenManager";
 function RouteGuard({ role }) {
 //   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -20,12 +20,12 @@ console.log("Route Gaurd Component");
 
         console.log("RouteGuard",userDetail.role,"Role prop-->",role);
         if (userDetail.role !== role) {
-          navigate("/notFound"); // Unauthorized access to role-based routes
+          navigate("/"); // Unauthorized access to role-based routes
         }
       })
       .catch((err) => {
         console.error("Error fetching user details", err);
-        navigate("/notFound");
+        navigate("/");
       })
     //   .finally(() => setLoading(false));
   }, [role, navigate]);

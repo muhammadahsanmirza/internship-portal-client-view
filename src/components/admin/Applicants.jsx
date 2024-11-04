@@ -3,10 +3,10 @@ import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
 import { debounce, isArray } from "lodash";
-import Header from "./Header";
-import Loader from "./Loader";
-import Pagination from "./Pagination";
-import axiosInstance from "../interceptors/axiosInstance";
+import axiosInstance from "../../interceptors/axiosInstance";
+
+
+import {Header, Loader, Pagination} from '../index.js'
 
 function Applicants() {
   const [data, setData] = useState([]);

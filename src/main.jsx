@@ -15,25 +15,26 @@ import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./authentication/auth.js";
 
 import App from "./App.jsx";
-import Dashboard from "./components/Dashboard.jsx";
-import Opportunities from "./components/Opportunities.jsx";
-import OpportunityForm from "./components/OpportunityForm.jsx";
-import Applicants from "./components/Applicants.jsx";
-import Students from "./components/Students.jsx";
-import Majors from "./components/Majors.jsx";
-import Programs from "./components/Programs.jsx";
-import Colleges from "./components/Colleges.jsx";
-import PageNotFound from "./components/PageNotFound.jsx";
-import AdminDashboard from "./components/AdminDashboard.jsx";
-import StudentDashboard from "./components/StudentDashboard.jsx";
-import StudentProfile from "./components/StudentProfile.jsx";
-import RouteGuard from "./components/RouteGuard.jsx";
+import {
+  Opportunities,
+  OpportunityForm,
+  Applicants,
+  Students,
+  Majors,
+  Programs,
+  Colleges,
+  PageNotFound,
+  AdminDashboard,
+  StudentDashboard,
+  StudentProfile,
+  RouteGuard,
+  Section,
+} from "./components/index.js"
 
 import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import { store } from "./redux/store/store.js";
 import { Provider } from "react-redux";
-import Section from "./components/Section.jsx";
 
 const msalInstance = new PublicClientApplication(msalConfig);
 msalInstance.initialize();

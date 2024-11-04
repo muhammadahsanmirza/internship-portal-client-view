@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from "react";
 import { RxCrossCircled } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { debounce, isArray } from "lodash";
-import Header from "./Header";
-import axiosInstance from "../interceptors/axiosInstance";
-import Loader from "./Loader";
+import axiosInstance from "../../interceptors/axiosInstance";
+
+import {Header, Loader} from '../index.js'
 
 function Students() {
   const [data, setData] = useState([]);

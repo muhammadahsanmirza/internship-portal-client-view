@@ -6,12 +6,12 @@ import { loginRequest } from "./authentication/auth";
 // import { jwtDecode } from "jwt-decode";
 import { getToken } from "./utils/TokenManager.js";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallback from "./components/ErrorFallback";
-import Dashboard from "./components/Dashboard.jsx";
 
 import { useDispatch } from "react-redux";
 import { clearUserDetails } from "./redux/slices/userSlice.js";
-import Loader from "./components/Loader.jsx";
+
+import {Dashboard, Loader, ErrorFallback} from "./components/index.js";
+
 const MAX_RETRIES = 3;
 
 function App() {

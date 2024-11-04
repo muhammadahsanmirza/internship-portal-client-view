@@ -12,7 +12,7 @@ import { NavLink } from "react-router-dom";
 import { useMsal } from "@azure/msal-react";
 
 import { useSelector } from "react-redux";
-import { selectUserDetails } from "../redux/slices/userSlice.js";
+import { selectUserDetails } from "../../redux/slices/userSlice.js";
 
 function NavigationDrawer({ isOpen, onClose }) {
   const userDetails = useSelector(selectUserDetails);

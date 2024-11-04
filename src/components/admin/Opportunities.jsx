@@ -7,13 +7,10 @@ import { IoIosSearch, IoIosAddCircleOutline } from "react-icons/io";
 import { TbBulb } from "react-icons/tb";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
-import Header from "./Header";
-import ViewOpportunity from "./ViewOpportunity";
-import axiosInstance from "../interceptors/axiosInstance";
-import EditOpportunity from "./EditOpportunity";
-import Loader from "./Loader";
-import DeleteDialog from "./DeleteDialog";
-import Pagination from "./Pagination";
+import axiosInstance from "../../interceptors/axiosInstance";
+
+import {Header, ViewOpportunity, EditOpportunity, Loader, DeleteDialog, Pagination} from '../index.js'
+
 const applicationStatus = [
   { id: 1, status: "Published", value: true },
   { id: 2, status: "Unpublished", value: false },

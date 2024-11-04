@@ -6,50 +6,56 @@ import { IoIosSearch } from "react-icons/io";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
-import Header from "./Header";
-import CollegeFormDialog from "./CollegeFormDialog";
-import axiosInstance from "../interceptors/axiosInstance";
-import DeleteDialog from "./DeleteDialog";
-import Loader from "./Loader";
-import Pagination from "./Pagination";
-function Colleges() {
+import axiosInstance from "../../interceptors/axiosInstance";
+
+import {Header, MajorFormDialog, Loader, DeleteDialog, Pagination} from '../index.js'
+
+function Majors() {
   const [data, setData] = useState([]);
-  const [totalColleges, setTotalColleges] = useState(0);
-  const [collegeSearch, setCollegeSearch] = useState("");
+  const [totalMajors, setTotalMajors] = useState(0);
+  const [majorSearch, setMajorSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
-  const [college, setCollege] = useState(null);
-  const [collegeId, setCollegeId] = useState(null);
-  const [isCreateCollege, setIsCreateCollege] = useState(false);
-  const [isEditCollege, setIsEditCollege] = useState(false);
+  const [programs, setPrograms] = useState([]);
+  const [programId, setProgramId] = useState(0);
+  const [majorId, setMajorId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
+  const [major, setMajor] = useState(null);
+  const [isCreateMajor, setIsCreateMajor] = useState(false);
+  const [isEditMajor, setIsEditMajor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchColleges = useCallback(
+  const handleOpenMajorDialog = () => setIsCreateMajor(true);
+  const handleCloseMajorDialog = () => setIsCreateMajor(false);
+  const handleCloseEditMajorDialog = () => setIsEditMajor(false);
+
+  const fetchMajors = useCallback(
     debounce(() => {
       setLoading(true);
       const payload = {
-        college_name: collegeSearch || undefined,
+        major_name: majorSearch || undefined,
+        program_id: programId || undefined,
         page_number: nextPrevPage || currentPage || undefined,
       };
       axiosInstance
-        .get(`/colleges`, { params: payload })
+        .get(`/majors`, { params: payload })
         .then((res) => {
-          console.log(res.data);
+          console.log("MAJORS===>", res);
           const newData = res.data.data;
+
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalColleges(res.data.total_records);
+            setTotalMajors(res.data.total_records);
             setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
             setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
-            setTotalColleges(0);
+            setTotalMajors(0);
             setCurrentPage(1);
             setTotalPages(1);
             setError(res.data.message || "No opportunities found");
@@ -60,28 +66,28 @@ function Colleges() {
         .catch((error) => {
           setData([]); // Clear previous data
           setError(error.message);
-          console.log("error");
         })
         .finally(() => {
           setLoading(false);
           setNextPrevPage(null);
         });
     }, 800),
-    [collegeSearch, collegeId, currentPage, nextPrevPage]
+    [majorSearch, programId, currentPage, nextPrevPage]
   );
 
-  // To Delete and Opportunity
 
-  const deleteCollege = (id) => {
+
+  const deleteMajor = (id) => {
     axiosInstance
-      .delete(`/college/${id}`)
+      .delete(`/major/${id}`)
       .then((res) => {
-        const message = res.data.message || "College deleted successfully.";
+        const message = res.data.message || "Major deleted successfully.";
         toast.success(message, { transition: Slide });
-        fetchColleges(); // Refresh the list after deletion
+        setMajorId(null);
+        fetchMajors(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage = err.response?.data || "Failed to delete College.";
+        const errorMessage = err.response?.data || "Failed to delete Major.";
         console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
@@ -94,54 +100,76 @@ function Colleges() {
   const closeConfirmDialog = () => {
     setConfirmDialogOpen(false);
   };
-  // To Close Edit College Dialog
-  const handleOpenCollegeDialog = () => setIsCreateCollege(true);
-  const handleCloseCollegeDialog = () => setIsCreateCollege(false);
-  const handleCloseEditCollegeDialog = () => setIsEditCollege(false);
 
   useEffect(() => {
-    fetchColleges();
+    fetchMajors();
     return () => {
-      fetchColleges.cancel();
+      fetchMajors.cancel();
     };
-  }, [collegeSearch, collegeId, fetchColleges, currentPage, nextPrevPage]);
+  }, [majorSearch, programId, fetchMajors, currentPage, nextPrevPage]);
+
+  useEffect(() => {
+    axiosInstance
+      .get("/program/names")
+      .then((res) => {
+        setPrograms(res.data.data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }, []);
 
   function handleClearFilter() {
-    setCollegeSearch("");
-    setCollegeId(0);
+    setMajorSearch("");
+    setProgramId(0);
   }
 
   const breadcrumbs = [
     { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
-    { title: "College", href: "#", isDisabled: true },
+    { title: "Majors", href: "#", isDisabled: true },
   ];
 
   return (
-    <div className="w-full sm:mt-0 lg:ml-20 z-0 overflow-x-hidden">
+    <div className="w-full sm:mt-0 lg:ml-20 z-0 ">
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Colleges</p>
-        <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 ">
-          <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap lg:gap-0 mx-2">
-            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Majors</p>
+        <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
+          <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
-                placeholder="Search college name"
+                placeholder="Search major name"
                 className="w-full text-xs outline-none px-1"
-                onChange={(e) => setCollegeSearch(e.target.value)}
-                value={collegeSearch}
+                onChange={(e) => setMajorSearch(e.target.value)}
+                value={majorSearch}
                 disabled={loading || error}
               />
               <button className="flex items-center justify-center w-12">
                 <IoIosSearch className="text-lg" />
               </button>
             </div>
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+              <select
+                className="w-full text-sm px-2 outline-none"
+                value={programId}
+                disabled={loading || error}
+                onChange={(e) => {
+                  setProgramId(e.target.value);
+                }}
+              >
+                <option value="">Select Program</option>
+                {programs?.map((program) => (
+                  <option key={program.id} value={program.id}>
+                    {program.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-
-          {/* Buttons */}
-          <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 md:justify-between gap-0 md:gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+          <div className="flex flex-col md:flex-row-reverse lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 gap-0 md:gap-0 lg:gap-0 xl:ml-36 xl:justify-evenly">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <RxCrossCircled />
               <button
                 className=" text-xs"
@@ -152,15 +180,15 @@ function Colleges() {
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-80 md:h-10 md:mx-0 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
               <IoIosAddCircleOutline className="text-white" />
               <button
                 className=" text-xs"
                 style={{ minWidth: "100px", padding: "5px 10px" }}
-                onClick={handleOpenCollegeDialog}
+                onClick={handleOpenMajorDialog}
                 disabled={loading || error}
               >
-                CREATE COLLEGE
+                CREATE MAJOR
               </button>
             </div>
           </div>
@@ -178,12 +206,23 @@ function Colleges() {
                   >
                     #
                   </th>
-
                   <th
                     scope="col"
                     className="px-6 py-3 text-center align-middle"
                   >
                     Name
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    Program
+                  </th>
+                  <th
+                    scope="col"
+                    className="px-6 py-3 text-center align-middle"
+                  >
+                    College
                   </th>
 
                   <th
@@ -202,16 +241,22 @@ function Colleges() {
               </thead>
               {data.length !== 0 && (
                 <tbody>
-                  {data?.map((college) => (
-                    <tr key={college.id}>
+                  {data?.map((major) => (
+                    <tr key={major.id}>
                       <td className="px-6 py-4 text-center align-middle">
-                        {college.id}
+                        {major.id}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {college.college_name}
+                        {major.name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {college.status ? (
+                        {major.program_name}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {major.college_name}
+                      </td>
+                      <td className="px-6 py-4 text-center align-middle">
+                        {major.status ? (
                           <span className="text-green-600 px-4 inline-block">
                             <BsCheckCircle />
                           </span>
@@ -226,8 +271,9 @@ function Colleges() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setIsEditCollege(true);
-                              setCollege(college);
+                              setMajor(major);
+                              setIsEditMajor(true);
+                              console.log(major);
                             }}
                           >
                             Edit
@@ -236,8 +282,7 @@ function Colleges() {
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              console.log("Button Clicked");
-                              setCollegeId(college.id);
+                              setMajorId(major.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -271,11 +316,12 @@ function Colleges() {
               </tfoot>
             </table>
           </div>
+
           <Pagination
-            totalText={"Colleges"}
+            totalText={"Majors"}
             currentPage={currentPage}
             totalPages={totalPages}
-            totalItems={totalColleges}
+            totalItems={totalMajors}
             onPageChange={() => {
               setNextPrevPage(currentPage + 1);
             }}
@@ -284,28 +330,28 @@ function Colleges() {
       </div>
       {confirmDialogOpen && (
         <DeleteDialog
-          title={"College"}
+          title={"Major"}
           open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
-          yesCallback={() => deleteCollege(collegeId)}
+          yesCallback={() => deleteMajor(majorId)}
         />
       )}
-      {isCreateCollege && (
-        <CollegeFormDialog
-          headerText={"Create College"}
-          open={isCreateCollege}
-          close={() => handleCloseCollegeDialog()}
-          onCollegeUpdate={fetchColleges}
+      {isCreateMajor && (
+        <MajorFormDialog
+          headerText={"Create Major"}
+          open={isCreateMajor}
+          close={() => handleCloseMajorDialog()}
+          onMajorUpdate={fetchMajors}
         />
       )}
-      {isEditCollege && (
-        <CollegeFormDialog
-          headerText={"Update College"}
-          open={isEditCollege}
-          close={() => handleCloseEditCollegeDialog()}
-          onCollegeUpdate={fetchColleges}
+      {isEditMajor && (
+        <MajorFormDialog
+          headerText={"Update Major"}
+          open={isEditMajor}
+          close={() => handleCloseEditMajorDialog()}
+          onMajorUpdate={fetchMajors}
           editMode={true}
-          {...college}
+          {...major}
         />
       )}
 
@@ -325,4 +371,4 @@ function Colleges() {
   );
 }
 
-export default Colleges;
+export default Majors;

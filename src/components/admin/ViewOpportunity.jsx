@@ -7,7 +7,7 @@ import { SlCalender } from "react-icons/sl";
 import { GoClockFill } from "react-icons/go";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axiosInstance from "../interceptors/axiosInstance";
+import axiosInstance from "../../interceptors/axiosInstance";
 
 function ViewOpportunity({ opportunity, isOpen, onClose }) {
   const [studentList, setStudentList] = useState([]);

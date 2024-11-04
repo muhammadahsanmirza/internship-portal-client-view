@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import axiosInstance from '../interceptors/axiosInstance';
-
+import axiosInstance from '../../interceptors/axiosInstance';
 function ResumeDialog({ isOpen, onClose, onUpload, resumeId, userId }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);

@@ -2,62 +2,58 @@ import { useState, useEffect, useCallback } from "react";
 import { toast, ToastContainer, Slide } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RxCrossCircled } from "react-icons/rx";
-import { IoIosSearch } from "react-icons/io";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoIosSearch, IoIosAddCircleOutline } from "react-icons/io";
 import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
-import Header from "./Header";
-import axiosInstance from "../interceptors/axiosInstance";
-import MajorFormDialog from "./MajorFormDialog";
-import Loader from "./Loader";
-import DeleteDialog from "./DeleteDialog";
-import Pagination from "./Pagination";
-function Majors() {
+import axiosInstance from "../../interceptors/axiosInstance";
+
+import {Header, ProgramFormDialog, DeleteDialog, Loader, Pagination} from '../index.js'
+
+function Programs() {
   const [data, setData] = useState([]);
-  const [totalMajors, setTotalMajors] = useState(0);
-  const [majorSearch, setMajorSearch] = useState("");
+  const [totalPrograms, setTotalPrograms] = useState(0);
+  const [programSearch, setProgramSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [nextPrevPage, setNextPrevPage] = useState(currentPage);
   const [totalPages, setTotalPages] = useState(0);
-  const [programs, setPrograms] = useState([]);
-  const [programId, setProgramId] = useState(0);
-  const [majorId, setMajorId] = useState(null);
+  const [colleges, setColleges] = useState([]);
+  const [collegeId, setCollegeId] = useState(0);
+  const [program, setProgram] = useState(null);
+  const [programId, setProgramId] = useState(null);
+  const [isCreateProgram, setIsCreateProgram] = useState(false);
+  const [isEditProgram, setIsEditProgram] = useState(false);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
-  const [major, setMajor] = useState(null);
-  const [isCreateMajor, setIsCreateMajor] = useState(false);
-  const [isEditMajor, setIsEditMajor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleOpenMajorDialog = () => setIsCreateMajor(true);
-  const handleCloseMajorDialog = () => setIsCreateMajor(false);
-  const handleCloseEditMajorDialog = () => setIsEditMajor(false);
+  const handleOpenProgramDialog = () => setIsCreateProgram(true);
+  const handleCloseProgramDialog = () => setIsCreateProgram(false);
+  const handleCloseEditProgramDialog = () => setIsEditProgram(false);
 
-  const fetchMajors = useCallback(
+  const fetchPrograms = useCallback(
     debounce(() => {
       setLoading(true);
       const payload = {
-        major_name: majorSearch || undefined,
-        program_id: programId || undefined,
+        program_name: programSearch || undefined,
+        college_id: collegeId || undefined,
         page_number: nextPrevPage || currentPage || undefined,
       };
       axiosInstance
-        .get(`/majors`, { params: payload })
+        .get(`/programs`, { params: payload })
         .then((res) => {
-          console.log("MAJORS===>", res);
           const newData = res.data.data;
 
           // Check if the received data is an array, else set it to an empty array
           if (isArray(newData)) {
             setData(newData);
-            setTotalMajors(res.data.total_records);
+            setTotalPrograms(res.data.total_records);
             setCurrentPage(res.data.current_page);
             // setNextPrevPage(currentPage);
             setTotalPages(res.data.total_pages);
           } else {
             setData([]); // No opportunities found
-            setTotalMajors(0);
+            setTotalPrograms(0);
             setCurrentPage(1);
             setTotalPages(1);
             setError(res.data.message || "No opportunities found");
@@ -74,22 +70,29 @@ function Majors() {
           setNextPrevPage(null);
         });
     }, 800),
-    [majorSearch, programId, currentPage, nextPrevPage]
+    [programSearch, collegeId, currentPage, nextPrevPage]
   );
 
+  // To Delete a Program
 
-
-  const deleteMajor = (id) => {
+  const deleteProgram = (id) => {
     axiosInstance
-      .delete(`/major/${id}`)
+      .delete(`/program/${id}`)
       .then((res) => {
-        const message = res.data.message || "Major deleted successfully.";
+        console.log("then");
+        const message = res.data.message || "Program deleted successfully.";
         toast.success(message, { transition: Slide });
-        setMajorId(null);
-        fetchMajors(); // Refresh the list after deletion
+        fetchPrograms(); // Refresh the list after deletion
       })
       .catch((err) => {
-        const errorMessage = err.response?.data || "Failed to delete Major.";
+        console.log("catch");
+        console.log("Err msg-->",err.message);
+        
+        let errorMessage = err.response?.data || "Failed to delete program.";
+        if (err.response && err.response.status === 409) {
+          errorMessage = "Program cannot be deleted, Majors Exist in program";
+      }
+  
         console.log(errorMessage);
         toast.error(errorMessage, { transition: Slide });
         console.error(error);
@@ -104,17 +107,18 @@ function Majors() {
   };
 
   useEffect(() => {
-    fetchMajors();
+    fetchPrograms();
     return () => {
-      fetchMajors.cancel();
+      fetchPrograms.cancel();
     };
-  }, [majorSearch, programId, fetchMajors, currentPage, nextPrevPage]);
+  }, [programSearch, collegeId, fetchPrograms, currentPage, nextPrevPage]);
 
   useEffect(() => {
     axiosInstance
-      .get("/program/names")
+      .get("/college/names")
       .then((res) => {
-        setPrograms(res.data.data);
+        console.log(res);
+        setColleges(res.data.data);
       })
       .catch((error) => {
         setError(error.message);
@@ -122,13 +126,13 @@ function Majors() {
   }, []);
 
   function handleClearFilter() {
-    setMajorSearch("");
-    setProgramId(0);
+    setProgramSearch("");
+    setCollegeId(0);
   }
 
   const breadcrumbs = [
     { title: "Opportunities", href: "/admin/opportunities", isDisabled: false },
-    { title: "Majors", href: "#", isDisabled: true },
+    { title: "Programs", href: "#", isDisabled: true },
   ];
 
   return (
@@ -136,16 +140,16 @@ function Majors() {
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Majors</p>
+        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Programs</p>
         <div className="flex flex-col md:flex-col lg:flex-row md:gap-4 lg:flex-nowrap md:justify-between my-4 mx-3 ">
           <div className="flex flex-col sm:flex-row justify-evenly md:flex-nowrap  md:justify-evenly lg:flex-nowrap gap-2 lg:gap-0 mx-2">
             <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <input
                 type="text"
-                placeholder="Search major name"
+                placeholder="Search program name"
                 className="w-full text-xs outline-none px-1"
-                onChange={(e) => setMajorSearch(e.target.value)}
-                value={majorSearch}
+                onChange={(e) => setProgramSearch(e.target.value)}
+                value={programSearch}
                 disabled={loading || error}
               />
               <button className="flex items-center justify-center w-12">
@@ -155,16 +159,16 @@ function Majors() {
             <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-80 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
               <select
                 className="w-full text-sm px-2 outline-none"
-                value={programId}
+                value={collegeId}
                 disabled={loading || error}
                 onChange={(e) => {
-                  setProgramId(e.target.value);
+                  setCollegeId(e.target.value);
                 }}
               >
-                <option value="">Select Program</option>
-                {programs?.map((program) => (
-                  <option key={program.id} value={program.id}>
-                    {program.name}
+                <option value="">Select College</option>
+                {colleges?.map((college) => (
+                  <option key={college.id} value={college.id}>
+                    {college.name}
                   </option>
                 ))}
               </select>
@@ -187,16 +191,15 @@ function Majors() {
               <button
                 className=" text-xs"
                 style={{ minWidth: "100px", padding: "5px 10px" }}
-                onClick={handleOpenMajorDialog}
+                onClick={handleOpenProgramDialog}
                 disabled={loading || error}
               >
-                CREATE MAJOR
+                CREATE PROGRAM
               </button>
             </div>
           </div>
         </div>
         {loading && <Loader />}
-
         <div>
           <div className="relative overflow-x-auto">
             <table className="w-full text-sm rtl:text-right">
@@ -214,12 +217,7 @@ function Majors() {
                   >
                     Name
                   </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-center align-middle"
-                  >
-                    Program
-                  </th>
+
                   <th
                     scope="col"
                     className="px-6 py-3 text-center align-middle"
@@ -243,22 +241,20 @@ function Majors() {
               </thead>
               {data.length !== 0 && (
                 <tbody>
-                  {data?.map((major) => (
-                    <tr key={major.id}>
+                  {data?.map((program) => (
+                    <tr key={program.id}>
                       <td className="px-6 py-4 text-center align-middle">
-                        {major.id}
+                        {program.id}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {major.name}
+                        {program.program_name}
+                      </td>
+
+                      <td className="px-6 py-4 text-center align-middle">
+                        {program.college_name}
                       </td>
                       <td className="px-6 py-4 text-center align-middle">
-                        {major.program_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {major.college_name}
-                      </td>
-                      <td className="px-6 py-4 text-center align-middle">
-                        {major.status ? (
+                        {program.status ? (
                           <span className="text-green-600 px-4 inline-block">
                             <BsCheckCircle />
                           </span>
@@ -273,9 +269,8 @@ function Majors() {
                           <button
                             className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setMajor(major);
-                              setIsEditMajor(true);
-                              console.log(major);
+                              setProgram(program);
+                              setIsEditProgram(true);
                             }}
                           >
                             Edit
@@ -284,7 +279,7 @@ function Majors() {
                           <button
                             className="bg-red-800 hover:bg-red-900 text-white font-bold py-2 px-4 mx-1 my-1 sm:my-0 rounded"
                             onClick={() => {
-                              setMajorId(major.id);
+                              setProgramId(program.id);
                               setConfirmDialogOpen(true);
                             }}
                           >
@@ -320,10 +315,10 @@ function Majors() {
           </div>
 
           <Pagination
-            totalText={"Majors"}
+            totalText={"Programs"}
             currentPage={currentPage}
             totalPages={totalPages}
-            totalItems={totalMajors}
+            totalItems={totalPrograms}
             onPageChange={() => {
               setNextPrevPage(currentPage + 1);
             }}
@@ -332,28 +327,28 @@ function Majors() {
       </div>
       {confirmDialogOpen && (
         <DeleteDialog
-          title={"Major"}
+          title={"Program"}
           open={confirmDialogOpen}
           noCallback={closeConfirmDialog}
-          yesCallback={() => deleteMajor(majorId)}
+          yesCallback={() => deleteProgram(programId)}
         />
       )}
-      {isCreateMajor && (
-        <MajorFormDialog
-          headerText={"Create Major"}
-          open={isCreateMajor}
-          close={() => handleCloseMajorDialog()}
-          onMajorUpdate={fetchMajors}
+      {isCreateProgram && (
+        <ProgramFormDialog
+          headerText={"Create Program"}
+          open={isCreateProgram}
+          close={() => handleCloseProgramDialog()}
+          onProgramUpdate={fetchPrograms}
         />
       )}
-      {isEditMajor && (
-        <MajorFormDialog
-          headerText={"Update Major"}
-          open={isEditMajor}
-          close={() => handleCloseEditMajorDialog()}
-          onMajorUpdate={fetchMajors}
+      {isEditProgram && (
+        <ProgramFormDialog
+          headerText={"Update Program"}
+          open={isEditProgram}
+          close={() => handleCloseEditProgramDialog()}
+          onProgramUpdate={fetchPrograms}
           editMode={true}
-          {...major}
+          {...program}
         />
       )}
 
@@ -373,4 +368,4 @@ function Majors() {
   );
 }
 
-export default Majors;
+export default Programs;

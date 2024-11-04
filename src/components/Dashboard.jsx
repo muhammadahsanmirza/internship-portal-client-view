@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import axiosInstance from '../interceptors/axiosInstance';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserDetails, selectUserDetails } from '../redux/slices/userSlice.js';
-import Sidebar from './Sidebar.jsx';
-import Section from './Section';
-import Opportunities from './Opportunities';
+
+import {Sidebar, Section, Opportunities} from './index.js'
+
 function Dashboard() {
   console.log("Dashboard")
   const dispatch = useDispatch();
@@ -23,9 +23,7 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    // if (!userDetails.role) {
       getUserDetails();
-    // }
   }, []);
 
   return (
