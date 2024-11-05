@@ -28,7 +28,7 @@ import {
   StudentDashboard,
   StudentProfile,
   RouteGuard,
-  Section,
+  StudentOpportunities,
 } from "./components/index.js"
 
 import "@mantine/core/styles.css";
@@ -60,7 +60,7 @@ const router = createBrowserRouter(
       <Route path="/student/" element={<RouteGuard role={"student"} />}>
         <Route element={<StudentDashboard />}>
           <Route index element={<Navigate to="opportunities" />} />
-          <Route path="opportunities" element={<Section />} />
+          <Route path="opportunities" element={<StudentOpportunities />} />
           <Route path="profile" element={<StudentProfile />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>

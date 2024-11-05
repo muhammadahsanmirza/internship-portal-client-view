@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
-import axiosInstance from '../../interceptors/axiosInstance';
+import axiosInstance from '../../interceptors/axiosInstance.js';
 import { IoIosSearch } from 'react-icons/io';
 import { RiCloseCircleLine } from 'react-icons/ri';
 import { debounce } from 'lodash';
 
 import {Card, CardDetail, Header, Loader} from '../index.js'
 
-function Section() {
+function StudentOpportunities() {
     const [activeDetail, setActiveDetail] = useState(false);
     const [selectedCard, setSelectedCard] = useState(null);
     const [data, setData] = useState([]);
@@ -180,4 +180,4 @@ function Section() {
     );
 }
 
-export default Section;
+export default StudentOpportunities;

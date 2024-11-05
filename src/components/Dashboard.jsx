@@ -3,7 +3,7 @@ import axiosInstance from '../interceptors/axiosInstance';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserDetails, selectUserDetails } from '../redux/slices/userSlice.js';
 
-import {Sidebar, Section, Opportunities} from './index.js'
+import {Sidebar, StudentOpportunities, Opportunities} from './index.js'
 
 function Dashboard() {
   console.log("Dashboard")
@@ -30,7 +30,7 @@ function Dashboard() {
     <div className='flex sm:flex-row h-screen'>
       <Sidebar />
       {userDetails.role === 'admin' && <Opportunities />}
-      {userDetails.role === 'student' && <Section />}
+      {userDetails.role === 'student' && <StudentOpportunities />}
     </div>
   );
 }

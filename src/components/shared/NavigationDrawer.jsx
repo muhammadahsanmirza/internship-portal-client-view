@@ -22,7 +22,7 @@ function NavigationDrawer({ isOpen, onClose }) {
   if (!userDetails.role) {
     return null; // Wait until user details are available
   }
-  
+
   const handleLogout = () => {
     localStorage.clear();
     instance.logout({ account: accounts[0] });
@@ -30,8 +30,8 @@ function NavigationDrawer({ isOpen, onClose }) {
 
   return (
     <div
-      className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white shadow-lg transform transition-all ease-in-out duration-300 ${
-        isOpen ? "translate-x-0" : "-translate-x-full  sm:hidden "
+      className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
       <div className="flex flex-col h-full">
@@ -51,7 +51,6 @@ function NavigationDrawer({ isOpen, onClose }) {
         <div className="flex-grow">
           <div className="flex flex-col justify-between mt-1">
             {/* Student Navigation Links */}
-
             {userDetails.role === "student" && (
               <NavLink
                 to="/student/opportunities"
@@ -76,7 +75,6 @@ function NavigationDrawer({ isOpen, onClose }) {
             )}
 
             {/* Admin Navigation Links */}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/opportunities"
@@ -89,7 +87,6 @@ function NavigationDrawer({ isOpen, onClose }) {
                 </span>
               </NavLink>
             )}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/applicants"
@@ -102,7 +99,6 @@ function NavigationDrawer({ isOpen, onClose }) {
                 </span>
               </NavLink>
             )}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/students"
@@ -113,7 +109,6 @@ function NavigationDrawer({ isOpen, onClose }) {
                 <span className="mx-4 text-center sm:text-left">Students</span>
               </NavLink>
             )}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/majors"
@@ -124,7 +119,6 @@ function NavigationDrawer({ isOpen, onClose }) {
                 <span className="mx-4 text-center sm:text-left">Majors</span>
               </NavLink>
             )}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/programs"
@@ -135,7 +129,6 @@ function NavigationDrawer({ isOpen, onClose }) {
                 <span className="mx-4 text-center sm:text-left">Programs</span>
               </NavLink>
             )}
-
             {userDetails.role === "admin" && (
               <NavLink
                 to="/admin/colleges"
@@ -162,3 +155,4 @@ function NavigationDrawer({ isOpen, onClose }) {
 }
 
 export default NavigationDrawer;
+

@@ -5,7 +5,7 @@ import Dashboard from "./Dashboard";
 import Card from "./student/Card";
 import CardDetail from "./student/CardDetail";
 import ResumeDialog from "./student/ResumeDialog";
-import Section from "./student/Section";
+import StudentOpportunities from "./student/StudentOpportunities";
 import StudentDashboard from "./student/StudentDashboard";
 import StudentProfile from "./student/StudentProfile";
 
@@ -43,7 +43,7 @@ export {
   Card,
   CardDetail,
   ResumeDialog,
-  Section,
+  StudentOpportunities,
   StudentDashboard,
   StudentProfile,
   
