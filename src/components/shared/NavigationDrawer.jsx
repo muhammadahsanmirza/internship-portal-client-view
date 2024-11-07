@@ -30,8 +30,8 @@ function NavigationDrawer({ isOpen, onClose }) {
 
   return (
     <div
-      className={`fixed z-50 top-0 left-0 lg:left-20 w-full lg:w-80 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
-        isOpen ? "translate-x-0" : "-translate-x-full"
+      className={`fixed z-50 top-0 left-0 lg:left--20 w-full lg:w-80 h-full bg-white shadow-lg transition-transform duration-300 ease-in-out ${
+        isOpen ? "translate-x-0 lg:ml-20" : "-translate-x-full "
       }`}
     >
       <div className="flex flex-col h-full">
