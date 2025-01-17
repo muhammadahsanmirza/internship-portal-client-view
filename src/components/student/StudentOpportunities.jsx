@@ -161,9 +161,7 @@ function StudentOpportunities() {
             } overflow-y-auto overflow-x-hidden`}
             style={{ width: activeDetail ? "49%" : "auto" }}
           >
-            {data &&
-              data?.map((card) => (
-                <>
+            {data?.map((card) => (
                   <Card
                     key={card.id}
                     company_name={card.company_name}
@@ -172,35 +170,7 @@ function StudentOpportunities() {
                     start_date={card.start_date}
                     end_date={card.end_date}
                     detail={() => detailClickHandler(card)}
-                  />
-                  <Card
-                    key={card.id}
-                    company_name={card.company_name}
-                    name={card.name}
-                    program_name={card.program_name}
-                    start_date={card.start_date}
-                    end_date={card.end_date}
-                    detail={() => detailClickHandler(card)}
-                  />
-                  <Card
-                    key={card.id}
-                    company_name={card.company_name}
-                    name={card.name}
-                    program_name={card.program_name}
-                    start_date={card.start_date}
-                    end_date={card.end_date}
-                    detail={() => detailClickHandler(card)}
-                  />
-                  <Card
-                    key={card.id}
-                    company_name={card.company_name}
-                    name={card.name}
-                    program_name={card.program_name}
-                    start_date={card.start_date}
-                    end_date={card.end_date}
-                    detail={() => detailClickHandler(card)}
-                  />
-                </>
+                  />                  
               ))}
           </div>
           <div className="md:w-full md:mt-0">
