@@ -119,7 +119,7 @@ function Colleges() {
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 pl-4 bg-blue-950 text-white rounded-t">Colleges</p>
+        <p className="py-4 lg:pl-7 bg-blue-950 text-white rounded-t">Colleges</p>
         <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 ">
           <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap lg:gap-0 mx-2">
             <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
