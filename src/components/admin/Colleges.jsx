@@ -8,7 +8,13 @@ import { BsCheckCircle } from "react-icons/bs";
 import { debounce, isArray } from "lodash";
 import axiosInstance from "../../interceptors/axiosInstance";
 
-import {Header, CollegeFormDialog, DeleteDialog, Loader, Pagination} from "../index.js";
+import {
+  Header,
+  CollegeFormDialog,
+  DeleteDialog,
+  Loader,
+  Pagination,
+} from "../index.js";
 
 function Colleges() {
   const [data, setData] = useState([]);
@@ -119,14 +125,16 @@ function Colleges() {
       <Header breadcrumbs={breadcrumbs} />
 
       <div className="rounded border mt-4 mx-2 sm:mx-6">
-        <p className="py-4 lg:pl-7 bg-blue-950 text-white rounded-t">Colleges</p>
+        <p className="py-4 lg:pl-7 bg-blue-950 text-white rounded-t">
+          Colleges
+        </p>
         <div className="flex flex-col sm:flex-row lg:flex-nowrap md:justify-between my-4 mx-3 ">
           <div className="flex flex-col sm:flex-row justify-evenly md:flex-wrap  md:justify-evenly lg:flex-nowrap lg:gap-0 mx-2">
-            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-48 lg:mx-1 lg:h-8 xl:w-52">
+            <div className="flex flex-row rounded border w-full sm:w-52 h-7 md:w-56 md:h-10 lg:w-96 lg:mx-0 lg:h-8">
               <input
                 type="text"
                 placeholder="Search college name"
-                className="w-full text-xs outline-none px-1"
+                className="w-full text-xs outline-none px-2"
                 onChange={(e) => setCollegeSearch(e.target.value)}
                 value={collegeSearch}
                 disabled={loading || error}
@@ -139,22 +147,21 @@ function Colleges() {
 
           {/* Buttons */}
           <div className="flex flex-col md:flex-row lg:flex-row justify-evenly sm:justify-around mx-2  sm:mt-0 md:mx-18 md:justify-between gap-0 md:gap-2 lg:gap-0 xl:ml-36 xl:justify-evenly">
-            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
+            <div className="flex flex-row rounded bg-yellow-500 hover:bg-yellow-600 text-black sm:px-0 md:px-2  text-sm items-center justify-center sm:mx-1 mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2  gap-2">
               <RxCrossCircled />
               <button
-                className=" text-xs"
-                style={{ minWidth: "100px", padding: "5px 10px" }}
+                className=" text-xs font-semibold "
                 onClick={handleClearFilter}
                 disabled={loading || error}
               >
                 CLEAR FILTERS
               </button>
             </div>
-            <div className="flex flex-row rounded bg-blue-950 text-white px-1 text-sm items-center justify-center mt-2 sm:mt-0 h-7  md:w-48 md:h-10 md:mx-4 lg:w-32 lg:h-8 lg:mx-2 xl:w-52">
-              <IoIosAddCircleOutline className="text-white" />
+
+            <div className="flex flex-row rounded bg-blue-950 text-white px-2 text-sm items-center justify-center mt-2 sm:mt-0 h-7 md:w-48 md:h-10 md:mx-4 lg:w-36 lg:h-8 lg:mx-2 gap-2">
+              <IoIosAddCircleOutline className="w-5 h-5" />{" "}
               <button
-                className=" text-xs"
-                style={{ minWidth: "100px", padding: "5px 10px" }}
+                className="text-xs font-semibold text-nowrap"
                 onClick={handleOpenCollegeDialog}
                 disabled={loading || error}
               >
