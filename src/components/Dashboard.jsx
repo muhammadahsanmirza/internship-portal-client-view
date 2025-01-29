@@ -11,11 +11,12 @@ function Dashboard() {
   const userDetails = useSelector(selectUserDetails);
 
   const getUserDetails = () => {
+    console.log("Getting User Details");
     axiosInstance
       .get('/user/detail')
       .then((res) => {
         dispatch(setUserDetails(res.data.data)); // Save to Redux
-        console.log('App Component User Details-->', res.data.data);
+        console.log('App Component USser Details-->', res.data.data);
       })
       .catch((err) => {
         console.error('Error fetching user details', err);

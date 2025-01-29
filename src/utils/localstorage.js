@@ -1,6 +1,8 @@
 // utils/localStorage.js
 
 export const saveState = (state) => {
+  console.log("**********Saving User State**********");
+  console.log(state);
     try {
       const serializedState = JSON.stringify(state);
       localStorage.setItem('userState', serializedState);
@@ -10,6 +12,7 @@ export const saveState = (state) => {
   };
   
   export const loadState = () => {
+  console.log("**********Loading User State**********")
     try {
       const serializedState = localStorage.getItem('userState');
       if (serializedState === null) {

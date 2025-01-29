@@ -14,6 +14,7 @@ const userSlice = createSlice({
       state.role = action.payload.role;
       state.context = action.payload.context;
     },
+
     clearUserDetails: (state) => {
       state.role = null;
       state.context = null;
@@ -24,7 +25,6 @@ const userSlice = createSlice({
 // Export actions
 export const { setUserDetails, clearUserDetails } = userSlice.actions;
 
-// Base selector
 const selectUserState = (state) => state.user;
 
 // Memoized selector to get user details (role and context)
